@@ -22,7 +22,7 @@ function(y, x, P, J, domain, w.index, D, Z, to, tree) {
       P$sumset <- union(setdiff(v, y), P$sumset)
       P <- simplify.expression(P, NULL)
     } else {
-      P$var <- y     
+      P$var <- y
     }
     tree$call$line <- 1
     tree$root <- P
@@ -36,7 +36,7 @@ function(y, x, P, J, domain, w.index, D, Z, to, tree) {
       P$sumset <- union(setdiff(v, anc), P$sumset)
       P <- simplify.expression(P, NULL)
     } else {
-      P$var <- anc     
+      P$var <- anc
     }
     nxt <- trmz(y, intersect(x, anc), P, J, domain, w.index, anc.graph, Z, to, list())
     tree$branch[[1]] <- nxt$tree
@@ -86,7 +86,6 @@ function(y, x, P, J, domain, w.index, D, Z, to, tree) {
 
     # line 6
     if (!identical(cG[[1]], v)) {
-
       is.element <- FALSE
       for (i in 1:length(cG)) {
         if (identical(cc, cG[[i]])) {
@@ -105,7 +104,7 @@ function(y, x, P, J, domain, w.index, D, Z, to, tree) {
         for (i in 1:length(cc)) {
           P.prod <- probability()
           P.num <- P
-          P.den <- P 
+          P.den <- P
           if (P$product) {
             P.num$sumset <- union(P.num$sumset, setdiff(v, v[0:ind[i]]))
             P.den$sumset <- union(P.den$sumset, setdiff(v, v[0:(ind[i]-1)]))
@@ -116,13 +115,16 @@ function(y, x, P, J, domain, w.index, D, Z, to, tree) {
             P.prod$cond <- v[0:(ind[i]-1)]
             #if (length(P.den$var) > 0) {
             #  P.num$fraction <- TRUE
-            #  P.num$divisor <- P.den            
+            #  P.num$divisor <- P.den
             #}
           }
           productlist[[i]] <- P.prod
         }  
-        if (length(productlist) > 1) P.new <- probability(product = TRUE, children = productlist)     
-        else P.new <- productlist[[1]]
+        if (length(productlist) > 1) P.new <- probability(sumset = setdiff(s, y), product = TRUE, children = productlist)
+        else {
+          P.new <- productlist[[1]]
+          P.new$sumset <- union(P.new$sumset, setdiff(s, y))
+        }
         tree$root <- P.new
         return(list(P = P.new, W = w.index, tree = tree))
       }

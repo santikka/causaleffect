@@ -41,7 +41,7 @@ function(P.num, P.den) {
           P.new <- probability(fraction = TRUE)
           P.new$num <- P.num
           P.new$den <- P.den
-          return(P.new)       
+          return(P.new)
         }
         if (P.den$product) {
           parse.children.den <- sapply(P.den$children, FUN = function(x) (x$product | length(x$sumset) > 0 | x$fraction))
@@ -49,11 +49,11 @@ function(P.num, P.den) {
             P.new <- probability(fraction = TRUE)
             P.new$num <- P.num
             P.new$den <- P.den
-            return(P.new)        
+            return(P.new)
           } else {
             while(length(P.den$children) > 0) {
               P.num$children[[1]] <- NULL
-              P.den$children[[1]] <- NULL     
+              P.den$children[[1]] <- NULL
             }
             return(P.num)
           }

@@ -13,10 +13,12 @@ function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE) {
   res.prob <- probability()
   if (is.null(z) || z == "" || identical(z, character(0))) { 
     res <- id(y, x, probability(), G, to, list())
-    res.prob <- organize.terms(res$P, to)
+    res.prob <- res$P
+    #res.prob <- organize.terms(res$P, to)
   } else { 
     res <- idc(y, x, z, probability(), G, to, list())
-    res.num <- organize.terms(res$P, to)
+    res.num <- res$P
+    #res.num <- organize.terms(res$P, to)
     res.den <- res.num
     res.den$sumset <- union(res.den$sumset, y)
     res.prob$fraction <- TRUE

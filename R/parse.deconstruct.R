@@ -29,6 +29,6 @@ function(P) {
     if (length(P$den$children) == 0) {
       return(P$num)
     }
-  }  
+  }
   return(P)
 }

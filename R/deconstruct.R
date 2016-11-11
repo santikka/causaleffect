@@ -90,7 +90,7 @@ deconstruct <- function(P, P.context) {
     for (i in 1:length(P$children)) {
       P.context <- deconstruct(P$children[[i]], P.context)
     }
-    return(P.context)     
+    return(P.context)
   }
 
   # Atomic expression in a context
@@ -124,7 +124,7 @@ deconstruct <- function(P, P.context) {
         P.context$children[[init + 1]] <- P.temp
       } 
     }
-    return(P.context)    
+    return(P.context)
   }
 
   if (P.context$sum) {

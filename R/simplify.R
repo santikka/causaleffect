@@ -13,8 +13,8 @@ function(P, to, G.adj, G, G.obs) {
     k <- 1
     n <- 1
     J <- character()
-    D <- character()    
-    while (k <= i) {  
+    D <- character()
+    while (k <= i) {
       joint <- join(J, D, P$children[[k]]$var, P$children[[k]]$cond, P$sumset[j], M, O, G.adj, G, G.obs, to)
       if (length(joint[[1]]) <= length(J)) {
         J <- character()
@@ -34,7 +34,7 @@ function(P, to, G.adj, G, G.obs) {
       }
     }
     if (k == i + 1) {
-      P <- factorize(J, D, P, to, i)   
+      P <- factorize(J, D, P, to, i)
       S <- P$sumset[j]  
       P$sumset <- P$sumset[-j]
       if (length(R.var) > 0) {
@@ -47,5 +47,5 @@ function(P, to, G.adj, G, G.obs) {
       } else j <- 0
     } else P <- P.orig
   }
-  return(P)       
+  return(P)
 }

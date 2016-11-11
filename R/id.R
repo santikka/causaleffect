@@ -10,7 +10,7 @@ id <- function(y, x, P, G, to, tree) {
   if (length(x) == 0) {
     if (P$product | P$fraction) {
       P$sumset <- union(setdiff(v, y), P$sumset)
-      P <- simplify.expression(P, NULL)
+      # P <- simplify.expression(P, NULL)
     } else {
       P$var <- y
     }
@@ -24,7 +24,7 @@ id <- function(y, x, P, G, to, tree) {
     anc.graph <- induced.subgraph(G, anc)
     if (P$product | P$fraction) {
       P$sumset <- union(setdiff(v, anc), P$sumset)
-      P <- simplify.expression(P, NULL)
+      # P <- simplify.expression(P, NULL)
     } else {
       P$var <- anc
     }
@@ -41,6 +41,7 @@ id <- function(y, x, P, G, to, tree) {
   w <- setdiff(setdiff(v, x), anc.xbar)
   if (length(w) != 0) {
     r <- blocked(w, y, G.x.overbar, to)
+    # nxt <- id(y, union(x, w), P, G, to, list())
     nxt <- id(y, union(x, setdiff(w, r)), P, induced.subgraph(G, setdiff(v, r)), to, list())
     tree$branch[[1]] <- nxt$tree
     tree$call$line <- 3
@@ -92,26 +93,28 @@ id <- function(y, x, P, G, to, tree) {
       product.list <- list()
       P.prod <- probability()
       s.len <- length(s)
-      for (i in 1:s.len) { 
+      # s.par <- parents(s, G, to)
+      for (i in 1:s.len) {
+        # cond.set <- union(parents(s[i], G, to), intersect(v[0:(ind[i]-1)], s.par))
         if (P$product) {
           P.prod <- parse.joint(P, s[i], v[0:(ind[i]-1)], v)
-          P.prod <- simplify.expression(P.prod, NULL)
+          # P.prod <- simplify.expression(P.prod, NULL)
         } else {
           P.prod <- P
           P.prod$var <- s[i]
           P.prod$cond <- v[0:(ind[i]-1)]
         }
         product.list[[i]] <- P.prod
-      }  
+      }
       if (s.len > 1) {
         P.new <- probability(sumset = setdiff(s, y), product = TRUE, children = product.list)
-        P.new <- simplify.expression(P.new, NULL)
+        # P.new <- simplify.expression(P.new, NULL)
         tree$root <- P.new
         return(list(P = P.new, tree = tree))
       } 
       if (P.prod$product | P.prod$fraction) {
         P.prod$sumset <- union(P.prod$sumset, setdiff(s, y))
-        P.prod <- simplify.expression(P.prod, NULL)
+        # P.prod <- simplify.expression(P.prod, NULL)
       } else {
         P.prod$var <- setdiff(P.prod$var, union(P.prod$sumset, setdiff(s, y)))
       }
@@ -130,7 +133,9 @@ id <- function(y, x, P, G, to, tree) {
     ind <- which(v %in% s)
     s.graph <- induced.subgraph(G, s)
     s.len <- length(s)
-    for (i in 1:s.len) { 
+    # s.par <- parents(s, G, to)
+    for (i in 1:s.len) {
+      # cond.set <- union(parents(s[i], G, to), intersect(v[0:(ind[i]-1)], s.par))
       P.prod <- P
       P.prod$var <- s[i]
       P.prod$cond <- v[0:(ind[i]-1)]
@@ -142,6 +147,5 @@ id <- function(y, x, P, G, to, tree) {
     else nxt <- id(y, x.new, product.list[[1]], s.graph, to, list())
     tree$branch[[1]] <- nxt$tree 
     return(list(P = nxt$P, tree = tree))
-    
   }
 }

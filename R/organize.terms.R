@@ -10,7 +10,7 @@ function(P, to) {
     P$children <- list()
     rec <- unlist(lapply(children.copy, FUN = function(x) x$product))
     children.rec <- children.copy[rec]
-    if (length(children.rec) > 0) for(i in 1:length(children.rec)) P$children[[i]] <- organize.terms(children.rec[[i]], to)    
+    if (length(children.rec) > 0) for(i in 1:length(children.rec)) P$children[[i]] <- organize.terms(children.rec[[i]], to)
     children.nonrec <- children.copy[!rec]
     if (length(children.nonrec) > 0) {
       ord <- order(unlist(lapply(children.nonrec, FUN = function(x) min(to %in% x$var))), decreasing = TRUE)

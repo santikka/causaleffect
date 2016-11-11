@@ -35,8 +35,7 @@ function(x) {
       else P <- paste(P, "^{(", letters[x$domain - 1], ")}(", var.string, sep = "", collapse = "")
     } else {
       P <- paste(P, "(", var.string, sep = "", collapse = "")   
-    }  
-
+    }
     if (length(x$cond) > 0) {
       cond.string <- paste(x$cond, sep = "", collapse = ",")   
       cond.string <- paste("\u007C", cond.string, ")", sep = "", collapse = "") 
@@ -45,5 +44,5 @@ function(x) {
     P <- paste(P, cond.string, sep = "")
   }
   if (s.print) P <- paste(P, "\\right)", sep = "", collapse = ",")
-  return(P)
+  return (P)
 }

@@ -78,10 +78,10 @@ function(y, x, P, J, domain, w.index, D, Z, to, tree) {
     ))
   }
 
-  # line 5  
+  # line 5
   else {
     cc <- cc[[1]]
-    cG.s <- lapply(1:d, function(x) sc.components(D[[x]], to[[x]]))  
+    cG.s <- lapply(1:d, function(x) sc.components(D[[x]], to[[x]]))
     cG <- cG.s[[1]]
 
     # line 6
@@ -120,10 +120,10 @@ function(y, x, P, J, domain, w.index, D, Z, to, tree) {
           }
           productlist[[i]] <- P.prod
         }  
-        if (length(productlist) > 1) P.new <- probability(sumset = setdiff(s, y), product = TRUE, children = productlist)
+        if (length(productlist) > 1) P.new <- probability(sumset = setdiff(cc, y), product = TRUE, children = productlist)
         else {
           P.new <- productlist[[1]]
-          P.new$sumset <- union(P.new$sumset, setdiff(s, y))
+          P.new$sumset <- union(P.new$sumset, setdiff(cc, y))
         }
         tree$root <- P.new
         return(list(P = P.new, W = w.index, tree = tree))
@@ -145,7 +145,7 @@ function(y, x, P, J, domain, w.index, D, Z, to, tree) {
         for (i in 1:length(cc)) { 
           kappa <- union(kappa, setdiff(v[0:(ind[i]-1)], cc))
           if (P$product) {
-            P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa), v)  
+            P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa), v)
             P.prod <- simplify.expression(P.prod, NULL)
             productlist[[i]] <- P.prod
           } else {

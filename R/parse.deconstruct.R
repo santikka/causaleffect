@@ -27,6 +27,7 @@ function(P) {
       }
     }
     if (length(P$den$children) == 0) {
+      P$num$sumset <- P$sumset
       return(P$num)
     }
   }

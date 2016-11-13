@@ -2,15 +2,16 @@ identify <-
 function(C, T, Q, G, to, tree) {
   v <- get.vertex.attribute(G, "name")
   s <- v[which(vertex.attributes(G)$description == "S")]
-  s <- to[which(to %in% s)]
   v <- to[which(to %in% v)]
   G.obs <- observed.graph(G)
   G.T <- induced.subgraph(G, T)
   G.T.obs <- observed.graph(G.T)
-  tree$call <- list(y = C, x = setdiff(v, C), C = C, T = T, P = Q, G = G.T, line = "", v = v, alg = "Identify")
+  tree$call <- list(y = C, x = setdiff(v, C), C = C, T = T, P = activate.selection.variable(Q, s), G = G.T, line = "", v = v, alg = "Identify")
   anc.c <- ancestors(C, G.T.obs, to)
 
   A <- intersect(anc.c, T)
+  tree$call$A <- A
+  
   # i)
   if (identical(A, C)) {
     if (Q$product | Q$fraction) {
@@ -19,7 +20,6 @@ function(C, T, Q, G, to, tree) {
       Q$var <- C
     }
     tree$call$line <- 9
-    tree$call$A <- A
     tree$call$anc.c <- anc.c
     tree$root <- Q
     return(list(P = Q, tree = tree))

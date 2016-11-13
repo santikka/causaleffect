@@ -2,7 +2,6 @@ rc <-
 function(D, P, G, to, tree) {
   v.s <- get.vertex.attribute(G, "name")
   s <- v.s[which(vertex.attributes(G)$description == "S")]
-  s <- to[which(to %in% s)]
   G.causal <- induced.subgraph(G, v.s[!(v.s %in% s)])
   v <- get.vertex.attribute(G.causal, "name")
   v <- to[which(to %in% v)]
@@ -10,7 +9,7 @@ function(D, P, G, to, tree) {
   G.s.obs <- observed.graph(G)
   anc.d.obs <- ancestors(D, G.obs, to)
   anc.d <- ancestors(D, G.s.obs, to)
-  tree$call <- list(y = D, x = setdiff(v, D), P = P, G = G, line = "", v = v.s, alg = "RC")
+  tree$call <- list(y = D, x = setdiff(v, D), P = activate.selection.variable(P, s), G = G, line = "", v = v.s, alg = "RC")
 
   # line 1
   anc.s <- ancestors(s, G.s.obs, to)

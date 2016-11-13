@@ -1,3 +1,9 @@
+Changes from version 1.3.1 to 1.3.2
+ * Added a new parameter called 'primes' which can be used to separate summation variables from other variables in the expressions.
+
+Changes from version 1.3.0 to 1.3.1
+ * Fixed some bugs in identification and transportability derivations.
+
 Changes from version 1.2.4 to 1.3.0
  * Now implements a transportability algorithm from multiple domains with limited experiments. This function replaces the following functions: 'aux.effect', 'transport' and 'meta.transport'. These functions can still be called and they serve as wrappers for the new function 'generalize'.
  * Now implements a selection bias recovery algorithm in the function 'recover'.

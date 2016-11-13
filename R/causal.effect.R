@@ -1,5 +1,5 @@
 causal.effect <-
-function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE) {
+function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
   G.obs <- observed.graph(G)
   if (!is.dag(G.obs)) stop("Graph 'G' is not a DAG")
   to <- topological.sort(G.obs)
@@ -9,6 +9,9 @@ function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE) {
   if (length(z) > 0 && z != "") {
     if (length(setdiff(z, to)) > 0) stop("Set 'z' contains variables not present in the graph.")
   }
+  if (length(intersect(x, y)) > 0) stop("Sets 'x' and 'y' are not disjoint.")
+  if (length(intersect(y, z)) > 0) stop("Sets 'y' and 'z' are not disjoint.")
+  if (length(intersect(x, z)) > 0) stop("Sets 'x' and 'z' are not disjoint.")
   res <- list()
   res.prob <- probability()
   if (is.null(z) || z == "" || identical(z, character(0))) { 
@@ -35,9 +38,8 @@ function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE) {
     res.prob <- parse.expression(res.prob, to, G.adj, G, G.obs)
     res.prob <- deconstruct(res.prob, probability())
     res.prob <- parse.deconstruct(res.prob)
-    # final cancellations here
   }
-  if (expr) res.prob <- get.expression(res.prob)
+  if (expr) res.prob <- get.expression(res.prob, primes)
   if (steps) return(list(P = res.prob, steps = res.tree))
   return(res.prob)
 }

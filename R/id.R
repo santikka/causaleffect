@@ -70,8 +70,8 @@ id <- function(y, x, P, G, to, tree) {
     s <- s[[1]]
 
     # line 5 
-    cG <- c.components(G, to)
-    if (identical(cG[[1]], v)) {
+    cc <- c.components(G, to)
+    if (identical(cc[[1]], v)) {
       v.string <- paste(v, sep = "", collapse = ",")
       s.string <- paste(s, sep = "", collapse = ",")
       tree$call$line <- 5
@@ -79,30 +79,24 @@ id <- function(y, x, P, G, to, tree) {
     }
    
     # line 6
-    is.element <- FALSE
-    for (i in 1:length(cG)) {
-      if (identical(s, cG[[i]])) {
-        is.element <- TRUE
-        break
-      }
-    }
-    if (is.element) {
+    pos <- Position(function(x) identical(s, x), cc, nomatch = 0)
+    if (pos > 0) {
       tree$call$line <- 6
       tree$call$s <- s
       ind <- which(v %in% s)
       product.list <- list()
       P.prod <- probability()
       s.len <- length(s)
-      # s.par <- parents(s, G, to)
       for (i in 1:s.len) {
-        # cond.set <- union(parents(s[i], G, to), intersect(v[0:(ind[i]-1)], s.par))
+        # cond.set <- causal.parents(s[i], v[1:ind[i]], G, G.obs, to)
+        cond.set <- v[0:(ind[i]-1)]
         if (P$product) {
-          P.prod <- parse.joint(P, s[i], v[0:(ind[i]-1)], v)
+          P.prod <- parse.joint(P, s[i], cond.set, v)
           # P.prod <- simplify.expression(P.prod, NULL)
         } else {
           P.prod <- P
           P.prod$var <- s[i]
-          P.prod$cond <- v[0:(ind[i]-1)]
+          P.prod$cond <- cond.set
         }
         product.list[[i]] <- P.prod
       }
@@ -124,21 +118,19 @@ id <- function(y, x, P, G, to, tree) {
 
     # line 7
     tree$call$s <- s
-    set.contain <- unlist(lapply(cG, FUN = function(x) setequal(intersect(x, s), s)))
-    set.contain <- which(set.contain)[1]
-    s <- cG[[set.contain]]
+    s <- Find(function(x) all(s %in% x), cc)
     tree$call$line <- 7
     tree$call$s.prime <- s
     product.list <- list()
     ind <- which(v %in% s)
     s.graph <- induced.subgraph(G, s)
     s.len <- length(s)
-    # s.par <- parents(s, G, to)
     for (i in 1:s.len) {
-      # cond.set <- union(parents(s[i], G, to), intersect(v[0:(ind[i]-1)], s.par))
+      # cond.set <- causal.parents(s[i], v[1:ind[i]], G, G.obs, to)
+      cond.set <- v[0:(ind[i]-1)]
       P.prod <- P
       P.prod$var <- s[i]
-      P.prod$cond <- v[0:(ind[i]-1)]
+      P.prod$cond <- cond.set
       product.list[[i]] <- P.prod
     }
     x.new <- intersect(x, s)

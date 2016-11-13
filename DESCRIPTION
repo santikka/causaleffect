@@ -1,6 +1,6 @@
 Package: causaleffect
-Version: 1.3.1
-Date: 2016-11-10
+Version: 1.3.2
+Date: 2016-11-13
 Title: Deriving Expressions of Joint Interventional Distributions and Transport Formulas in Causal Models
 Author: Santtu Tikka
 Maintainer: Santtu Tikka <santtuth@gmail.com>

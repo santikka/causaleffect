@@ -2,7 +2,7 @@
 \alias{meta.transport}
 \title{Derive a transport formula for a causal effect between a target domain and multiple source domains}
 \description{This function returns an expression for the transport formula of a causal effect between a target domain and multiple source domains. The formula is returned for the interventional distribution of the set of variables (\code{y}) given the intervention on the set of variables (\code{x}). The multiple source domains are given as a list of selection diagrams (\code{D}). If the effect is non-transportable, an error is thrown describing the graphical structure that witnesses non-transportability. The vertices of any diagram in (\code{D}) that correspond to selection variables must have a description parameter of a single character "S" (shorthand for "selection"). }
-\usage{meta.transport(y, x, D, expr = TRUE, simp = TRUE, steps = FALSE)}
+\usage{meta.transport(y, x, D, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE)}
 
 \arguments{
   \item{y}{A character vector of variables of interest given the intervention. }
@@ -11,6 +11,7 @@
   \item{expr}{A logical value. If \code{TRUE}, a string is returned describing the expression in LaTeX syntax. Else, a list structure is returned which can be manually parsed by the function \code{get.expression}}
   \item{simp}{A logical value. If \code{TRUE}, a simplification procedure is applied to the resulting probability object. d-separation and the rules of do-calculus are applied repeatedly to simplify the expression. }
   \item{steps}{A logical value. If \code{TRUE}, returns a list where the first element corresponds to the expression of the transport formula and the second to the a list describing intermediary steps taken by the algorithm. }
+  \item{primes}{A logical value. If \code{TRUE}, prime symbols are appended to summation variables to make them distinct from their other instantiations. }
 }
 
 \value{If \code{steps = FALSE}, A character string or an object of class \code{probability} that describes the transport formula. Otherwise, a list as described in the arguments.}

@@ -6,7 +6,7 @@ given the intervention on the set of variables (\code{x}) in graph (\code{G}) co
 an error is thrown describing the graphical structure that witnesses unidentifiability. The vertex of (\code{G}) that corresponds to the selection variable must have a description parameter of a single character "S" (shorthand for "selection"). If \code{steps = TRUE}, returns instead
 a list where the first element is the expression and the second element is a list of the intermediary steps taken by the algorithm. }
 
-\usage{recover(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE)}
+\usage{recover(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE)}
 
 \arguments{
   \item{y}{A character vector of variables of interest given the intervention. }
@@ -15,6 +15,7 @@ a list where the first element is the expression and the second element is a lis
   \item{expr}{A logical value. If \code{TRUE}, a string is returned describing the expression in LaTeX syntax. Else, a list structure is returned which can be manually parsed by the function \code{get.expression}}
   \item{simp}{A logical value. If \code{TRUE}, a simplification procedure is applied to the resulting probability object. d-separation and the rules of do-calculus are applied repeatedly to simplify the expression. }
   \item{steps}{A logical value. If \code{TRUE}, returns a list where the first element corresponds to the expression of the causal effect and the second to the a list describing intermediary steps taken by the algorithm. }
+  \item{primes}{A logical value. If \code{TRUE}, prime symbols are appended to summation variables to make them distinct from their other instantiations. }
 }
 
 \value{If \code{steps = FALSE}, A character string or an object of class \code{probability} that describes the interventional distribution. Otherwise, a list as described in the arguments. }

@@ -27,8 +27,8 @@ function(P, to, G.adj, G, G.obs) {
   if (length(P$sumset) == 0) return(P)
 
   if (!P$product) { 
-    if (P$sumset == P$var) return(NULL)
-    else return(P)
+    if (P$sumset == P$var) return (NULL)
+    else return (P)
   }
 
   ord.children <- order(unlist(lapply(P$children, FUN = function(x) which(to == x$var))), decreasing = TRUE)
@@ -37,26 +37,27 @@ function(P, to, G.adj, G, G.obs) {
   P$children <- P$children[ord.children]
   P$sumset <- P$sumset[ord.sum]
   P <- simplify(P, to, G.adj, G, G.obs)
-  if (length(P$children) == 0) return(NULL)
-  return(P)   
+  if (length(P$children) == 0) return (NULL)
 
-  # P.parse <- probability(product = TRUE, children = list())
-  # remove <- c()
-  # if (length(P.sum$sumset) > 0) {
-  #   j <- 1
-  #  for (i in 1:length(P.sum$children)) {
-  #    if (length(intersect(P.sum$children[[i]]$var, P.sum$sumset)) == 0 & length(intersect(P.sum$children[[i]]$cond, P.sum$sumset)) == 0) {
-  #      P.parse$children[[j]] <- P.sum$children[[i]]
-  #      remove <- c(remove, i)
-  #      j <- j + 1
-  #   }
-  #  }
-  # }
-  # 
-  # P.sum$children[remove] <- NULL
-  # if (length(P.sum$children) > 0) P.parse$children[[length(P.parse$children) + 1]] <- P.sum
-  # if (length(P.parse$children) == 0) return(P.sum)
-  # return(P.parse)  
-  
+  P.parse <- probability(product = TRUE, children = list())
+  remove <- c()
+  j <- 0
+  if (length(P$sumset) > 0) {
+    for (i in 1:length(P$children)) {
+      if (length(intersect(P$children[[i]]$var, P$sumset)) == 0 & length(intersect(P$children[[i]]$cond, P$sumset)) == 0) {
+        remove <- c(remove, i)
+        j <- j + 1
+      }
+    }
+  } else {
+    return (P)
+  }
+  if (j > 0) {
+    P.parse$children <- P$children[remove]
+    P$children[remove] <- NULL
+    if (length(P$children) > 0) P.parse$children[[j + 1]] <- P
+    return(P.parse)
+  }
+  return(P)
 }
 

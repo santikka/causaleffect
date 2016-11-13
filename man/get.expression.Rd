@@ -3,11 +3,13 @@
 \title{Get the expression of a probability object}
 \description{This function converts an object of class \code{probability} returned by \code{aux.effect}, \code{causal.effect}, \code{generalize}, \code{meta.transport}, \code{recover} or \code{transport} with \code{expr = FALSE} into a string which represents the probability distribution.  Currently only LaTeX syntax is available.  }
 
-\usage{get.expression(x)}
+\usage{get.expression(x, primes = FALSE)}
 
 \arguments{
   \item{x}{An object of class \code{probability} which is an internal list structure describing the interventional distribution.}
+  \item{primes}{A logical value. If \code{TRUE}, prime symbols are appended to summation variables to make them distinct from their other instantiations.}
 }
+
 \value{A character string that describes the resulting distribution in LaTeX syntax. }
 
 \author{Santtu Tikka}
@@ -26,6 +28,7 @@ g <- graph.formula(X -+ Y, Z -+ X, Z -+ Y , X -+ Z, Z -+ X, simplify = FALSE)
 g <- set.edge.attribute(graph = g, name = "description", index = c(4,5), value = "U") 
 
 x <- causal.effect(y = "Y", x = "X", z = NULL, G = g, expr = FALSE)
-get.expression(x)
+get.expression(x, primes = FALSE)
+get.expression(x, primes = TRUE)
 }
 

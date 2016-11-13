@@ -1,5 +1,4 @@
-activate.interventions <-
-function(P, domain, active) {
+activate.interventions <- function(P, domain, active) {
   if (P$fraction) {
     P$num <- activate.interventions(P$num, domain, active)
     P$den <- activate.interventions(P$den, domain, active)

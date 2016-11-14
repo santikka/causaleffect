@@ -8,7 +8,7 @@ set.primes <- function(vars, new, counter) {
     counter[initial] <- 0
   }
   primes <- sapply(counter, function(x) {
-    if (x > 0) return (paste0("^{", paste0(rep("\\prime", x), collapse = ""), "}", collapse = ""))
+    if (x > 1) return (paste0("^{", paste0(rep("\\prime", x - 1), collapse = ""), "}", collapse = ""))
     return ("")
   })
   return (list(counter = counter, super = setNames(primes, names(counter))))

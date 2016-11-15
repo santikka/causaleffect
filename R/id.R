@@ -41,8 +41,8 @@ id <- function(y, x, P, G, to, tree) {
   w <- setdiff(setdiff(v, x), anc.xbar)
   if (length(w) != 0) {
     r <- blocked(w, y, G.x.overbar, to)
-    # nxt <- id(y, union(x, w), P, G, to, list())
     nxt <- id(y, union(x, setdiff(w, r)), P, induced.subgraph(G, setdiff(v, r)), to, list())
+    # nxt <- id(y, union(x, w), P, G, to, list())
     tree$branch[[1]] <- nxt$tree
     tree$call$line <- 3
     tree$call$w <- w

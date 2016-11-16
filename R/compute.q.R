@@ -12,26 +12,26 @@ function(c.comp, v, P) {
     if (P$product | P$fraction) {
       P.num <- P.prod
       P.den <- P.prod
-      P.den$sumset <- union(P$sumset, sum.new)  
+      P.den$sumset <- union(P$sumset, sum.new)
       P.prod <- simplify.rc(P.num, P.den)
       #P.prod$fraction <- TRUE
       #P.prod$divisor <- P
-      #P.prod$divisor$sumset <- union(P$sumset, sum.new)   
-    } 
+      #P.prod$divisor$sumset <- union(P$sumset, sum.new)
+    }
     else {
       P.prod$var <- setdiff(P.prod$var, P.prod$sumset)
-      P.prod$sumset <- c()
+      P.prod$sumset <- character(0)
       if (!identical(P.prod$var, sum.new)) {
         P.prod$cond <- union(P.prod$cond, setdiff(P.prod$var, v[ind[i]]))
         P.prod$var <- v[ind[i]]
       }
     }
-    product.list[[i]] <- P.prod  
+    product.list[[i]] <- P.prod
   }
   if (length(product.list) > 1) {
     product.list <- cancel.rc(product.list)
-  	return(probability(product = TRUE, children = product.list))
+    return(probability(product = TRUE, children = product.list))
   } else {
-  	return(P.prod)
-  }    
+    return(P.prod)
+  }
 }

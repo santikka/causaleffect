@@ -1,7 +1,6 @@
-ancestors <-
-function(y, G, to) { 
-  neighbors <- unique(unlist(neighborhood(G, order = vcount(G), nodes = y, mode = "in")))
-  v <- V(G)[neighbors]$name
-  v <- to[which(to %in% v)]
-  return(v)
+ancestors <- function(node, G.obs, to) { 
+  an.ind <- unique(unlist(neighborhood(G.obs, order = vcount(G.obs), nodes = node, mode = "in")))
+  an <- V(G.obs)[an.ind]$name
+  an <- to[which(to %in% an)]
+  return(an)
 }

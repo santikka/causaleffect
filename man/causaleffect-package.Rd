@@ -62,4 +62,6 @@ Shpitser I., Pearl J. 2006a Identification of Joint Interventional Distributions
 Shpitser I., Pearl J. 2006b Identification of Conditional Interventional Distributions. \emph{Proceedings of the 22nd Conference on Uncertainty in Artificial Intelligence}, 427--444.
 
 Tian J. 2002 Studies in Causal Reasoning and Learning. PhD thesis, Department of Computer Science, University of California, Los Angeles.
+
+Tian, J., Pearl J. 2002 On Testable Implications of Causal Models with Hidden variables. \emph{Proceedings of the Eighteenth Conference on Uncertainty in Artificial Intelligence}, 519--527.
 }

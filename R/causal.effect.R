@@ -39,6 +39,7 @@ function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FA
     res.prob <- deconstruct(res.prob, probability())
     res.prob <- parse.deconstruct(res.prob)
   }
+  attr(res.prob, "query") <- list(y = y, x = x, z = z)
   if (expr) res.prob <- get.expression(res.prob, primes)
   if (steps) return(list(P = res.prob, steps = res.tree))
   return(res.prob)

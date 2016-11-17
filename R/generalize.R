@@ -20,7 +20,9 @@ generalize <- function(y, x, Z, D, expr = TRUE, simp = TRUE, steps = FALSE, prim
     if (length(intersect(x, Z[[i]])) > 0) stop("Sets 'x' and 'Z[", i, "]' are not disjoint.")
   }
   res <- trmz(y, x, probability(domain = 1), c(), 1, 1, D, Z, to, list())
-  if (expr) res$P <- get.expression(res$P, primes)
-  if (steps) return(list(P = res$P, steps = res$tree))
-  return(res$P)
+  res.prob <- res$P
+  attr(res.prob, "query") <- list(y = y, x = x)
+  if (expr) res.prob <- get.expression(res.prob, primes)
+  if (steps) return(list(P = res.prob, steps = res$tree))
+  return(res.prob)
 }

@@ -54,6 +54,7 @@ function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
   #   # final cancellations here
   # }
   res <- activate.selection.variable(res, s)
+  attr(res, "query") <- list(y = y, x = x)
   if (expr) res <- get.expression(res, primes)
   if (steps) return(list(P = res, steps = tree))
   return(res)

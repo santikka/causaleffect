@@ -35,7 +35,6 @@ q.constraints <- function(s, node, G, G.obs, to, constraints) {
       q.d.factor$den <- q.factor
       eff.e <- parents(e, G.obs, to)
       eff.diff <- setdiff(eff.d, eff.e)
-      print(constraints)
       if (length(eff.diff) > 0) {
         constraints <- c(constraints, list(c(
           "X" = get.expression(q.d.factor), 

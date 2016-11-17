@@ -1,4 +1,4 @@
-compute.q <- 
+compute.c.factor <- 
 function(c.comp, v, P) {
   v.len <- length(v)
   product.list <- list()

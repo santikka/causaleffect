@@ -39,7 +39,7 @@ function(D, P, G, to, tree) {
       c.ind <- c(c.ind, i)
       # line 4
       if (all(D %in% cc[[i]])) {
-        nxt <- identify(D, cc[[i]], compute.q(cc[[i]], v, P), G, to, list())
+        nxt <- identify(D, cc[[i]], compute.c.factor(cc[[i]], v, P), G, to, list())
         tree$call$line <- 5
         tree$call$c.i <- cc[[i]]
         tree$branch[[1]] <- nxt$tree
@@ -55,7 +55,7 @@ function(D, P, G, to, tree) {
   product.list <- list()
   ind <- 1
   for(i in c.ind) {
-    product.list[[ind]] <- compute.q(cc[[i]], v, P)
+    product.list[[ind]] <- compute.c.factor(cc[[i]], v, P)
     ind + 1
   }
   P.new <- probability(fraction = TRUE)

@@ -47,7 +47,7 @@ function(C, T, Q, G, to, tree) {
     } else {
       Q.A$var <- A
     }
-    Q.T.one <- compute.q(T.one, A, Q.A)
+    Q.T.one <- compute.c.factor(T.one, A, Q.A)
     nxt <- identify(C, T.one, Q.T.one, G, to, list())
     tree$call$line <- 11
     tree$call$T.prime <- T.prime

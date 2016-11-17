@@ -11,18 +11,18 @@ verma.constraints <- function(G) {
     cc <- c.components(G.vi, v)
     if (length(cc) > 1) {
       s <- Find(function(x) v[i] %in% x, cc)
-      pa.s <- parents(s, G.obs, v)
-      pred <- setdiff(vi, pa.s)
-      if (length(pred) > 0) {
-        eff <- setdiff(pa.s, v[i])
-        if (dSep(G.adj, v[i], pred, eff)) {
-          constraints <- c(constraints, list(c(
-            "X" = v[i], 
-            "Y" = paste0(pred, collapse = ","), 
-            "Z" = paste0(eff, collapse = ",")
-          )))
-        }
-      }
+      # pa.s <- parents(s, G.obs, v)
+      # pred <- setdiff(vi, pa.s)
+      # if (length(pred) > 0) {
+      #   eff <- setdiff(pa.s, v[i])
+      #   if (dSep(G.adj, v[i], pred, eff)) {
+      #     constraints <- c(constraints, list(c(
+      #       "X" = v[i], 
+      #       "Y" = paste0(pred, collapse = ","), 
+      #       "Z" = paste0(eff, collapse = ",")
+      #     )))
+      #   }
+      # }
       constraints <- c(constraints, q.constraints(s, v[i], G, G.obs, v, list()))
     }
   }

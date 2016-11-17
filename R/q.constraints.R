@@ -1,7 +1,7 @@
 q.constraints <- function(s, node, G, G.obs, to, constraints) {
   G.s <- induced.subgraph(G, s)
   G.s.obs <- observed.graph(G.s)
-  desc.sets <- descendant.sets(node, s, G.s.obs, to)
+  desc.sets <- descendent.sets(node, s, G.s.obs, to)
   if (length(desc.sets) > 0) {
     for (d in desc.sets) {
       s_d <- setdiff(s, d)

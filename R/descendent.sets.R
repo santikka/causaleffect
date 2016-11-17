@@ -1,4 +1,4 @@
-descendant.sets <- function(node, s, G.s.obs, to) {
+descendent.sets <- function(node, s, G.s.obs, to) {
   n.s <- length(s)
   roots <- vapply(s, function(x) {
     anc <- ancestors(x, G.s.obs, to)

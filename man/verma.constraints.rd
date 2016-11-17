@@ -9,7 +9,7 @@ This functions computes functional constraints known as Verma constraints for a 
   \item{G}{An \code{igraph} object describing the directed acyclic graph induced by the causal model that matches the internal syntax. }
 }
 
-\value{A list of named vectors, each with three components named \code{X}, \code{Y} and \code{Z} corresponding to either a functional constraint where \code{X} is independent of \code{Y}, or a conditional independence constraint where \code{X} is independent of \code{Y} given \code{Z}.}
+\value{A list of named vectors, each with two components named \code{X} and \code{Y} corresponding to a functional constraint where \code{X} is independent of \code{Y}.}
 
 \references{
 

@@ -1,8 +1,8 @@
 descendent.sets <- function(node, s, G.s.obs, to) {
   n.s <- length(s)
   roots <- vapply(s, function(x) {
-    anc <- ancestors(x, G.s.obs, to)
-    if (length(anc) == 1) return (TRUE)
+    pa <- parents(x, G.s.obs, to)
+    if (length(pa) == 1) return (TRUE)
     return (FALSE)
   }, logical(1))
   n.roots <- sum(roots)

@@ -6,7 +6,7 @@ deconstruct <- function(P, P.context) {
       if (P.context$fraction) {
         P.context$num <- deconstruct(P$num, P.context$num)
         P.context$den <- deconstruct(P$den, P.context$den)
-        return (P.context)
+        return(P.context)
       }
       if (P.context$product) {
         P.temp <- probability(fraction = TRUE)
@@ -15,20 +15,20 @@ deconstruct <- function(P, P.context) {
         P.context$sumset <- character(0)
         P.temp$num <- deconstruct(P$num, P.context)
         P.temp$den <- deconstruct(P$den, probability())
-        return (P.temp)
+        return(P.temp)
       }
       if (P.context$sum) {
         P.context$children[[length(P.context$children)+1]] <- deconstruct(P, probability())
-        return (P.context)
+        return(P.context)
       }
     } else {
       if (P.context$fraction) {
         P.context$num <- deconstruct(P, P.context$num)
-        return (P.context)
+        return(P.context)
       }
       if (P.context$product || P.context$sum) {
         P.context$children[[length(P.context$children)+1]] <- deconstruct(P, probability())
-        return (P.context)
+        return(P.context)
       }
     }
     P.context$fraction <- TRUE
@@ -61,7 +61,7 @@ deconstruct <- function(P, P.context) {
       }
       if (P.context$product || P.context$sum) {
         P.context$children[[length(P.context$children)+1]] <- deconstruct(P, probability())
-        return (P.context)
+        return(P.context)
       }
     }
     P.context$product <- TRUE
@@ -69,31 +69,31 @@ deconstruct <- function(P, P.context) {
     for (i in 1:length(P$children)) {
       P.context <- deconstruct(P$children[[i]], P.context)
     }
-    return (P.context)
+    return(P.context)
   }
 
   # Sum in a context
   if (P$sum) {
     if (P.context$fraction) {
       P.context$num <- deconstruct(P, P.context$num)
-      return (P.context)
+      return(P.context)
     }
     if (P.context$product || P.context$sum) {
       P.context$children[[length(P.context$children)+1]] <- deconstruct(P, probability())
-      return (P.context)
+      return(P.context)
     }
     P.context$sum <- TRUE
     P.context$sumset <- P$sumset
     for (i in 1:length(P$children)) {
       P.context <- deconstruct(P$children[[i]], P.context)
     }
-    return (P.context)
+    return(P.context)
   }
 
   # Atomic expression in a context
   if (P.context$fraction) {
     P.context$num <- deconstruct(P, P.context$num)
-    return (P.context)
+    return(P.context)
   }
 
   if (P.context$product) {
@@ -119,9 +119,9 @@ deconstruct <- function(P, P.context) {
             domain = P$domain, do = P$do)
         }
         P.context$children[[init + 1]] <- P.temp
-      } 
+      }
     }
-    return (P.context)
+    return(P.context)
   }
 
   if (P.context$sum) {
@@ -135,8 +135,8 @@ deconstruct <- function(P, P.context) {
       }
     }
     P.context$children[[init + 1]] <- P.temp
-    return (P.context)
+    return(P.context)
   }
 
-  return (P)
+  return(P)
 }

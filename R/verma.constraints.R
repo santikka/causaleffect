@@ -26,5 +26,5 @@ verma.constraints <- function(G) {
       constraints <- c(constraints, q.constraints(s, v[i], G, G.obs, v, list()))
     }
   }
-  return (constraints)
+  return(constraints)
 }

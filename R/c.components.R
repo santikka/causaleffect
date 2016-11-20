@@ -1,5 +1,4 @@
-c.components <-
-function(G, to) {
+c.components <- function(G, to) {
   A <- as.matrix(get.adjacency(G))
   v <- get.vertex.attribute(G, "name")
   e <- E(G)
@@ -13,10 +12,10 @@ function(G, to) {
   }
   G.bidirected <- subgraph.edges(G, bidirected, delete.vertices = FALSE)
   subgraphs <- decompose.graph(G.bidirected)
-  for (i in 1:length(subgraphs)) { 
+  for (i in 1:length(subgraphs)) {
     v.sub <- get.vertex.attribute(subgraphs[[i]], "name")
     v.sub <- to[which(to %in% v.sub)]
-    c.comp[[i]] <- v.sub 
+    c.comp[[i]] <- v.sub
   }
   return(c.comp)
 }

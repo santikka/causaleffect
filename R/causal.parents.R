@@ -1,4 +1,4 @@
-causal.parents <- function(node, vi, G, G.obs, to) { 
+causal.parents <- function(node, vi, G, G.obs, to) {
   G.vi <- induced.subgraph(G, vi)
   cc <- c.components(G.vi, to)
   t <- Find(function(x) node %in% x, cc)

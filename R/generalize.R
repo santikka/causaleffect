@@ -12,7 +12,7 @@ generalize <- function(y, x, Z, D, expr = TRUE, simp = TRUE, steps = FALSE, prim
     if (!is.dag(observed.graph(D[[i]]))) {
       if (i > 1) stop("Selection diagram 'D[", i, "]' is not a DAG.")
       else stop("Causal diagram 'D[", i, "]' is not a DAG.")
-    } 
+    }
     if (length(setdiff(y, to[[i]])) > 0) stop("Set 'y' contains variables not present in diagram 'D[", i, "]'.")
     if (length(setdiff(x, to[[i]])) > 0) stop("Set 'x' contains variables not present in diagram 'D[", i, "]'.")
     if (length(setdiff(Z[[i]], to[[i]])) > 0) stop("Set 'Z[", i, "]' contains variables not present in diagram 'D[", i, "]'.")
@@ -24,5 +24,5 @@ generalize <- function(y, x, Z, D, expr = TRUE, simp = TRUE, steps = FALSE, prim
   attr(res.prob, "algorithm") <- "trmz"
   if (expr) res.prob <- get.expression(res.prob, primes)
   if (steps) return(list(P = res.prob, steps = res$tree))
-  return (res.prob)
+  return(res.prob)
 }

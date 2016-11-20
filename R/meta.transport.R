@@ -1,5 +1,4 @@
-meta.transport <-
-function(y, x, D, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
+meta.transport <- function(y, x, D, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
   v <- get.vertex.attribute(D[[1]], "name")
   s <- v[which(vertex.attributes(D[[1]])$description == "S")]
   interventions <- setdiff(v, union(y, s))
@@ -20,5 +19,5 @@ function(y, x, D, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
     if (expr) res.prob <- get.expression(res.prob)
     res$P <- res.prob
   }
-  return (res)
+  return(res)
 }

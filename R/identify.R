@@ -1,5 +1,4 @@
-identify <-
-function(C, T, Q, G, to, tree) {
+identify <- function(C, T, Q, G, to, tree) {
   v <- get.vertex.attribute(G, "name")
   s <- v[which(vertex.attributes(G)$description == "S")]
   v <- to[which(to %in% v)]
@@ -8,10 +7,9 @@ function(C, T, Q, G, to, tree) {
   G.T.obs <- observed.graph(G.T)
   tree$call <- list(y = C, x = setdiff(v, C), C = C, T = T, P = activate.selection.variable(Q, s), G = G.T, line = "", v = v, alg = "Identify")
   anc.c <- ancestors(C, G.T.obs, to)
-
   A <- intersect(anc.c, T)
   tree$call$A <- A
-  
+
   # i)
   if (identical(A, C)) {
     if (Q$product | Q$fraction) {
@@ -33,7 +31,7 @@ function(C, T, Q, G, to, tree) {
     G.A <- induced.subgraph(G, A)
     cc <- c.components(G.A, to)
     i <- 1
-    while(TRUE) {
+    while (TRUE) {
       if (all(C %in% cc[[i]])) {
         break
       }

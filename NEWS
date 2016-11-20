@@ -1,6 +1,7 @@
 Changes from version 1.3.1 to 1.3.2
  * Added a new parameter called 'primes' which can be used to separate summation variables from other variables in the expressions.
- * Added a new function to derive Verma constraints
+ * Added a new function to derive Verma constraints.
+ * Cleaner output for aux.effect and transport functions.
 
 Changes from version 1.3.0 to 1.3.1
  * Fixed some bugs in identification and transportability derivations.

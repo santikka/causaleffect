@@ -1,5 +1,4 @@
-parse.joint <-
-function(P, v, cond, var) {
+parse.joint <- function(P, v, cond, var) {
   P.new <- probability()
   P.num <- P
   P.num$sumset <- c(union(P$sumset, setdiff(var, union(v, cond))))

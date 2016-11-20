@@ -1,5 +1,4 @@
-trmz <-
-function(y, x, P, J, domain, w.index, D, Z, to, tree) {
+trmz <- function(y, x, P, J, domain, w.index, D, Z, to, tree) {
   d <- length(D)
   v.s <- lapply(D, function(x) get.vertex.attribute(x, "name"))
   s <- lapply(1:d, function(x) v.s[[x]][which(vertex.attributes(D[[x]])$description == "S")])
@@ -12,7 +11,7 @@ function(y, x, P, J, domain, w.index, D, Z, to, tree) {
   anc <- ancestors(y, D.obs, to[[1]])
   anc.s <- lapply(1:d, function(x) ancestors(y, D.s.obs[[x]], to[[x]]))
   G.export <- D[[domain]]
-  if (length(P$var) == 0 & !P$product & !P$fraction) tree$call <- list(y = y, x = x, P = probability(var = v, domain = domain), 
+  if (length(P$var) == 0 & !P$product & !P$fraction) tree$call <- list(y = y, x = x, P = probability(var = v, domain = domain),
     I = J, S = domain-1, G = G.export, line = "", v = v, Z = Z)
   else tree$call <- list(y = y, x = x, P = P, I = J, S = domain-1, G = G.export, line = "", v = v, Z = Z)
 
@@ -34,7 +33,7 @@ function(y, x, P, J, domain, w.index, D, Z, to, tree) {
     anc.graph <- lapply(1:d, function(x) induced.subgraph(D[[x]], anc.s[[x]]))
     if (P$product | P$fraction | P$sum) {
       P$sumset <- union(setdiff(v, anc), P$sumset)
-      # P <- simplify.expression(P, NULL)
+      P <- simplify.expression(P, NULL)
     } else {
       P$var <- anc
     }
@@ -56,7 +55,7 @@ function(y, x, P, J, domain, w.index, D, Z, to, tree) {
     tree$call$w <- w
     tree$call$anc.xbar <- anc.xbar
     return(list(P = nxt$P, W = nxt$W, tree = tree))
-  } 
+  }
 
   # line 4
   D.remove.x <- induced.subgraph(D.causal, v[!(v %in% x)])
@@ -213,5 +212,5 @@ function(y, x, P, J, domain, w.index, D, Z, to, tree) {
       }
       stop("Not transportable.", call. = FALSE)
     }
-  }  
+  }
 }

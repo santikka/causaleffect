@@ -1,5 +1,4 @@
-compute.c.factor <- 
-function(c.comp, v, P) {
+compute.c.factor <- function(c.comp, v, P) {
   v.len <- length(v)
   product.list <- list()
   P.prod <- NULL
@@ -14,9 +13,6 @@ function(c.comp, v, P) {
       P.den <- P.prod
       P.den$sumset <- union(P$sumset, sum.new)
       P.prod <- simplify.rc(P.num, P.den)
-      #P.prod$fraction <- TRUE
-      #P.prod$divisor <- P
-      #P.prod$divisor$sumset <- union(P$sumset, sum.new)
     }
     else {
       P.prod$var <- setdiff(P.prod$var, P.prod$sumset)

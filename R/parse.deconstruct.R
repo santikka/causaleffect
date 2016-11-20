@@ -1,5 +1,4 @@
-parse.deconstruct <-
-function(P) {
+parse.deconstruct <- function(P) {
   if (P$product) {
     for (i in 1:length(P$children)) {
       P$children[[i]] <- parse.deconstruct(P$children[[i]])

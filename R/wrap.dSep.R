@@ -1,5 +1,4 @@
-wrap.dSep <- 
-function(amat, first, second, cond) {
+wrap.dSep <- function(amat, first, second, cond) {
   if (identical(first, second)) return(FALSE)
   if (length(first) == 0 | length(second) == 0) {
     return(TRUE)

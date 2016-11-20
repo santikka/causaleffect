@@ -20,7 +20,7 @@ get.expression.internal <- function(x, primes, prime.counter, start.sum, target.
     }
   }
   if (x$fraction) {
-    P <- paste0(P, "\\frac{", get.expression.internal(x$num, primes, prime.counter, TRUE, target.sym, single.source),
+    P <- paste0(P, "\\frac{", get.expression.internal(x$num, primes, prime.counter, start.sum, target.sym, single.source),
       "}{", get.expression.internal(x$den, primes, prime.counter, TRUE, target.sym, single.source), "}", collapse = "")
   }
   if (x$sum) {
@@ -75,5 +75,5 @@ get.expression.internal <- function(x, primes, prime.counter, start.sum, target.
     P <- paste0(P, cond.string)
   }
   if (s.print & start.sum) P <- paste0(P, "\\right)", collapse = ",")
-  return (P)
+  return(P)
 }

@@ -1,5 +1,4 @@
-zero.children <-
-function(P) {
+zero.children <- function(P) {
   if (P$recursive) {
     if (length(P$children) == 0) return(TRUE)
     zeros <- logical(length(P$children))

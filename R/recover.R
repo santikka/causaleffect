@@ -1,5 +1,4 @@
-recover <-
-function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
+recover <- function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
   if (!is.dag(observed.graph(G))) stop("Graph 'G' is not a DAG")
   sel <- which(vertex.attributes(G)$description == "S")
   if (length(sel) == 0) stop("No selection variables present in the diagram.")
@@ -42,17 +41,6 @@ function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
     res <- product.list[[1]]
     res$sumset <- union(res$sumset, setdiff(D, y))
   }
-  # if (simp) {
-  #   G.unobs <- unobserved.graph(G)
-  #   G.adj <- as.matrix(get.adjacency(G.unobs))
-  #   to.u <- topological.sort(G.unobs)
-  #   to.u <- get.vertex.attribute(G.unobs, "name")[to.u]
-  #   res.prob <- deconstruct(res, probability())
-  #   res.prob <- parse.expression(res, to, G.adj, G, G.obs)
-  #   res.prob <- deconstruct(res, probability())
-  #   res.prob <- parse.deconstruct(res.prob)
-  #   # final cancellations here
-  # }
   res <- activate.selection.variable(res, s)
   attr(res, "query") <- list(y = y, x = x)
   attr(res, "algorithm") <- "rc"

@@ -1,5 +1,4 @@
-causal.effect <-
-function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
+causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
   G.obs <- observed.graph(G)
   if (!is.dag(G.obs)) stop("Graph 'G' is not a DAG")
   to <- topological.sort(G.obs)
@@ -46,5 +45,5 @@ function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FA
   attr(res.prob, "algorithm") <- algo
   if (expr) res.prob <- get.expression(res.prob, primes)
   if (steps) return(list(P = res.prob, steps = res.tree))
-  return(res.prob)
+  return (res.prob)
 }

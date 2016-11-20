@@ -1,5 +1,4 @@
-simplify.trmz <-
-function(P.num, P.den, to) {
+simplify.trmz <- function(P.num, P.den, to) {
   if (is.null(P.den)) {
     if (P.num$fraction) {
       P.num$fraction <- FALSE
@@ -19,7 +18,7 @@ function(P.num, P.den, to) {
         } else break
       }
       if (length(P$children) == 1) {
-        ch <- P$children[[1]] 
+        ch <- P$children[[1]]
         return(probability(var = ch$var, cond = ch$cond, sumset = P$sumset,
           domain = ch$domain, do = ch$do))
       } else return(P)
@@ -41,11 +40,11 @@ function(P.num, P.den, to) {
       if (sum(parse.children.num) > 0 | sum(parse.children.den) > 0) {
         P.num$fraction <- TRUE
         P.num$divisor <- P.den
-        return(P.num)        
+        return(P.num)
       } else {
-        while(length(P.den$children) > 0) {
+        while (length(P.den$children) > 0) {
           P.num$children[[1]] <- NULL
-          P.den$children[[1]] <- NULL     
+          P.den$children[[1]] <- NULL
         }
         return(P.num)
       }

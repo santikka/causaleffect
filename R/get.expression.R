@@ -7,5 +7,5 @@ get.expression <- function(x, primes = FALSE) {
     if (attr(x, "algorithm") == "zid") target.sym <- "("
     if (attr(x, "algorithm") == "trz") single.source <- TRUE
   }
-  return (get.expression.internal(x, primes, prime.counter, FALSE, target.sym, single.source))
+  return(get.expression.internal(x, primes, prime.counter, FALSE, target.sym, single.source))
 }

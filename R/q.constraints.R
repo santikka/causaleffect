@@ -51,5 +51,5 @@ q.constraints <- function(s, node, G, G.obs, to, constraints) {
       }
     }
   } 
-  return (constraints)
+  return(constraints)
 }

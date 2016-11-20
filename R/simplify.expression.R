@@ -1,5 +1,4 @@
-simplify.expression <-
-function(P.num, P.den) {
+simplify.expression <- function(P.num, P.den) {
   if (is.null(P.den)) {
     if (P.num$fraction) {
       P.new <- simplify.expression(P.num$num, P.num$den)
@@ -51,7 +50,7 @@ function(P.num, P.den) {
             P.new$den <- P.den
             return(P.new)
           } else {
-            while(length(P.den$children) > 0) {
+            while (length(P.den$children) > 0) {
               P.num$children[[1]] <- NULL
               P.den$children[[1]] <- NULL
             }

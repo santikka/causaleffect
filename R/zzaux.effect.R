@@ -9,5 +9,5 @@ aux.effect <- function(y, x, z, G, expr = TRUE, simp = TRUE, steps = FALSE, prim
     if (expr) res.prob <- get.expression(res.prob)
     res$P <- res.prob
   }
-  return (res)
+  return(res)
 }

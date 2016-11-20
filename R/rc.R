@@ -1,5 +1,4 @@
-rc <-
-function(D, P, G, to, tree) {
+rc <- function(D, P, G, to, tree) {
   v.s <- get.vertex.attribute(G, "name")
   s <- v.s[which(vertex.attributes(G)$description == "S")]
   G.causal <- induced.subgraph(G, v.s[!(v.s %in% s)])

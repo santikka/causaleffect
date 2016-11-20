@@ -1,5 +1,4 @@
-idc <-
-function(y, x, z, P, G, to, tree) {
+idc <- function(y, x, z, P, G, to, tree) {
   G.obs <- observed.graph(G)
   v <- get.vertex.attribute(G, "name")
   v <- to[which(to %in% v)]

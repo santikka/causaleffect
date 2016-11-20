@@ -1,10 +1,9 @@
-organize.terms <-
-function(P, to) {
+organize.terms <- function(P, to) {
   if (P$fraction) {
     P$num <- organize.terms(P$den, to)
     P$den <- organize.terms(P$den, to)
     return(P)
-  } 
+  }
   if (P$product) {
     children.copy <- P$children
     P$children <- list()

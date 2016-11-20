@@ -1,5 +1,4 @@
-transport <-
-function(y, x, z = NULL, D, expr = TRUE, simp = TRUE, steps = FALSE, primes = primes) {
+transport <- function(y, x, z = NULL, D, expr = TRUE, simp = TRUE, steps = FALSE, primes = primes) {
   v <- get.vertex.attribute(D, "name")
   s <- v[which(vertex.attributes(D)$description == "S")]
   if (is.null(z)) z <- setdiff(v, union(y, s))
@@ -14,5 +13,5 @@ function(y, x, z = NULL, D, expr = TRUE, simp = TRUE, steps = FALSE, primes = pr
     if (expr) res.prob <- get.expression(res.prob)
     res$P <- res.prob
   }
-  return (res)
+  return(res)
 }

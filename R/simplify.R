@@ -1,5 +1,4 @@
-simplify <- 
-function(P, to, G.adj, G, G.obs) {
+simplify <- function(P, to, G.adj, G, G.obs) {
   j <- 0
   while (j < length(P$sumset)) {
     P.orig <- P
@@ -35,7 +34,7 @@ function(P, to, G.adj, G, G.obs) {
     }
     if (k == i + 1) {
       P <- factorize(J, D, P, to, i)
-      S <- P$sumset[j]  
+      S <- P$sumset[j]
       P$sumset <- P$sumset[-j]
       if (length(R.var) > 0) {
         P.cancel <- cancel(P, R.var, R.cond, S)

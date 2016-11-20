@@ -1,5 +1,4 @@
-join <- 
-function(J, D, vari, cond, S, M, O, G.adj, G, G.obs, to) {
+join <- function(J, D, vari, cond, S, M, O, G.adj, G, G.obs, to) {
   J.new <- character()
   D.new <- character()
   if (length(J) == 0) {
@@ -7,15 +6,12 @@ function(J, D, vari, cond, S, M, O, G.adj, G, G.obs, to) {
     D.new <- cond
     return(list(J.new, D.new))
   }
-
   non.mis <- min(which(J %in% O))
   V.prev <- J[non.mis]
   ind <- which(to == V.prev)
   V.pi <- to[0:(ind-1)]
-    
   anc <- ancestors(vari, G.obs, to)
   cond.diff <- setdiff(union(vari, setdiff(V.pi, anc)), J)
-
   ds <- powerset(cond.diff, nonempty = FALSE)
   n <- length(ds)
   for (i in 1:n) {
@@ -36,7 +32,5 @@ function(J, D, vari, cond, S, M, O, G.adj, G, G.obs, to) {
       return(joint)
     }
   }
-
   return(list(J, D))
-
 }

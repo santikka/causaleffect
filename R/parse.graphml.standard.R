@@ -1,5 +1,4 @@
-parse.graphml.standard <-
-function(file, nodes, use.names) {
+parse.graphml.standard <- function(file, nodes, use.names) {
   doc <- xmlParse(file, useInternalNodes = TRUE)
   top <- xmlRoot(doc)
   graph <- top[["graph"]]
@@ -27,12 +26,12 @@ function(file, nodes, use.names) {
           remove.id <- remove.id + 1
           removals[[remove.id]] <- current.edge
           e1 <- newXMLNode("edge", parent = doc, attrs = c(id = "e", source = src, target = trgt), 
-                  newXMLNode("data", attrs = c(key = "d9"), cdata = TRUE, "U" ))
+            newXMLNode("data", attrs = c(key = "d9"), cdata = TRUE, "U" ))
           e2 <- newXMLNode("edge", parent = doc, attrs = c(id = "e", source = trgt, target = src), 
-                  newXMLNode("data", attrs = c(key = "d9"), cdata = TRUE, "U" ))
+            newXMLNode("data", attrs = c(key = "d9"), cdata = TRUE, "U" ))
           addChildren(graph, kids = list(e1, e2))
         }
-      }     
+      }
     }
   }
   removeNodes(removals)

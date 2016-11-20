@@ -1,5 +1,4 @@
-parse.graphml.internal <-
-function(file, nodes, use.names) {
+parse.graphml.internal <- function(file, nodes, use.names) {
   doc <- xmlParse(file, useInternalNodes = TRUE)
   top <- xmlRoot(doc)
   graph <- top[["graph"]]

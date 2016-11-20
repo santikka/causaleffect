@@ -60,11 +60,12 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, to, tree) {
   # line 4
   D.remove.x <- induced.subgraph(D.causal, v[!(v %in% x)])
   cc <- c.components(D.remove.x, to[[1]])
-  if (length(cc) > 1) {
+  cc.len <- length(cc)
+  if (cc.len > 1) {
     tree$call$line <- 4
-    product.list <- list()
-    nxt.list <- list()
-    for (i in 1:length(cc)) {
+    product.list <- vector(mode = "list", length = cc.len)
+    nxt.list <- vector(mode = "list", length = cc.len)
+    for (i in 1:cc.len) {
       if (i == 1) nxt.list[[1]] <- trmz(cc[[1]], setdiff(v, cc[[1]]), P, J, domain, w.index, D, Z, to, list())
       else nxt.list[[i]] <- trmz(cc[[i]], setdiff(v, cc[[i]]), P, J, domain, nxt.list[[i-1]]$W, D, Z, to, list())
       product.list[[i]] <- nxt.list[[i]]$P
@@ -85,22 +86,17 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, to, tree) {
 
     # line 6
     if (!identical(cG[[1]], v)) {
-      is.element <- FALSE
-      for (i in 1:length(cG)) {
-        if (identical(cc, cG[[i]])) {
-          is.element <- TRUE
-          break
-        }
-      }
+      pos <- Position(function(x) identical(cc, x), cG, nomatch = 0)
 
       # line 7
-      if (is.element) {
+      if (pos > 0) {
         P.new <- probability()
         ind <- which(v %in% cc)
-        product.list <- list()
+        cc.len <- length(cc)
+        product.list <- vector(mode = "list", length = cc.len)
         tree$call$line <- 7
         tree$call$c.zero <- cc
-        for (i in 1:length(cc)) {
+        for (i in 1:cc.len) {
           P.prod <- probability()
           P.num <- P
           P.den <- P
@@ -131,13 +127,14 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, to, tree) {
         x[[which(unlist(lapply(x, function(y) all(cc %in% y))))]]
       })
       cc <- cc.s[[1]]
+      cc.len <- length(cc)
+      product.list <- vector(mode = "list", length = cc.len)
       tree$call$line <- 8
       tree$call$c.prime <- cc
-      product.list <- list()
       ind <- which(v %in% cc)
       cc.graph <- lapply(1:d, function(x) induced.subgraph(D[[x]], cc.s[[x]]))
       kappa <- c()
-      if (length(cc) > 1) {
+      if (cc.len > 1) {
         for (i in 1:length(cc)) { 
           kappa <- union(kappa, setdiff(v[0:(ind[i]-1)], cc))
           if (P$product) {

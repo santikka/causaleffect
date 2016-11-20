@@ -51,15 +51,16 @@ rc <- function(D, P, G, to, tree) {
   if (length(c.set) == 0) stop("Unrecoverable", call. = FALSE)
 
   # line 5
-  product.list <- list()
+  c.len <- length(c.ind)
+  product.list <- vector(mode = "list", length = c.len)
   ind <- 1
-  for(i in c.ind) {
+  for (i in c.ind) {
     product.list[[ind]] <- compute.c.factor(cc[[i]], v, P)
     ind + 1
   }
   P.new <- probability(fraction = TRUE)
   P.new$num <- P
-  if (length(product.list) > 1) {
+  if (c.len > 1) {
     P.new$den <- probability(product = TRUE, children = product.list)
   } else {
     P.new$den <- product.list[[1]]

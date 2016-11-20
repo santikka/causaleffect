@@ -55,13 +55,11 @@ id <- function(y, x, P, G, to, tree) {
   s <- c.components(G.remove.x, to)
   if (length(s) > 1) {
     tree$call$line <- 4
-    product.list <- list()
-    nxt.list <- list()
-    for (i in 1:length(s)) {
-      nxt.list[[i]] <- id(s[[i]], setdiff(v, s[[i]]), P, G, to, list())
-      product.list[[i]] <- nxt.list[[i]]$P
-      tree$branch[[i]] <- nxt.list[[i]]$tree
-    }
+    nxt <- lapply(s, function(t) {
+      return(id(t, setdiff(v, t), P, G, to, list()))
+    })
+    product.list <- lapply(nxt, "[[", "P")
+    tree$branch <- lapply(nxt, "[[", "tree")
     return(list(
       P = probability(sumset = setdiff(v, union(y, x)), product = TRUE, children = product.list),
       tree = tree
@@ -84,9 +82,9 @@ id <- function(y, x, P, G, to, tree) {
       tree$call$line <- 6
       tree$call$s <- s
       ind <- which(v %in% s)
-      product.list <- list()
-      P.prod <- probability()
       s.len <- length(s)
+      product.list <- vector(mode = "list", length = s.len)
+      P.prod <- probability()
       for (i in 1:s.len) {
         # cond.set <- causal.parents(s[i], v[1:ind[i]], G, G.obs, to)
         cond.set <- v[0:(ind[i]-1)]
@@ -121,10 +119,10 @@ id <- function(y, x, P, G, to, tree) {
     s <- Find(function(x) all(s %in% x), cc)
     tree$call$line <- 7
     tree$call$s.prime <- s
-    product.list <- list()
+    s.len <- length(s)
+    product.list <- vector(mode = "list", length = s.len)
     ind <- which(v %in% s)
     s.graph <- induced.subgraph(G, s)
-    s.len <- length(s)
     for (i in 1:s.len) {
       # cond.set <- causal.parents(s[i], v[1:ind[i]], G, G.obs, to)
       cond.set <- v[0:(ind[i]-1)]

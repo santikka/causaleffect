@@ -4,9 +4,14 @@ sc.components <- function(D, to) {
   v <- get.vertex.attribute(D, "name")
   s <- v[which(vertex.attributes(D)$description == "S")]
   e <- E(D)
-  selection <- E(D)[from(s)]
+  bidirected <- NULL
+  selection <- e[from(s)]
   indices <- which(A >= 1 & t(A) >= 1, arr.ind = TRUE)
-  bidirected <- e[v[indices[ ,1]] %->% v[indices[ ,2]]]
+  if (nrow(indices) > 0) {
+    bidirected <- unlist(apply(indices, 1, function(x) {
+      e[v[x[1]] %->% v[x[2]]]
+    }))
+  }
   D.bidirected <- subgraph.edges(D, union(bidirected, selection), delete.vertices = FALSE)
   subgraphs <- decompose.graph(D.bidirected)
   cc.s <- lapply(subgraphs, function(x) {

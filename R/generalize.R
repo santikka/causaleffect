@@ -17,12 +17,12 @@ generalize <- function(y, x, Z, D, expr = TRUE, simp = TRUE, steps = FALSE, prim
     if (length(setdiff(x, to[[i]])) > 0) stop("Set 'x' contains variables not present in diagram 'D[", i, "]'.")
     if (length(setdiff(Z[[i]], to[[i]])) > 0) stop("Set 'Z[", i, "]' contains variables not present in diagram 'D[", i, "]'.")
     if (length(intersect(y, Z[[i]])) > 0) stop("Sets 'y' and 'Z[", i, "]' are not disjoint.")
-    if (length(intersect(x, Z[[i]])) > 0) stop("Sets 'x' and 'Z[", i, "]' are not disjoint.")
   }
   res <- trmz(y, x, probability(domain = 1), c(), 1, 1, D, Z, to, list())
   res.prob <- res$P
   attr(res.prob, "query") <- list(y = y, x = x)
+  attr(res.prob, "algorithm") <- "trmz"
   if (expr) res.prob <- get.expression(res.prob, primes)
   if (steps) return(list(P = res.prob, steps = res$tree))
-  return(res.prob)
+  return (res.prob)
 }

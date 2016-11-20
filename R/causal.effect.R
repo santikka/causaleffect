@@ -13,12 +13,14 @@ function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FA
   if (length(intersect(y, z)) > 0) stop("Sets 'y' and 'z' are not disjoint.")
   if (length(intersect(x, z)) > 0) stop("Sets 'x' and 'z' are not disjoint.")
   res <- list()
+  algo <- ""
   res.prob <- probability()
-  if (is.null(z) || z == "" || identical(z, character(0))) { 
+  if (is.null(z) || z == "" || identical(z, character(0))) {
     res <- id(y, x, probability(), G, to, list())
     res.prob <- res$P
+    algo <- "id"
     #res.prob <- organize.terms(res$P, to)
-  } else { 
+  } else {
     res <- idc(y, x, z, probability(), G, to, list())
     res.num <- res$P
     #res.num <- organize.terms(res$P, to)
@@ -27,6 +29,7 @@ function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FA
     res.prob$fraction <- TRUE
     res.prob$num <- res.num
     res.prob$den <- res.den
+    algo <- "idc"
   }
   res.tree <- res$tree
   if (simp) {
@@ -40,6 +43,7 @@ function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FA
     res.prob <- parse.deconstruct(res.prob)
   }
   attr(res.prob, "query") <- list(y = y, x = x, z = z)
+  attr(res.prob, "algorithm") <- algo
   if (expr) res.prob <- get.expression(res.prob, primes)
   if (steps) return(list(P = res.prob, steps = res.tree))
   return(res.prob)

@@ -1,7 +1,7 @@
 q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
   G.s <- induced.subgraph(G, s)
   v <- get.vertex.attribute(G, "name")
-  v <- to[which(to %in% v)]
+  v <- v %ts% to
   G.s.obs <- observed.graph(G.s)
   desc.sets <- descendent.sets(node, s, G.s.obs, to)
   if (length(desc.sets) > 0) {
@@ -31,7 +31,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
       for (i in s_d.len:1) {
         prod$var <- s_d[i]
         pa <- setdiff(parents(s_d[i], G.unobs, to.u), s_d[i])
-        cond.unobs <- pa[which(pa %in% u)]
+        cond.unobs <- pa %ts% u
         cond.obs <- setdiff(pa, cond.unobs)
         prod$cond <- c(cond.obs, cond.unobs)
         u.pa <- c(u.pa, cond.unobs)
@@ -57,7 +57,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
           "rhs.cfactor" = rhs.text,
           "rhs.expr" = get.expression(q.factor.rhs),
           "lhs.cfactor" = paste0("\\sum_{", paste0(d, collapse = ","), "}Q[\\{", paste0(s, collapse = ","), "\\}](", 
-            paste0(eff.d, collapse = ","), ")", collapse = ""),
+            paste0(v, collapse = ","), ")", collapse = ""),
           "lhs.expr" = get.expression(q.factor),
           "vars" = eff.diff
         )))
@@ -65,7 +65,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
       d.prime <- s_d
       G.d <- induced.subgraph(G.s, d.prime)
       v <- get.vertex.attribute(G.d, "name")
-      v <- to[which(to %in% v)]
+      v <- v %ts% to
       cc.d <- c.components(G.d, to)
       if (length(cc.d) > 1) {
 
@@ -73,7 +73,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
         e <- Find(function(x) node %in% x, cc.d)
         q.d.factor <- probability(fraction = TRUE)
         q.d.factor$num <- q.factor
-        q.factor$sumset <- union(q.factor$sumset, node)
+        q.factor$sumset <- union(q.factor$sumset, node) %ts% to
         q.d.factor$den <- q.factor
         q.factor.lhs <- NULL
 
@@ -84,7 +84,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
         for (i in e.len:1) {
           prod$var <- e[i]
           pa <- setdiff(parents(e[i], G.unobs, to.u), e[i])
-          cond.unobs <- pa[which(pa %in% u)]
+          cond.unobs <- pa %ts% u
           cond.obs <- setdiff(pa, cond.unobs)
           prod$cond <- c(cond.obs, cond.unobs)
           u.pa <- c(u.pa, cond.unobs)

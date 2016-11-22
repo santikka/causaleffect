@@ -85,7 +85,7 @@ id <- function(y, x, P, G, to, tree) {
       s.len <- length(s)
       product.list <- vector(mode = "list", length = s.len)
       P.prod <- probability()
-      for (i in 1:s.len) {
+      for (i in s.len:1) {
         # cond.set <- causal.parents(s[i], v[1:ind[i]], G, G.obs, to)
         cond.set <- v[0:(ind[i]-1)]
         if (P$product) {
@@ -96,7 +96,7 @@ id <- function(y, x, P, G, to, tree) {
           P.prod$var <- s[i]
           P.prod$cond <- cond.set
         }
-        product.list[[i]] <- P.prod
+        product.list[[s.len - i + 1]] <- P.prod
       }
       if (s.len > 1) {
         P.new <- probability(sumset = setdiff(s, y), product = TRUE, children = product.list)
@@ -123,13 +123,13 @@ id <- function(y, x, P, G, to, tree) {
     product.list <- vector(mode = "list", length = s.len)
     ind <- which(v %in% s)
     s.graph <- induced.subgraph(G, s)
-    for (i in 1:s.len) {
+    for (i in s.len:1) {
       # cond.set <- causal.parents(s[i], v[1:ind[i]], G, G.obs, to)
       cond.set <- v[0:(ind[i]-1)]
       P.prod <- P
       P.prod$var <- s[i]
       P.prod$cond <- cond.set
-      product.list[[i]] <- P.prod
+      product.list[[s.len - i + 1]] <- P.prod
     }
     x.new <- intersect(x, s)
     nxt <- NULL

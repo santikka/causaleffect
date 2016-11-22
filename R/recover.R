@@ -42,8 +42,8 @@ recover <- function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = F
     res$sumset <- union(res$sumset, setdiff(D, y))
   }
   res <- activate.selection.variable(res, s)
-  attr(res, "query") <- list(y = y, x = x)
   attr(res, "algorithm") <- "rc"
+  attr(res, "query") <- list(y = y, x = x, s = s)
   if (expr) res <- get.expression(res, primes)
   if (steps) return(list(P = res, steps = tree))
   return(res)

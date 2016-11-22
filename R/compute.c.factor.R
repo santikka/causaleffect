@@ -1,10 +1,11 @@
-compute.c.factor <- function(c.comp, v, P) {
+compute.c.factor <- function(cc, v, P) {
   v.len <- length(v)
+  cc.len <- length(cc)
   product.list <- list()
   P.prod <- NULL
-  ind <- which(v %in% c.comp)
+  ind <- which(v %in% cc)
   add <- 1
-  for (i in 1:length(c.comp)) {
+  for (i in cc.len:1) {
     sum.new <- v[ind[i]:v.len]
     P.prod <- P
     P.prod$sumset <- union(P$sumset, setdiff(sum.new, v[ind[i]]))
@@ -22,7 +23,7 @@ compute.c.factor <- function(c.comp, v, P) {
         P.prod$var <- v[ind[i]]
       }
     }
-    product.list[[i]] <- P.prod
+    product.list[[cc.len - 1 + 1]] <- P.prod
   }
   if (length(product.list) > 1) {
     product.list <- cancel.rc(product.list)

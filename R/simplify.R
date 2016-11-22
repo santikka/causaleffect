@@ -2,17 +2,29 @@ simplify <- function(P, to, G.adj, G, G.obs) {
   j <- 0
   while (j < length(P$sumset)) {
     P.orig <- P
-    vars <- unlist(lapply(P$children, FUN = function(x) x$var))
-    M <- to[!(to %in% vars)]
-    O <- to[(to %in% vars)]
-    R.var <- character()
-    R.cond <- list()
+    irl.len <- 0
+    irrel <- NULL
+    terms <- list()
+    vars <- sapply(P$children, "[[", "var")
     j <- j + 1
     i <- which(vars == P$sumset[j])
     k <- 1
-    n <- 1
+    R.var <- character()
+    R.cond <- list()
     J <- character()
     D <- character()
+    if (i > 1) {
+      irrel <- irrelevant(P$children[1:(i-1)], P$sumset[j], P$sumset, G.adj)
+      irl.len <- length(irrel)
+      if (irl.len > 0) {
+        i <- i - irl.len
+        terms <- P$children[irrel]
+        P$children[irrel] <- NULL
+        vars <- vars[-irrel]
+      }
+    }
+    M <- to[!(to %in% vars)]
+    O <- to[(to %in% vars)]
     while (k <= i) {
       joint <- join(J, D, P$children[[k]]$var, P$children[[k]]$cond, P$sumset[j], M, O, G.adj, G, G.obs, to)
       if (length(joint[[1]]) <= length(J)) {
@@ -36,6 +48,7 @@ simplify <- function(P, to, G.adj, G, G.obs) {
       P <- factorize(J, D, P, to, i)
       S <- P$sumset[j]
       P$sumset <- P$sumset[-j]
+      if (irl.len > 0) P$children <- c(terms, P$children)
       if (length(R.var) > 0) {
         P.cancel <- cancel(P, R.var, R.cond, S)
         if (identical(P.cancel, P)) P <- P.orig

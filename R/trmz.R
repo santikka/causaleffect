@@ -96,7 +96,7 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, to, tree) {
         product.list <- vector(mode = "list", length = cc.len)
         tree$call$line <- 7
         tree$call$c.zero <- cc
-        for (i in 1:cc.len) {
+        for (i in cc.len:1) {
           P.prod <- probability()
           P.num <- P
           P.den <- P
@@ -110,7 +110,7 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, to, tree) {
             P.prod$var <- v[ind[i]]
             P.prod$cond <- v[0:(ind[i]-1)]
           }
-          product.list[[i]] <- P.prod
+          product.list[[cc.len - i + 1]] <- P.prod
         }  
         if (length(product.list) > 1) P.new <- probability(sumset = setdiff(cc, y), product = TRUE, children = product.list)
         else {
@@ -135,17 +135,17 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, to, tree) {
       cc.graph <- lapply(1:d, function(x) induced.subgraph(D[[x]], cc.s[[x]]))
       kappa <- c()
       if (cc.len > 1) {
-        for (i in 1:length(cc)) { 
+        for (i in cc.len:1) { 
           kappa <- union(kappa, setdiff(v[0:(ind[i]-1)], cc))
           if (P$product) {
             P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa), v)
             P.prod <- simplify.expression(P.prod, NULL)
-            product.list[[i]] <- P.prod
+            product.list[[cc.len - i + 1]] <- P.prod
           } else {
             P.prod <- P
             P.prod$var <- cc[i]
             P.prod$cond <- union(intersect(v[0:(ind[i]-1)], cc), kappa) 
-            product.list[[i]] <- P.prod
+            product.list[[cc.len - i + 1]] <- P.prod
           }
         }
         nxt <- trmz(y, intersect(x, cc), probability(product = TRUE, children = product.list), J, domain, w.index, cc.graph, Z, to, list())

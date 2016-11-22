@@ -3,7 +3,9 @@ verma.constraints <- function(G) {
   G.unobs <- unobserved.graph(G)
   G.adj <- as.matrix(get.adjacency(G.unobs))
   to <- topological.sort(G.obs)
+  to.u <- topological.sort(G.unobs)
   v <- get.vertex.attribute(G, "name")[to]
+  v.unobs <- get.vertex.attribute(G.unobs, "name")[to.u]
   constraints <- list()
   for (i in 1:length(v)) {
     vi <- v[1:i]
@@ -23,7 +25,7 @@ verma.constraints <- function(G) {
       #     )))
       #   }
       # }
-      constraints <- c(constraints, q.constraints(s, v[i], G, G.obs, v, list()))
+      constraints <- c(constraints, q.constraints(s, v[i], G, G.obs, G.unobs, v, v.unobs, list()))
     }
   }
   return(constraints)

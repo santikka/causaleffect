@@ -138,7 +138,7 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, to, tree) {
         for (i in cc.len:1) { 
           kappa <- union(kappa, setdiff(v[0:(ind[i]-1)], cc))
           if (P$product) {
-            P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa), v)
+            P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa), v, to)
             P.prod <- simplify.expression(P.prod, NULL)
             product.list[[cc.len - i + 1]] <- P.prod
           } else {
@@ -154,7 +154,7 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, to, tree) {
       } else {
         kappa <- setdiff(v[0:(ind[1]-1)], cc)
         if (P$product) {
-          P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa) , v)
+          P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa) , v, to)
           P.prod <- simplify.expression(P.prod, NULL)
           nxt <- trmz(y, intersect(x, cc), P.prod, J, domain, w.index, cc.graph, Z, to, list())
           tree$branch[[1]] <- nxt$tree

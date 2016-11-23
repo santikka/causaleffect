@@ -7,7 +7,8 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
   if (length(desc.sets) > 0) {
     for (d in desc.sets) {
       s_d <- setdiff(s, d)
-      eff.d <- setdiff(parents(s, G.obs, to), d)
+      s.pa <- parents(s, G.obs, to)
+      eff.d <- setdiff(s.pa, d)
       eff.s_d <- parents(s_d, G.obs, to)
       prod <- probability()
 
@@ -57,7 +58,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
           "rhs.cfactor" = rhs.text,
           "rhs.expr" = get.expression(q.factor.rhs),
           "lhs.cfactor" = paste0("\\sum_{", paste0(d, collapse = ","), "}Q[\\{", paste0(s, collapse = ","), "\\}](", 
-            paste0(v, collapse = ","), ")", collapse = ""),
+            paste0(s.pa, collapse = ","), ")", collapse = ""),
           "lhs.expr" = get.expression(q.factor),
           "vars" = eff.diff
         )))

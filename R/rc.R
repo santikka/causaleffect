@@ -3,7 +3,7 @@ rc <- function(D, P, G, to, tree) {
   s <- v.s[which(vertex.attributes(G)$description == "S")]
   G.causal <- induced.subgraph(G, v.s[!(v.s %in% s)])
   v <- get.vertex.attribute(G.causal, "name")
-  v <- to[which(to %in% v)]
+  v <- v %ts% to
   G.obs <- observed.graph(G.causal)
   G.s.obs <- observed.graph(G)
   anc.d.obs <- ancestors(D, G.obs, to)
@@ -12,10 +12,10 @@ rc <- function(D, P, G, to, tree) {
 
   # line 1
   anc.s <- ancestors(s, G.s.obs, to)
-  anc.union <- union(anc.s, anc.d)
+  anc.union <- union(anc.s, anc.d) %ts% to
   if (length(setdiff(v.s, anc.union)) != 0) {
     if (P$product | P$fraction) {
-      P$sumset <- setdiff(v.s, anc.union) 
+      P$sumset <- setdiff(v.s, anc.union) %ts% to
     } else {
       P$var <- anc.union
     }
@@ -34,11 +34,11 @@ rc <- function(D, P, G, to, tree) {
   c.ind <- c()
   for (i in 1:cg) {
     if (length(intersect(anc.s, cc[[i]])) == 0) {
-      c.set <- union(c.set, cc[[i]])
+      c.set <- union(c.set, cc[[i]]) %ts% to
       c.ind <- c(c.ind, i)
       # line 4
       if (all(D %in% cc[[i]])) {
-        nxt <- identify(D, cc[[i]], compute.c.factor(cc[[i]], v, P), G, to, list())
+        nxt <- identify(D, cc[[i]], compute.c.factor(cc[[i]], v, P, to), G, to, list())
         tree$call$line <- 5
         tree$call$c.i <- cc[[i]]
         tree$branch[[1]] <- nxt$tree
@@ -55,7 +55,7 @@ rc <- function(D, P, G, to, tree) {
   product.list <- vector(mode = "list", length = c.len)
   ind <- 1
   for (i in c.ind) {
-    product.list[[ind]] <- compute.c.factor(cc[[i]], v, P)
+    product.list[[ind]] <- compute.c.factor(cc[[i]], v, P, to)
     ind + 1
   }
   P.new <- probability(fraction = TRUE)

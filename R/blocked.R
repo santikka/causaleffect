@@ -1,7 +1,7 @@
-blocked <- function(w, y, G.x.overbar, to) {
-  nv <- vcount(G.x.overbar)
-  connected <- unique(unlist(neighborhood(G.x.overbar, order = nv, nodes = y, mode = "all")))
-  r <- V(G.x.overbar)[setdiff(1:nv, connected)]$name
-  r <- to[which(to %in% r)]
+blocked <- function(w, y, G.xbar, to) {
+  nv <- vcount(G.xbar)
+  connected <- unique(unlist(neighborhood(G.xbar, order = nv, nodes = y, mode = "all")))
+  r <- V(G.xbar)[setdiff(1:nv, connected)]$name
+  r <- r %ts% to
   return (r)
 }

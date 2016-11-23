@@ -1,10 +1,10 @@
-parse.joint <- function(P, v, cond, var) {
+parse.joint <- function(P, v, cond, var, to) {
   P.new <- probability()
   P.num <- P
-  P.num$sumset <- c(union(P$sumset, setdiff(var, union(v, cond))))
+  P.num$sumset <- union(P$sumset, setdiff(var, union(v, cond))) %ts% to
   if (length(cond) > 0) {
     P.den <- P
-    P.den$sumset <- c(union(P$sumset, setdiff(var, cond)))
+    P.den$sumset <- union(P$sumset, setdiff(var, cond)) %ts% to
     P.new$fraction <- TRUE
     P.new$num <- P.num
     P.new$den <- P.den

@@ -13,7 +13,7 @@ c.components <- function(G, to) {
   subgraphs <- decompose.graph(G.bidirected)
   cc <- lapply(subgraphs, function(x) {
     v.sub <- get.vertex.attribute(x, "name")
-    return(to[which(to %in% v.sub)])
+    return(v.sub %ts% to)
   })
   return(cc)
 }

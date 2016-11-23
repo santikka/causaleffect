@@ -15,12 +15,12 @@ causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = F
   algo <- ""
   res.prob <- probability()
   if (is.null(z) || z == "" || identical(z, character(0))) {
-    res <- id(y, x, probability(), G, to, list())
+    res <- id(y, x, probability(), G, G.obs, to, to, list())
     res.prob <- res$P
     algo <- "id"
     #res.prob <- organize.terms(res$P, to)
   } else {
-    res <- idc(y, x, z, probability(), G, to, list())
+    res <- idc(y, x, z, probability(), G, G.obs, to, to, list())
     res.num <- res$P
     #res.num <- organize.terms(res$P, to)
     res.den <- res.num

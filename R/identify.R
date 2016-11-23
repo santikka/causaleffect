@@ -1,7 +1,7 @@
 identify <- function(C, T, Q, G, to, tree) {
   v <- get.vertex.attribute(G, "name")
   s <- v[which(vertex.attributes(G)$description == "S")]
-  v <- to[which(to %in% v)]
+  v <- v %ts% to
   G.obs <- observed.graph(G)
   G.T <- induced.subgraph(G, T)
   G.T.obs <- observed.graph(G.T)
@@ -13,7 +13,7 @@ identify <- function(C, T, Q, G, to, tree) {
   # i)
   if (identical(A, C)) {
     if (Q$product | Q$fraction) {
-      Q$sumset <- union(setdiff(T, C), Q$sumset)
+      Q$sumset <- union(setdiff(T, C), Q$sumset) %ts% to
     } else {
       Q$var <- C
     }
@@ -41,11 +41,11 @@ identify <- function(C, T, Q, G, to, tree) {
     T.one <- intersect(T.prime, A)
     Q.A <- Q
     if (Q.A$product | Q.A$fraction) {
-      Q.A$sumset <- union(setdiff(T, A), Q.A$sumset)
+      Q.A$sumset <- union(setdiff(T, A), Q.A$sumset) %ts% to
     } else {
       Q.A$var <- A
     }
-    Q.T.one <- compute.c.factor(T.one, A, Q.A)
+    Q.T.one <- compute.c.factor(T.one, A, Q.A, to)
     nxt <- identify(C, T.one, Q.T.one, G, to, list())
     tree$call$line <- 11
     tree$call$T.prime <- T.prime

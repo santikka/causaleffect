@@ -5,7 +5,7 @@ parse.expression <- function(P, to, G.adj, G, G.obs) {
     if (is.null(P$den)) {
       sum.P <- P$sumset
       P <- P$num
-      P$sumset <- union(sum.P, P$sumset)
+      P$sumset <- union(sum.P, P$sumset) %ts% to
     }
     return(P)
   }
@@ -26,10 +26,10 @@ parse.expression <- function(P, to, G.adj, G, G.obs) {
     if (P$sumset == P$var) return (NULL)
     else return (P)
   }
-  # ord.children <- order(unlist(lapply(P$children, FUN = function(x) which(to == x$var))), decreasing = TRUE)
-  # ord.sum <- order(sapply(P$sumset, FUN = function(x) which(to == x)), decreasing = TRUE)
-  # P$children <- P$children[ord.children]
-  # P$sumset <- P$sumset[ord.sum]
+  ord.children <- order(unlist(lapply(P$children, FUN = function(x) which(to == x$var))), decreasing = TRUE)
+  ord.sum <- order(sapply(P$sumset, FUN = function(x) which(to == x)), decreasing = TRUE)
+  P$children <- P$children[ord.children]
+  P$sumset <- P$sumset[ord.sum]
   P <- simplify(P, to, G.adj, G, G.obs)
   if (length(P$children) == 0) return (NULL)
   P.parse <- probability(product = TRUE, children = list())

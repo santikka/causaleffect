@@ -9,10 +9,10 @@ descendent.sets <- function(node, s, G.s.obs, to) {
   if (n.roots == 0) return(list())
   desc <- lapply(which(roots), function(i) {
     de <- descendants(s[i], G.s.obs, to)
-    if (node %in% de) de <- setdiff(de, node)
+    if (node %in% de) return(NULL)
     return(de)
   })
-  desc <- Filter(function(x) length(x) > 0, desc)
+  desc <- desc[!vapply(desc, is.null, logical(1))]
   n.desc <- length(desc)
   if (n.desc > 0) {
     desc.pow <- powerset(1:n.desc, nonempty = TRUE)
@@ -21,6 +21,7 @@ descendent.sets <- function(node, s, G.s.obs, to) {
     for (i in 1:n.sets) {
       D[[i]] <- Reduce(union, desc[desc.pow[[i]]])
     }
+    # cat("Descendant sets of ", s, " not containing ", node, " are" , as.character(unique(D)), "\n")
     return(unique(D))
   }
   return(list())

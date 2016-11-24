@@ -5,7 +5,7 @@ causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = F
   to <- get.vertex.attribute(G, "name")[to]
   if (length(setdiff(y, to)) > 0) stop("Set 'y' contains variables not present in the graph.")
   if (length(setdiff(x, to)) > 0) stop("Set 'x' contains variables not present in the graph.")
-  if (length(z) > 0 && z != "") {
+  if (length(z) > 0 && !identical(z, "")) {
     if (length(setdiff(z, to)) > 0) stop("Set 'z' contains variables not present in the graph.")
   }
   if (length(intersect(x, y)) > 0) stop("Sets 'x' and 'y' are not disjoint.")
@@ -14,7 +14,7 @@ causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = F
   res <- list()
   algo <- ""
   res.prob <- probability()
-  if (is.null(z) || z == "" || identical(z, character(0))) {
+  if (is.null(z) || identical(z, "") || identical(z, character(0))) {
     res <- id(y, x, probability(), G, G.obs, to, to, list())
     res.prob <- res$P
     algo <- "id"

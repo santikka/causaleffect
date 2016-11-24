@@ -5,10 +5,12 @@ parse.deconstruct <- function(P) {
     }
   } 
   if (P$fraction) {
+    P$num <- parse.deconstruct(P$num)
+    P$den <- parse.deconstruct(P$den)
     i <- 1
     k <- 0
-    if (length(P$num$sumset) == 0) {
-      while (i <= length(P$num$children) & length(P$num$children) > 0 & length(P$den$children) > 0) {
+    if (length(P$num$sumset) == 0 && length(P$den$sumset) == 0) {
+      while (i <= length(P$num$children) && length(P$num$children) > 0 && length(P$den$children) > 0) {
         is.element <- FALSE
         for (j in 1:length(P$den$children)) {
           if (identical(P$num$children[[i]], P$den$children[[j]], attrib.as.set = TRUE)) {
@@ -18,14 +20,14 @@ parse.deconstruct <- function(P) {
           }
         }
         if (is.element) {
-          P$num$children[i] <- NULL
-          P$den$children[k] <- NULL
+          P$num$children <- P$num$children[-i]
+          P$den$children <- P$den$children[-k]
           i <- 0
         }
         i <- i + 1
       }
     }
-    if (length(P$den$children) == 0) {
+    if (length(P$den$children) == 0 && !P$den$fraction) {
       P$num$sumset <- P$sumset
       return(P$num)
     }

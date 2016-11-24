@@ -14,7 +14,7 @@ activate.interventions <- function(P, domain, active) {
       }
     } 
     if (length(const) > 0) {
-      P$children[const] <- NULL
+      P$children <- P$children[-const]
     }
   }
   else {

@@ -7,13 +7,12 @@ simplify.expression <- function(P.num, P.den) {
     }
     P <- P.num
     if (P$product) {
-      parse.children <- sapply(P$children, FUN = function(x) (x$product | length(x$sumset) > 0 | x$fraction | x$sum))
+      parse.children <- sapply(P$children, FUN = function(x) (x$product || length(x$sumset) > 0 || x$fraction || x$sum))
       if (sum(parse.children) > 0) return(P)
       while (length(P$sumset) > 0) {
-        last <- length(P$children)
-        if (P$children[[last]]$var %in% P$sumset) {
-          P$sumset <- setdiff(P$sumset, P$children[[last]]$var)
-          P$children[[last]] <- NULL
+        if (P$children[[1]]$var %in% P$sumset && !(P$children[[1]]$cond %in% P$sumset)) {
+          P$sumset <- setdiff(P$sumset, P$children[[1]]$var)
+          P$children <- P$children[-1]
         } else break
       }
       if (length(P$children) == 1) {
@@ -35,7 +34,7 @@ simplify.expression <- function(P.num, P.den) {
       return(P.new)
     } else {
       if (P.num$product) {
-        parse.children.num <- sapply(P.num$children, FUN = function(x) (x$product | length(x$sumset) > 0 | x$fraction))
+        parse.children.num <- sapply(P.num$children, FUN = function(x) (x$product || length(x$sumset) > 0 || x$fraction || x$sum))
         if (sum(parse.children.num) > 0) {
           P.new <- probability(fraction = TRUE)
           P.new$num <- P.num
@@ -43,21 +42,34 @@ simplify.expression <- function(P.num, P.den) {
           return(P.new)
         }
         if (P.den$product) {
-          parse.children.den <- sapply(P.den$children, FUN = function(x) (x$product | length(x$sumset) > 0 | x$fraction))
+          parse.children.den <- sapply(P.den$children, FUN = function(x) (x$product || length(x$sumset) > 0 || x$fraction || x$sum))
           if (sum(parse.children.den) > 0) {
             P.new <- probability(fraction = TRUE)
             P.new$num <- P.num
             P.new$den <- P.den
             return(P.new)
           } else {
+            last.num <- length(P.num$children)
+            last.den <- length(P.den$children)
             while (length(P.den$children) > 0) {
-              P.num$children[[1]] <- NULL
-              P.den$children[[1]] <- NULL
+              P.num$children <- P.num$children[-last.num]
+              P.den$children <- P.den$children[-last.den]
+              last.num <- last.num - 1
+              last.den <- last.den - 1
             }
-            return(P.num)
+            if (length(P.den$children) == 1) P.den <- P.den$children[[1]]
+            if (length(P.den$children) == 0) {
+              return(P.num)
+            } else {
+              P.new <- probability(fraction = TRUE)
+              P.new$num <- P.num
+              P.new$den <- P.den
+              return(P.new)
+            }
           }
         } else {
-          P.num$children[[1]] <- NULL
+          P.num$children <- P.num$children[-1]
+          if (length(P.num$children) == 1) return(P.num$children[[1]])
           return(P.num)
         }
       }

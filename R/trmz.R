@@ -111,8 +111,8 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, to, tree) {
             P.prod$cond <- v[0:(ind[i]-1)]
           }
           product.list[[cc.len - i + 1]] <- P.prod
-        }  
-        if (length(product.list) > 1) P.new <- probability(sumset = setdiff(cc, y), product = TRUE, children = product.list)
+        }
+        if (cc.len > 1) P.new <- probability(sumset = setdiff(cc, y), product = TRUE, children = product.list)
         else {
           P.new <- product.list[[1]]
           P.new$sumset <- union(P.new$sumset, setdiff(cc, y))

@@ -12,6 +12,6 @@ cancel <- function(P, R.var, R.cond, S) {
       }
     }
   }
-  P$children[[ind]] <- NULL
+  if (length(ind) > 0) P$children <- P$children[-ind]
   return (P)
 }

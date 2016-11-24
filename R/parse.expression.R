@@ -37,17 +37,15 @@ parse.expression <- function(P, to, G.adj, G, G.obs) {
   j <- 0
   if (length(P$sumset) > 0) {
     for (i in 1:length(P$children)) {
-      if (length(intersect(P$children[[i]]$var, P$sumset)) == 0 & length(intersect(P$children[[i]]$cond, P$sumset)) == 0) {
+      if (length(intersect(P$children[[i]]$var, P$sumset)) == 0 && length(intersect(P$children[[i]]$cond, P$sumset)) == 0) {
         remove <- c(remove, i)
         j <- j + 1
       }
     }
-  } else {
-    return (P)
-  }
+  } else return (P)
   if (j > 0) {
     P.parse$children <- P$children[remove]
-    P$children[remove] <- NULL
+    P$children <- P$children[-remove]
     if (length(P$children) > 0) P.parse$children[[j + 1]] <- P
     return(P.parse)
   }

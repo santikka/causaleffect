@@ -55,7 +55,7 @@ get.expression.internal <- function(x, primes, prime.counter, start.sum, target.
       if (x$domain == 1) P <- paste0(P, target.sym, var.string, collapse = "")
       else {
         if (single.source) P <- paste0(P, "(", var.string, collapse = "")
-        else P <- paste0(P, "^{(", letters[x$domain - 1], ")}(", var.string, collapse = "")
+        else P <- paste0(P, "^{(", x$domain - 1, ")}(", var.string, collapse = "")
       }
     } else {
       P <- paste0(P, "(", var.string, collapse = "")

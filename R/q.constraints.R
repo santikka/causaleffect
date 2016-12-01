@@ -4,6 +4,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
   v <- v %ts% to
   G.s.obs <- observed.graph(G.s)
   desc.sets <- descendent.sets(node, s, G.s.obs, to)
+  e <- NULL
   if (length(desc.sets) > 0) {
     for (d in desc.sets) {
       s_d <- setdiff(s, d)
@@ -68,56 +69,56 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
       v <- get.vertex.attribute(G.d, "name")
       v <- v %ts% to
       cc.d <- c.components(G.d, to)
-      if (length(cc.d) > 1) {
+      if (length(cc.d) > 1) e <- Find(function(x) node %in% x, cc.d)
+      else e <- cc.d[[1]]
 
-        # C factor of the left hand side
-        e <- Find(function(x) node %in% x, cc.d)
-        q.d.factor <- probability(fraction = TRUE)
-        q.d.factor$num <- q.factor
-        q.factor$sumset <- union(q.factor$sumset, node) %ts% to
-        q.d.factor$den <- q.factor
-        q.factor.lhs <- NULL
+      # C factor of the left hand side
+      
+      q.d.factor <- probability(fraction = TRUE)
+      q.d.factor$num <- q.factor
+      q.factor$sumset <- union(q.factor$sumset, node) %ts% to
+      q.d.factor$den <- q.factor
+      q.factor.lhs <- NULL
 
-        # C factor of the right hand side
-        u.pa <- NULL
-        e.len <- length(e)
-        product.list.rhs <- vector(mode = "list", length = e.len)
-        for (i in e.len:1) {
-          prod$var <- e[i]
-          pa <- setdiff(parents(e[i], G.unobs, to.u), e[i])
-          cond.unobs <- pa %ts% u
-          cond.obs <- setdiff(pa, cond.unobs)
-          prod$cond <- c(cond.obs, cond.unobs)
-          u.pa <- c(u.pa, cond.unobs)
-          product.list.rhs[[e.len - i + 1]] <- prod
-        }
-        u.pa <- unique(u.pa)
-        u.pa.len <- length(u.pa)
-        prod <- probability()
-        if (u.pa.len > 0) {
-          for (i in u.pa.len:1) {
-            prod$var <- u.pa[i]
-            product.list.rhs[[e.len + u.pa.len - i + 1]] <- prod
-          }
-          q.factor.rhs <- probability(product = TRUE, sumset = u.pa, children = product.list.rhs)
-        } else {
-          q.factor.rhs <- probability(product = TRUE, children = product.list.rhs)
-        }
-
-        eff.e <- parents(e, G.obs, to)
-        eff.diff <- setdiff(eff.s_d, eff.e)
-        if (length(eff.diff) > 0) {
-          constraints <- c(constraints, list(list(
-            "rhs.cfactor" = paste0("Q[\\{", paste0(e, collapse = ","), "\\}](", paste0(eff.e, collapse = ","), ")", collapse = ""),
-            "rhs.expr" = get.expression(q.factor.rhs),
-            "lhs.cfactor" = paste0("\\frac{", rhs.text, "}{\\sum_{", node, "}", rhs.text, "}", collapse = ""),
-            "lhs.expr" = get.expression(q.d.factor),
-            "vars" = eff.diff
-          )))
-        }
-        constraints <- c(constraints, q.constraints(e, node, G, G.obs, G.unobs, to, to.u, list()))
+      # C factor of the right hand side
+      u.pa <- NULL
+      e.len <- length(e)
+      product.list.rhs <- vector(mode = "list", length = e.len)
+      for (i in e.len:1) {
+        prod$var <- e[i]
+        pa <- setdiff(parents(e[i], G.unobs, to.u), e[i])
+        cond.unobs <- pa %ts% u
+        cond.obs <- setdiff(pa, cond.unobs)
+        prod$cond <- c(cond.obs, cond.unobs)
+        u.pa <- c(u.pa, cond.unobs)
+        product.list.rhs[[e.len - i + 1]] <- prod
       }
+      u.pa <- unique(u.pa)
+      u.pa.len <- length(u.pa)
+      prod <- probability()
+      if (u.pa.len > 0) {
+        for (i in u.pa.len:1) {
+          prod$var <- u.pa[i]
+          product.list.rhs[[e.len + u.pa.len - i + 1]] <- prod
+        }
+        q.factor.rhs <- probability(product = TRUE, sumset = u.pa, children = product.list.rhs)
+      } else {
+        q.factor.rhs <- probability(product = TRUE, children = product.list.rhs)
+      }
+
+      eff.e <- parents(e, G.obs, to)
+      eff.diff <- setdiff(eff.s_d, eff.e)
+      if (length(eff.diff) > 0) {
+        constraints <- c(constraints, list(list(
+          "rhs.cfactor" = paste0("Q[\\{", paste0(e, collapse = ","), "\\}](", paste0(eff.e, collapse = ","), ")", collapse = ""),
+          "rhs.expr" = get.expression(q.factor.rhs),
+          "lhs.cfactor" = paste0("\\frac{", rhs.text, "}{\\sum_{", node, "}", rhs.text, "}", collapse = ""),
+          "lhs.expr" = get.expression(q.d.factor),
+          "vars" = eff.diff
+        )))
+      }
+      constraints <- c(constraints, q.constraints(e, node, G, G.obs, G.unobs, to, to.u, list()))
     }
-  } 
+  }
   return(constraints)
 }

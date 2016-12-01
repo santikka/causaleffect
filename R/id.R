@@ -38,14 +38,16 @@ id <- function(y, x, P, G, G.obs, v, to, tree) {
   G.xbar <- subgraph.edges(G, E(G)[!to(x)], delete.vertices = FALSE)
   an.xbar <- ancestors(y, observed.graph(G.xbar), to)
   w <- setdiff(setdiff(v, x), an.xbar)
-  if (length(w) != 0) {
-    r <- blocked(w, y, G.xbar, to)
-    if (length(r) > 0) {
-      G <- induced.subgraph(G, setdiff(v, r))
+  w.len <- length(w)
+  if (w.len != 0) {
+    co <- connected(w, y, G.xbar, to)
+    if (length(co) < w.len) {
+      v.new <- setdiff(v, setdiff(w, co))
+      G <- induced.subgraph(G, v.new)
       G.obs <- observed.graph(G)
-      v <- setdiff(v, r)
+      v <- v.new
     }
-    nxt <- id(y, union(x, setdiff(w, r)) %ts% to, P, G, G.obs, v, to, list())
+    nxt <- id(y, union(x, co) %ts% to, P, G, G.obs, v, to, list())
     # nxt <- id(y, union(x, w), P, G, to, list())
     tree$branch[[1]] <- nxt$tree
     tree$call$line <- 3

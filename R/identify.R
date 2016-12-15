@@ -30,14 +30,7 @@ identify <- function(C, T, Q, G, to, tree) {
   if (all(C %in% A) && all(A %in% T)) {
     G.A <- induced.subgraph(G, A)
     cc <- c.components(G.A, to)
-    i <- 1
-    while (TRUE) {
-      if (all(C %in% cc[[i]])) {
-        break
-      }
-      i = i + 1
-    }
-    T.prime <- cc[[i]] 
+    T.prime <- Find(function(x) all(C %in% x), cc)
     T.one <- intersect(T.prime, A)
     Q.A <- Q
     if (Q.A$product | Q.A$fraction) {

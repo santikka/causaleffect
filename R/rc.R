@@ -56,7 +56,7 @@ rc <- function(D, P, G, to, tree) {
   ind <- 1
   for (i in c.ind) {
     product.list[[ind]] <- compute.c.factor(cc[[i]], v, P, to)
-    ind + 1
+    ind <- ind + 1
   }
   P.new <- probability(fraction = TRUE)
   P.new$num <- P

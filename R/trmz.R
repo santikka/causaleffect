@@ -96,7 +96,7 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, to, tree) {
         product.list <- vector(mode = "list", length = cc.len)
         tree$call$line <- 7
         tree$call$c.zero <- cc
-        for (i in cc.len:1) {
+        for (i in 1:cc.len) {
           P.prod <- probability()
           P.num <- P
           P.den <- P
@@ -135,7 +135,7 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, to, tree) {
       cc.graph <- lapply(1:d, function(x) induced.subgraph(D[[x]], cc.s[[x]]))
       kappa <- c()
       if (cc.len > 1) {
-        for (i in cc.len:1) { 
+        for (i in 1:cc.len) { 
           kappa <- union(kappa, setdiff(v[0:(ind[i]-1)], cc))
           if (P$product) {
             P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa), v, to)

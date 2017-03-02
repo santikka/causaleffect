@@ -1,13 +1,11 @@
 \documentclass[article, shortnames, nojss]{jss}
+\usepackage{thumbpdf,lmodern} 
+\graphicspath{{Figures/}}  % folder with figures
 
-  %\VignetteIndexEntry{Identifying Causal Effects with the R Package causaleffect}
-  %\VignetteAuthor{Santtu Tikka, Juha Karvanen}
-  %\VignetteKeyword{R}
-  %\VignetteKeyword{package}
-  %\VignetteTangle{no}
-  %\VignetteEngine{R.rsp::tex}
+% todo
+\newcommand{\TODO}[1]{{\color{red} #1}}
 
-\usepackage{graphicx}
+
 \usepackage{pdfpages}
 \usepackage{float}
 \usepackage[toc,page]{appendix}
@@ -29,8 +27,6 @@ scr=rsfs]{mathalfa}
 \usepackage[plain]{algorithm} 
 \usepackage[noend]{algpseudocode}
 
-
-%\setlength{\bibitemsep}{0.5\baselineskip}
 \newcommand{\indep}{\,\rotatebox[origin=c]{90}{$\models$}\,}
 \newcommand{\+}[1]{\ensuremath{\mathbf{#1}}}
 \newcommand{\vectornorm}[1]{\left\|#1\right\|}
@@ -38,50 +34,59 @@ scr=rsfs]{mathalfa}
 \newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 
-% algorithm
 \newcommand*\Let[2]{\State #1 $\gets$ #2}
 \algnewcommand\algorithmicinput{\textbf{INPUT:}}
 \algnewcommand\INPUT{\item[\algorithmicinput]}
 \algnewcommand\algorithmicoutput{\textbf{OUTPUT:}}
 \algnewcommand\OUTPUT{\item[\algorithmicoutput]}
 
-% AMS
 \theoremstyle{plain}
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
 
-\author{Santtu Tikka\\University of Jyvaskyla \And
-Juha Karvanen\\University of Jyvaskyla}
-\title{Identifying Causal Effects with the \proglang{R} Package \pkg{causaleffect}}
+\author{Santtu Tikka\\University of Jyvaskyla
+   \And Juha Karvanen\\University of Jyvaskyla}
+\Plainauthor{Santtu Tikka, Juha Karvanen}
 
-\Plainauthor{Santtu Tikka}
+\title{Identifying Causal Effects with the \proglang{R} Package \pkg{causaleffect}}
 \Plaintitle{Identifying Causal Effects with the R Package causaleffect}
 
 \Abstract{
 Do-calculus is concerned with estimating the interventional distribution of an action from the
 observed joint probability distribution of the variables in a given causal structure. All identifiable
 causal effects can be derived using the rules of do-calculus, but the rules themselves do not give any
-direct indication whether the effect in question is identifiable or not. \cite{shpitser06} constructed an algorithm for identifying joint interventional distributions in causal models,
+direct indication whether the effect in question is identifiable or not. \cite{shpitser06} constructed
+an algorithm for identifying joint interventional distributions in causal models,
 which contain unobserved variables and induce directed acyclic graphs. This algorithm can be seen
 as a repeated application of the rules of do-calculus and known properties of probabilities, and it
 ultimately either derives an expression for the causal distribution, or fails to identify the effect, in
-which case the effect is non-identifiable. In this paper, the \proglang{R} package \pkg{causaleffect} is presented, which provides an implementation of this algorithm. Functionality of \pkg{causaleffect} is also demonstrated through examples.
+which case the effect is non-identifiable. In this paper, the \proglang{R} package \pkg{causaleffect} is
+presented, which provides an implementation of this algorithm. Functionality of \pkg{causaleffect} is
+also demonstrated through examples.
 }
 
 \Keywords{DAG, do-calculus, causality, causal model, identifiability, graph, C-component, hedge, d-separation}
+
+\Volume{76}
+\Issue{12}
+\Month{February}
+\Year{2017}
+\Submitdate{2015-05-06}
+\Acceptdate{2015-11-25}
+\DOI{10.18637/jss.v076.i12}
 
 \Address{
   Santtu Tikka\\
   Department of Mathematics and Statistics\\
   Faculty of Mathematics and Science\\
   University of Jyvaskyla\\
-  P.O.Box 35, FI-40014\\
+  P.O.Box 35, FI-40014, Finland\\
   E-mail: \email{santtu.tikka@jyu.fi}\\
 }
 
 \begin{document}
 
-This work is a modification of a manuscript submitted to \textit{Journal of Statistical Software}
+A modification of \citep{tikka17} published in the Journal of Statistical Software.
 
 \section{Introduction} \label{Sect:intro}
 When discussing causality, one often means the relationships between events, where a set of events directly or indirectly causes another set of events. The aim of causal inference is to draw conclusions from these relationships by using available data and prior knowledge. Causal inference can also be applied when determining the effects of actions on some variables of interest. These types of actions are often called interventions and the results of the interventions are referred to as causal effects.
@@ -92,56 +97,68 @@ Do-calculus \citep{pearl95} consist of a set of inference rules, which can be us
 
 Other \proglang{R} packages for causal inference are summarized in Table~\ref{tab:Rpackages}. It can be seen that in addition to \pkg{causaleffect}, only \pkg{pcalg} \citep{pcalg} supports the identification of causal effects. \pkg{pcalg} supports the generalized back-door criterion but does not support the front-door criterion. Thus, according to our knowledge, \pkg{causaleffect} is the only \proglang{R} package that implements a complete algorithm for the identification of causal effects.
 
-An algorithm equivalent to the one developed by \citep{shpitser06} has been implemented earlier by Lexin Liu in the CIBN software using JavaBayes, which is a graphical software interface written in \proglang{Java} by Fabio Gagliardi Cozman. In addition to causal effect identification CIBN also provides tools for creating and editing graphical models. CIBN is freely available from \url{http://web.cs.iastate.edu/~jtian/Software/CIBN.htm}. DAGitty \citep{dagitty} provides another free interface for causal inference and causal modeling. One of the main features of DAGitty is finding sufficient adjustment sets for the minimization of bias in causal effect estimation. DAGitty can also be used to determine instrumental variables, which is a feature currently not provided by \pkg{causaleffect}. However, DAGitty does not provide a complete criterion for identifiability.
+An algorithm equivalent to the one developed by \citep{shpitser06} has been
+implemented earlier by Lexin Liu in the \pkg{CIBN} software using
+\pkg{JavaBayes}, which is a graphical software interface written in
+\proglang{Java} by Fabio Gagliardi Cozman. In addition to causal effect
+identification \pkg{CIBN} also provides tools for creating and editing
+graphical models. \pkg{CIBN} is freely available from
+\url{http://web.cs.iastate.edu/~jtian/Software/CIBN.htm}. \pkg{DAGitty}
+\citep{dagitty} provides another free interface for causal inference and causal
+modeling. One of the main features of \pkg{DAGitty} is finding sufficient
+adjustment sets for the minimization of bias in causal effect estimation.
+\pkg{DAGitty} can also be used to determine instrumental variables, which is a
+feature currently not provided by \pkg{causaleffect}. However, \pkg{DAGitty}
+does not provide a complete criterion for identifiability.
 
 Familiarity of Pearl's causal model, do-calculus and basic graph theory is assumed throughout the paper. These concepts are briefly reviewed in Appendix~\ref{App:AppendixA}. A more detailed description can be found in \citep{pearl09} and \citep{koller09}. Notation similar to that of \citep{shpitser06} is also utilized repeatedly in this paper. Capital letters denote variables and small letters denote their values. Bold letters denote sets which are formed of the previous two. The abbreviations $Pa(\+ Y)_G, An(\+ Y)_G, $ and $De(\+ Y)_G$ denote the set of observable parents, ancestors and descendants of the node set $\+ Y$ while also containing $\+ Y$ itself. It should also be noted that the shorthand notation of bidirected edges is used to represent the direct effects of an unobserved confounding variable on the two variables at the endpoints of the bidirected edge.
 
-\begin{table}[H]\footnotesize
-  \begin{tabular}{l p{10.5cm}}
+\begin{table}[p!]
+  \begin{tabular}{l p{10.2cm}}
   \hline
 
-  \multicolumn{2}{l}{Packages for specific applications} \\
+  \multicolumn{2}{l}{\it Packages for specific applications} \\
   \hline
-  \pkg{ASPBay} & Bayesian Inference on Causal Genetic Variants using Affected Sib-Pairs Data \citep{ASPBay}. \\
-  \pkg{cin}    & Causal Inference for Neuroscience \citep{cin}.\\
-  \pkg{mwa}    & Causal Inference in Spatiotemporal Event Data \citep{mwa}.\\
-  \pkg{qtlnet} &  Causal Inference of QTL Networks \citep{qtlnet}.\\
-  \hline
-
-  \multicolumn{2}{l}{Packages for estimation of causal effects from data} \\
-  \hline
-  \pkg{CausalGAM}  &     Estimation of Causal Effects with Generalized Additive Models \citep{CausalGAM}. \\
-  \pkg{InvariantCausalPrediction}  &     Invariant Causal Prediction \citep{InvariantCausalPrediction}. \\
-  \pkg{iWeigReg}  &      Improved methods for causal inference and missing data problems \citep{iWeigReg}. \\
-  \pkg{pcalg}  & Methods for Graphical Models and Causal Inference. \\
-  \pkg{SVMMatch}  &      Causal Effect Estimation and Diagnostics with Support Vector Machines \citep{SVMMatch}. \\
-  \pkg{wfe}  &   Weighted Linear Fixed Effects Regression Models for Causal Inference \citep{wfe}. \\
+  \pkg{ASPBay} & Bayesian inference on causal genetic variants using affected sib-pairs data \citep{ASPBay} \\
+  \pkg{cin}    & Causal inference for neuroscience \citep{cin}\\
+  \pkg{mwa}    & Causal inference in spatiotemporal event data \citep{mwa}\\
+  \pkg{qtlnet} & Causal inference of QTL networks \citep{qtlnet}\\
   \hline
 
-  \multicolumn{2}{l}{Packages for sensitivity analysis and other specific problems in causal inference} \\
+  \multicolumn{2}{l}{\it Packages for estimation of causal effects from data} \\
   \hline
-  \pkg{causalsens}  &      Selection Bias Approach to Sensitivity Analysis for Causal Effects \citep{causalsens}. \\
-  \pkg{cit}  &     Causal Inference Test \citep{cit}. \\
-  \pkg{ImpactIV}  &        Identifying Causal Effect for Multi-Component Intervention Using Instrumental Variable Method \citep{ImpactIV}.\\
-  \pkg{inferference}  &    Methods for Causal Inference with Interference \citep{inferference}. \\
-  \pkg{MatchingFrontier}  &        Computation of the Balance - Sample Size Frontier in Matching Methods for Causal Inference \citep{MatchingFrontier}.\\
-  \pkg{mediation}  &       Causal Mediation Analysis \citep{mediation}. \\
-  \pkg{qualCI}  & Causal Inference with Qualitative and Ordinal Information on Outcomes\citep{qualCI}. \\
-  \pkg{SimpleTable}  &     Bayesian Inference and Sensitivity Analysis for Causal Effects from 2 x 2 and 2 x 2 x K Tables in the Presence of Unmeasured Confounding \citep{SimpleTable}. \\
-  \pkg{treatSens} &       Sensitivity Analysis for Causal Inference \citep{treatSens}. \\
+  \pkg{CausalGAM}  &     Estimation of causal effects with generalized additive models \citep{CausalGAM} \\
+  \pkg{InvariantCausalPrediction}  &     Invariant causal prediction \citep{InvariantCausalPrediction} \\
+  \pkg{iWeigReg}  &      Improved methods for causal inference and missing data problems \citep{iWeigReg} \\
+  \pkg{pcalg}  & Methods for graphical models and causal inference \\
+  \pkg{SVMMatch}  &      Causal effect estimation and diagnostics with support vector machines \citep{SVMMatch} \\
+  \pkg{wfe}  &   Weighted linear fixed effects regression models for causal inference \citep{wfe} \\
   \hline
 
-  \multicolumn{2}{l}{Packages for causal discovery} \\
+  \multicolumn{2}{l}{\it Packages for sensitivity analysis and other specific problems in causal inference} \\
   \hline
-  \pkg{CAM}  &     Causal Additive Model (CAM) \citep{cam}.\\
-  \pkg{D2C}  &     Predicting Causal Direction from Dependency Features \citep{D2C} \\
-  \pkg{pcalg}  &   Methods for Graphical Models and Causal Inference \\
+  \pkg{causalsens}  &      Selection bias approach to sensitivity analysis for causal effects \citep{causalsens} \\
+  \pkg{cit}  &     Causal inference test \citep{cit} \\
+  \pkg{ImpactIV}  &        Identifying causal effect for multi-component intervention using instrumental variable method \citep{ImpactIV}\\
+  \pkg{inferference}  &    Methods for causal inference with interference \citep{inferference} \\
+  \pkg{MatchingFrontier}  &        Computation of the balance -- sample size frontier in matching methods for causal inference \citep{MatchingFrontier}\\
+  \pkg{mediation}  &       Causal mediation analysis \citep{mediation} \\
+  \pkg{qualCI}  & Causal inference with qualitative and ordinal information on outcomes\citep{qualCI} \\
+  \pkg{SimpleTable}  &     Bayesian inference and sensitivity analysis for causal effects from 2 $\times$ 2 and 2 $\times$ 2 $\times K$ tables in the presence of unmeasured confounding \citep{SimpleTable} \\
+  \pkg{treatSens} &       Sensitivity analysis for causal inference \citep{treatSens} \\
   \hline
 
-  \multicolumn{2}{l}{Packages for identification of causal effects} \\
+  \multicolumn{2}{l}{\it Packages for causal discovery} \\
   \hline
-  \pkg{causaleffect} &  Deriving Expressions of Joint Interventional Distributions in Causal Models \\
-  \pkg{pcalg} &   Methods for Graphical Models and Causal Inference \\
+  \pkg{CAM}  &     Causal additive model (CAM) \citep{cam}\\
+  \pkg{D2C}  &     Predicting causal direction from dependency features \citep{D2C} \\
+  \pkg{pcalg}  &   Methods for graphical models and causal inference \\
+  \hline
+
+  \multicolumn{2}{l}{\it Packages for identification of causal effects} \\
+  \hline
+  \pkg{causaleffect} &  Deriving expressions of joint interventional distributions in causal models \\
+  \pkg{pcalg} &   Methods for graphical models and causal inference \\
   \hline
   \end{tabular}
   \caption{\proglang{R} packages for causal inference.}
@@ -170,7 +187,7 @@ The rules of do-calculus can be shown to be true by using d-separation and the d
 
 To identify $P_x(y)$ in the causal model of Figure~\ref{kuva:grfGm}, we begin with the factorization
 \begin{equation} \label{eq:big1}
-P_x(y) = \sum_{w,z}[P_x(y|w,z)P_x(z|w)P_x(w)].
+P_x(y) = \sum_{w,z}P_x(y|w,z)P_x(z|w)P_x(w).
 \end{equation}
 
 %\begin{equation} \label{eq:big1}
@@ -179,9 +196,10 @@ P_x(y) = \sum_{w,z}[P_x(y|w,z)P_x(z|w)P_x(w)].
 %Because $(Y \indep Z|X)_{G_{\thickbar X,\thickubar Z}}$ rule 2 implies that
 %$$ p_x(y|z) = p_{x,z}(y) $$
 %
-\begin{figure}[H]
+\begin{figure}[t!]
     \centering
-    \includegraphics[width=0.27\textwidth]{graphspdf/g1.pdf}
+    \vspace*{-0.5cm}
+    \includegraphics[width=0.27\textwidth]{g1.pdf}
     \caption{Graph $G$ for the illustrative example.}
     \label{kuva:grfGm}
 \end{figure}
@@ -220,9 +238,9 @@ Similarly, the third term simplifies by using rule 3 and the condition $(W \inde
 P_x(w) = P(w).
 \end{equation}
 Finally, we combine the results above by inserting (\ref{eq:bigsolve1}), (\ref{eq:part2}) and (\ref{eq:part3}) into (\ref{eq:big1}) which yields the expression for the causal effect.
-$$ P_x(y) = \sum_{w,z}[\sum_x [P(y|w,x,z)P(x|w)]P(z|x,w)P(w)] $$
+$$ P_x(y) = \sum_{w,z} \left( \sum_x P(y|w,x,z)P(x|w) \right) P(z|x,w)P(w) $$
 In Section~\ref{Sect:practice} we will see how the causal effect can be identified by applying the algorithm of \citep{shpitser06}. The previous result highly resembles the front-door criterion, which states that
-$$ P_{\+ x}(\+ y) = \sum_{\+ s} [\sum_{\+ x} P(\+ y|\+ x, \+s)P(\+ x)]P(\+ s|\+ x)],$$
+$$ P_{\+ x}(\+ y) = \sum_{\+ s} \left( \sum_{\+ x} P(\+ y|\+ x, \+s)P(\+ x) \right) P(\+ s|\+ x),$$
 whenever the set $\+ S$ blocks all directed paths from $\+ X$ to $\+ Y$, there are no unblocked back-door paths from $\+ X$ to $\+ S$ and $\+ X$ blocks all back-door paths from $\+ S$ to $\+ Y$. However, neither $W$, $Z$, or $\{W,Z\}$ satisfy the role of the set $\+ S$. The criterion would certainly hold if we removed $W$ from the graph.%This example also serves to demonstrate the front-door criterion 
 
 %
@@ -282,15 +300,16 @@ Some graph theoretic definitions are necessary in order to present the algorithm
 
 Defining new graphs using only a set of nodes can easily be achieved using induced subgraphs. For example, the graph in Figure \ref{kuva:grfGsubexp}(\subref{kuva:grfGsubexpb}) is an induced subgraph induced by the nodes $X, Z_1$ and $Z_2$ from  $G$ in \ref{kuva:grfGsubexp}(\subref{kuva:grfGsubexpa}).
 
-\begin{figure}[H]
+\begin{figure}[t!]
   \centering
+  \vspace*{-0.5cm}
   \begin{subfigure}[b]{0.34\textwidth}
-    \includegraphics[width=1\textwidth]{graphspdf/g2.pdf}
+    \includegraphics[width=1\textwidth]{g2.pdf}
     \caption{Graph $G$.}
     \label{kuva:grfGsubexpa}
   \end{subfigure}
   \begin{subfigure}[b]{0.50\textwidth}
-    \hspace{1.5cm} \includegraphics[width=0.5\textwidth]{graphspdf/g2sub1.pdf}
+    \hspace{1.5cm} \includegraphics[width=0.5\textwidth]{g2sub1.pdf}
     \caption{A subgraph of $G$ induced by the set $\{X,Z_1,Z_2\}$.}
     \label{kuva:grfGsubexpb}
   \end{subfigure}
@@ -305,7 +324,7 @@ Perhaps the most important definition is C-component (confounded component).
 
 Both graphs in Figure \ref{kuva:grfGsubexp} are examples of C-components. Even if a graph is not a C-component, at least one of its subgraphs is guaranteed to be a C-component because every subgraph induced by a single node is always a C-component. It is often of greater interest to determine how a given graph can be partitioned in C-components that contain as many nodes as possible.
 
-\begin{definition}[Maximal C-component] Let $G$ be a graph and $C = \langle \+ V, \+ E \rangle$ a C-component such that $C \subset G$. C-component $C$ is \emph{maximal} (with respect to graph $G$) if $H \subset C$ for every bidirected path $H$ of graph $G$ which contains at leasts one node of the set $\+ V$.
+\begin{definition}[Maximal C-component] Let $G$ be a graph and $C = \langle \+ V, \+ E \rangle$ a C-component such that $C \subset G$. C-component $C$ is \emph{maximal} (with respect to graph $G$) if $H \subset C$ for every bidirected path $H$ of graph $G$ which contains at least one node of the set $\+ V$.
 \end{definition}
 
 \citet{tian02phd} proved, that the joint probability distribution $P(\+ V)$ of the observed variables of graph $G$ can always be factorized in such a way, that each term of the resulting product corresponds to a maximal C-component. This property is in a fundamental role in the algorithm, since it can be used to recursively divide the expression of the interventional distribution into simpler expressions.
@@ -324,22 +343,21 @@ Using only C-trees and C-components it is already possible to characterize ident
 
 Both C-components in Figure \ref{kuva:grfGsubexp} are also C-forests, because every observed node has at most one child in both graphs. In addition, their root sets consist only of a single node. There exists a connection between C-forests and general causal effects of the form $P_{\+ x}(\+ Y)$. A graph structure formed by a pair of C-trees is used to determine such effects.
 
-\begin{definition}[Hedge, \citep{shpitser06} 6] Let $G = \langle \+ V, \+ E \rangle $ be a graph, and $\+ X, \+ Y \subset \+ V$ disjoint subsets. If there are two $\+ R$-rooted C-forests $F = \langle \+ V_F, \+ E_F \rangle$ and $F^\prime = \langle \+ V_{F^\prime}, \+ E_{F^\prime} \rangle$ such that ${\+ V_F \cap \+ X \neq \emptyset}$, $\+ V_{F^\prime} \cap \+ X = \emptyset, F^\prime \subset F,$ and $\+ R \subset An(\+ Y)_{G_{\thickbar {\+ X}}}$, then $F$ and $F^\prime$ form \emph{hedge} for $P_{\+ x}(\+ y)$ in $G$.
-\end{definition}
-Hedges are a remarkable structure, since they generalize certain results regarding identifiability. One example of such a result is the condition for identification of a causal effect of the form $P_x(\+ y)$ in \citep{tian02}. The result states that $P_x(\+ y)$ is identifiable if there are no bidirected paths between $X$ and any of its children in $G[An(\+ Y)_G]$. Consider the graph $H = \langle \+ V, \+ E \rangle$ in Figure \ref{kuva:grfGzbpath} containing the nodes $X$ and $Y$ and a bidirected path connecting them formed by the intermediary nodes $\{Z_1,\ldots,Z_k\}$. One can observe, that the C-forests $H$ and $H[\+ V\setminus\{X\}]$ form a hedge for $P_x(Y,Z_1,\ldots,Z_k)$.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.52\textwidth]{graphspdf/gzbpath.pdf}
+\begin{figure}[t!]
+  \centering
+  \includegraphics[width=0.52\textwidth, trim=0 13 0 13, clip]{gzbpath.pdf}
   \caption{Path $H$.}
   \label{kuva:grfGzbpath}
 \end{figure}
-\noindent
 \citet{shpitser06} proved, that if a graph $G$ contains a hedge for $P_{\+ x}(\+ y)$, then the effect is not identifiable.
+
+\begin{definition}[Hedge, \citep{shpitser06} 6] Let $G = \langle \+ V, \+ E \rangle $ be a graph, and $\+ X, \+ Y \subset \+ V$ disjoint subsets. If there are two $\+ R$-rooted C-forests $F = \langle \+ V_F, \+ E_F \rangle$ and $F^\prime = \langle \+ V_{F^\prime}, \+ E_{F^\prime} \rangle$ such that ${\+ V_F \cap \+ X \neq \emptyset}$, $\+ V_{F^\prime} \cap \+ X = \emptyset, F^\prime \subset F,$ and $\+ R \subset An(\+ Y)_{G_{\thickbar {\+ X}}}$, then $F$ and $F^\prime$ form \emph{hedge} for $P_{\+ x}(\+ y)$ in $G$.
+\end{definition}
+Hedges are a remarkable structure, since they generalize certain results regarding identifiability. One example of such a result is the condition for identification of a causal effect of the form $P_x(\+ y)$ in \citep{tian02}. The result states that $P_x(\+ y)$ is identifiable if and only if there are no bidirected paths between $X$ and any of its children in $G[An(\+ Y)_G]$. Consider the graph $H = \langle \+ V, \+ E \rangle$ in Figure \ref{kuva:grfGzbpath} containing the nodes $X$ and $Y$ and a bidirected path connecting them formed by the intermediary nodes $\{Z_1,\ldots,Z_k\}$. One can observe, that the C-forests $H$ and $H[\+ V\setminus\{X\}]$ form a hedge for $P_x(Y, Z_1, \ldots, Z_k)$.
 
 \subsection{Algorithm}\label{Sect:algos}
 
-Using the previously presented definitions it is now possible to define algorithm \ref{alg:identify}, which completely characterizes the identifiability problem of general causal effects. \citet{shpitser06} showed, that the expression returned by algorithm \ref{alg:identify} for $P_{\+ x}(\+ y)$ is always correct if the effect in question is identifiable. They also showed, that if the algorithm is interrupted on line five, then the original graph $G$ contains a hedge, preventing the identifiability of the effect. The existence of a hedge is therefore equivalent with unidentifiability. This result also shows the completeness of do-calculus, because the algorithm only applies standard rules of probability manipulations and the three rules of do-calculus. All variables are assumed to be discrete, but the algorithm can also be applied in a continuous case, when the respective sums are replaced with integrals.
+Using the previously presented definitions it is now possible to define Algorithm~\ref{alg:identify}, which completely characterizes the identifiability problem of general causal effects. \citet{shpitser06} showed, that the expression returned by Algorithm~\ref{alg:identify} for $P_{\+ x}(\+ y)$ is always correct if the effect in question is identifiable. They also showed, that if the algorithm is interrupted on line five, then the original graph $G$ contains a hedge, preventing the identifiability of the effect. The existence of a hedge is therefore equivalent with unidentifiability. This result also shows the completeness of do-calculus, because the algorithm only applies standard rules of probability manipulations and the three rules of do-calculus. All variables are assumed to be discrete, but the algorithm can also be applied in a continuous case, when the respective sums are replaced with integrals.
 
 The algorithm is required to be able to iteratively process the nodes of the graph, which means that the nodes have to be ordered in some meaningful fashion. This ordering must be able to take the directions of the edges into account, and at least one such ordering must always exist for any given graph. Topological ordering has all of these prerequisite properties.
 
@@ -349,34 +367,34 @@ The algorithm is required to be able to iteratively process the nodes of the gra
 
 There exists at least one topological ordering for any DAG, but in some cases there can be multiple orderings. One way to always construct an ordering for a given graph is to begin by determining all nodes without parents, and ordering them arbitrarily. Next, all nodes without parents excluding the nodes found in previous step are determined and again ordered arbitrarily. It is also assigned, that the largest node in the previous step is smaller than the smallest node in the current step. This process is iterated, until all nodes have been ordered.
 
-\begin{algorithm}[H]
-	\begin{algorithmic}[1]
-		\INPUT{Value assignments $\+ x$ and $\+ y$, joint distribution $P(\+ v)$ and a DAG $G = \langle \+ V, \+ E \rangle$. $G$ is an $I$-map of $P$.}
-		\OUTPUT{Expression for $P_{\+ x}(\+ y)$ in terms of $P(\+ v)$ or \textbf{FAIL}$(F,F^\prime)$.}
-		\Statex
-		\Statex \textbf{function}{ \textbf{ID}$(\+ y, \+ x, P, G)$}
-			\If{$\+ x = \emptyset$,}
-				\Statex \textbf{\quad return}{ $\sum_{v \in \+ v \setminus \+ y}P(\+ v)$.}
-			\EndIf
-			\If{$\+ V \neq An(\+ Y)_G,$}
-				\Statex \textbf{\quad return}{ \textbf{ID}$(\+ y, \+ x \cap An(\+ Y)_G, P(An(\+ Y)_G), G[An(\+ Y)_G)]$.}
-			\EndIf	
-			\State \textbf{Let}{ $\+ W = (\+ V \setminus \+ X) \setminus An(\+ Y)_{G_{\thickbar {\+ X}}}$.}
-			\Statex \textbf{if}{ $\+ W \neq \emptyset $,} \textbf{then}
-				\Statex \quad \textbf{return}{ \textbf{ID}$(\+ y, \+ x \cup \+ w, P, G)$.}
-			\If{$C(G[\+ V \setminus \+ X]) = \{G[\+ S_1], \ldots,G[\+ S_k]\}$,}
-				\Statex \textbf{\quad return}{ $\sum_{v \in \+ v \setminus (\+ y \cup \+ x)} \prod_{i=1}^k$ \textbf{ID}($\+ s_i, \+ v \setminus \+ s_i, P, G)$.}
-			\EndIf
-			\Statex \textbf{if}{ $C(G[\+V \setminus \+ X]) = \{G[\+ S]\}$,} \textbf{then}
-				\State \quad \textbf{if}{ $C(G) = \{G\}$,} \textbf{then}
-				\Statex \quad \quad \textbf{throw FAIL}{$(G, G[\+ S])$.}
-				\State \quad \textbf{if}{ $G[\+ S] \in C(G)$,} \textbf{then} 
-				\Statex \quad \quad \textbf{return} {$\sum_{v \in \+ s \setminus \+ y} \prod_{V_i \in \+ S}{P(v_i \vert v_\pi^{(i-1)})}$.}
-				\State \quad \textbf{if}{ $(\exists \+ S^\prime)\+ S \subset \+ S^\prime \text{ such that } G[\+ S^\prime] \in C(G)$,} \textbf{then}
-				\Statex \quad \quad \textbf{return} {\textbf{ID}$(\+ y, \+ x \cap \+ s^\prime, \prod_{V_i \in \+ S^\prime}{P(V_i \vert V_\pi^{(i-1)} \cap \+ S^\prime,v_\pi^{(i-1)} \setminus \+ s^\prime), G[\+ S^\prime}])$.}
-	\end{algorithmic}
-	\caption{The causal effect of intervention $do(\+ X = \+ x)$ on $\+ Y$.}
-	\label{alg:identify}
+\begin{algorithm}[t!]
+  \begin{algorithmic}[1]
+    \INPUT{Value assignments $\+ x$ and $\+ y$, joint distribution $P(\+ v)$ and a DAG $G = \langle \+ V, \+ E \rangle$. $G$ is an $I$-map of $P$.}
+    \OUTPUT{Expression for $P_{\+ x}(\+ y)$ in terms of $P(\+ v)$ or \textbf{FAIL}$(F,F^\prime)$.}
+    \Statex
+    \Statex \textbf{function}{ \textbf{ID}$(\+ y, \+ x, P, G)$}
+      \If{$\+ x = \emptyset$,}
+        \Statex \textbf{\quad return}{ $\sum_{v \in \+ v \setminus \+ y}P(\+ v)$.}
+      \EndIf
+      \If{$\+ V \neq An(\+ Y)_G,$}
+        \Statex \textbf{\quad return}{ \textbf{ID}$(\+ y, \+ x \cap An(\+ Y)_G, P(An(\+ Y)_G), G[An(\+ Y)_G)]$.}
+      \EndIf  
+      \State \textbf{Let}{ $\+ W = (\+ V \setminus \+ X) \setminus An(\+ Y)_{G_{\thickbar {\+ X}}}$.}
+      \Statex \textbf{if}{ $\+ W \neq \emptyset $,} \textbf{then}
+        \Statex \quad \textbf{return}{ \textbf{ID}$(\+ y, \+ x \cup \+ w, P, G)$.}
+      \If{$C(G[\+ V \setminus \+ X]) = \{G[\+ S_1], \ldots,G[\+ S_k]\}$,}
+        \Statex \textbf{\quad return}{ $\sum_{v \in \+ v \setminus (\+ y \cup \+ x)} \prod_{i=1}^k$ \textbf{ID}($\+ s_i, \+ v \setminus \+ s_i, P, G)$.}
+      \EndIf
+      \Statex \textbf{if}{ $C(G[\+V \setminus \+ X]) = \{G[\+ S]\}$,} \textbf{then}
+        \State \quad \textbf{if}{ $C(G) = \{G\}$,} \textbf{then}
+        \Statex \quad \quad \textbf{throw FAIL}{$(G, G[\+ S])$.}
+        \State \quad \textbf{if}{ $G[\+ S] \in C(G)$,} \textbf{then} 
+        \Statex \quad \quad \textbf{return} {$\sum_{v \in \+ s \setminus \+ y} \prod_{V_i \in \+ S}{P(v_i \vert v_\pi^{(i-1)})}$.}
+        \State \quad \textbf{if}{ $(\exists \+ S^\prime)\+ S \subset \+ S^\prime \text{ such that } G[\+ S^\prime] \in C(G)$,} \textbf{then}
+        \Statex \quad \quad \textbf{return} {\textbf{ID}$(\+ y, \+ x \cap \+ s^\prime, \prod_{V_i \in \+ S^\prime}{P(V_i \vert V_\pi^{(i-1)} \cap \+ S^\prime,v_\pi^{(i-1)} \setminus \+ s^\prime), G[\+ S^\prime}])$.}
+  \end{algorithmic}
+  \caption{The causal effect of intervention $do(\+ X = \+ x)$ on $\+ Y$.}
+  \label{alg:identify}
 \end{algorithm}
 Algorithm~\ref{alg:identify} is simple in a sense that at each recursion stage the computation proceeds to exactly one line only. This is easy to see from the fact that after a condition regarding any of the line has been checked, either a \textbf{return} or a \textbf{FAIL} command will be executed. If $\+ x = \emptyset$ on line one, then the marginal distribution $P(\+ y)$ is computed instead of a causal effect. This can be achieved by marginalizing over the joint distribution $P(\+ V)$. On line two, all non-ancestors of $\+ Y$ in $G$ are eliminated. This is possible due to the fact that the input of the algorithm assumes that $G$ is an $I$-map of $G$ and thus all necessary conditional independences hold. On line three, interventions are added to the original causal effect, which is feasible due to the third rule of do-calculus, because $(\+ Y \indep \+ W|\+X)_{G_{\thickbar {\+ X},\thickbar{\+ W}}}$.
 
@@ -388,47 +406,47 @@ If Algorithm~\ref{alg:identify} throws \textbf{FAIL}, then the original graph $G
 
 Identifiability of conditional interventional distributions is characterized by Algorithm~\ref{alg:identifycond}. This algorithm is a generalization of Algorithm~\ref{alg:identify} and in fact it utilizes the function \textbf{ID} in the computation. It was constructed by \citet{shpitser2006identificationconditional} for identifying conditional causal effects i.e., causal effects of the form $P_{\+ x}(\+ y|\+ z)$. They showed, that this algorithm is also sound and complete for identifying all such effects.
 
-\begin{algorithm}[H]
-	\begin{algorithmic}[1]
-		\INPUT{Value assignments $\+ x$, $\+ y$ and $\+ z$, joint distribution $P(\+ v)$ and a DAG $G = \langle \+ V, \+ E \rangle$. $G$ is an $I$-map of $P$.}
-		\OUTPUT{Expression for $P_{\+ x}(\+ y| \+ z)$ in terms of $P(\+ v)$ or \textbf{FAIL}$(F,F^\prime)$.}
-		\Statex
-		\Statex \textbf{function}{ \textbf{IDC}$(\+ y, \+ x,\+ z, P, G)$}
-			\If{$\exists Z \in \+ Z \text{ such that } (\+ Y \indep Z|\+ X, \+ Z \setminus \{Z\})_{G_{\thickbar {\+ X},\thickubar {\+ Z}}}$}
-				\Statex \textbf{\quad return} { \textbf{IDC}$(\+ y, \+ x \cup \{z\}, \+ z \setminus \{z\}, P, G)$.}
-			\EndIf
-			\State \textbf{else let} { $P^\prime =\;$\textbf{ID}$(\+ y \cup \+ z, \+ x, P, G)$.}
-			\Statex \textbf{return} {$P^\prime / \sum_{y \in \+ y}P^\prime$}
-	\end{algorithmic}
-	\caption{The causal effect of intervention $do(\+ X = \+ x)$ on $\+ Y$ given $\+ Z$.}
-	\label{alg:identifycond}
+\begin{algorithm}[t!]
+  \begin{algorithmic}[1]
+    \INPUT{Value assignments $\+ x$, $\+ y$ and $\+ z$, joint distribution $P(\+ v)$ and a DAG $G = \langle \+ V, \+ E \rangle$. $G$ is an $I$-map of $P$.}
+    \OUTPUT{Expression for $P_{\+ x}(\+ y| \+ z)$ in terms of $P(\+ v)$ or \textbf{FAIL}$(F,F^\prime)$.}
+    \Statex
+    \Statex \textbf{function}{ \textbf{IDC}$(\+ y, \+ x,\+ z, P, G)$}
+      \If{$\exists Z \in \+ Z \text{ such that } (\+ Y \indep Z|\+ X, \+ Z \setminus \{Z\})_{G_{\thickbar {\+ X},\thickubar {\+ Z}}}$}
+        \Statex \textbf{\quad return} { \textbf{IDC}$(\+ y, \+ x \cup \{z\}, \+ z \setminus \{z\}, P, G)$.}
+      \EndIf
+      \State \textbf{else let} { $P^\prime =\;$\textbf{ID}$(\+ y \cup \+ z, \+ x, P, G)$.}
+      \Statex \textbf{return} {$P^\prime / \sum_{y \in \+ y}P^\prime$}
+  \end{algorithmic}
+  \caption{The causal effect of intervention $do(\+ X = \+ x)$ on $\+ Y$ given $\+ Z$.}
+  \label{alg:identifycond}
 \end{algorithm}
 
 The primary focus of this paper however, is the implementation of Algorithm~\ref{alg:identify}. The implementation of Algorithm~\ref{alg:identifycond} follows seamlessly from this implementation, because at the bottom of any recursive stack of \textbf{IDC} the function \textbf{ID} is ultimately called, which determines if the original conditional effect is identifiable. The only additional task is to determine whether a suitable node for the d-separation condition exists on line 1.
 
 \subsection{Application in practice} \label{Sect:practice}
 
-We return to the example presented in Section~\ref{Sect:docalc}. The graph of the example along with some subgraphs are shown here in Figure~\ref{kuva:grfG}. Let $G = \langle \+ V, \+ E \rangle$ be a graph such as in Figure \ref{kuva:grfG}(\subref{kuva:grfGa}) and a causal effect of interest $P_x(y)$, which is to be identified from the joint distribution $P(X,Y,Z,W)$. Only a single topological ordering exists for the nodes of $G$, and it is $W<X<Z<Y$. Clearly $\+ x \neq \emptyset, \+ V = An(Y)_G$ and $\+ W = \emptyset$, so the first three lines are ignored and line four is triggered, since
-$$ C(G[\+ V \setminus \{X\}]) = \{G[W],G[Z],G[Y]\}.$$ 
-Because $\+ v \setminus (\{y\} \cup \{x\}) = \{w,z\}$, it is now necessary to identify three new causal effects in the following expression:
-$$ \sum_{w,z}P_{x,z,y}(w)P_{w,x,y}(z)P_{w,x,z}(y).$$ 
+We return to the example presented in Section~\ref{Sect:docalc}. The graph of the example along with some subgraphs are shown here in Figure~\ref{kuva:grfG}. Let $G = \langle \+ V, \+ E \rangle$ be a graph such as in Figure \ref{kuva:grfG}(\subref{kuva:grfGa}) and a causal effect of interest $P_x(y)$, which is to be identified from the joint distribution $P(X, Y, Z, W)$. Only a single topological ordering exists for the nodes of $G$, and it is $W<X<Z<Y$. Clearly $\+ x \neq \emptyset, \+ V = An(Y)_G$ and $\+ W = \emptyset$, so the first three lines are ignored and line four is triggered, since
+$$ C(G[\+ V \setminus \{X\}]) = \{G[W], G[Z], G[Y]\}.$$ 
+Because $\+ v \setminus (\{y\} \cup \{x\}) = \{w, z\}$, it is now necessary to identify three new causal effects in the following expression:
+$$ \sum_{w, z}P_{x, z, y}(w)P_{w, x, y}(z)P_{w, x, z}(y).$$ 
 Consider the first term of the product. Because $\+ V \neq An(W)_G$, line two is triggered, and non-ancestors of $W$ are ignored. 
-\begin{figure}[H]
+\begin{figure}[t!]
   \centering
   \begin{subfigure}[b]{0.28\textwidth}
-    \includegraphics[width=1\textwidth]{graphspdf/g1.pdf}
+    \includegraphics[width=1\textwidth]{g1.pdf}
     \caption{Graph $G$}
     \label{kuva:grfGa}
   \end{subfigure}
   \qquad
   \begin{subfigure}[b]{0.29\textwidth}
-    \includegraphics[width=1\textwidth]{graphspdf/g1sub1.pdf}
+    \includegraphics[width=1\textwidth]{g1sub1.pdf}
     \caption{Subgraph $G[An(Z)_G]$.}
     \label{kuva:grfGb}
   \end{subfigure}
   \qquad
   \begin{subfigure}[b]{0.28\textwidth}
-    \includegraphics[width=1\textwidth]{graphspdf/g1sub2.pdf}
+    \includegraphics[width=1\textwidth]{g1sub2.pdf}
     \caption{Subgraph  $G[\+ S^\prime]$.}
     \label{kuva:grfGc}
   \end{subfigure}
@@ -459,20 +477,21 @@ The result agrees with the result derived in Section~\ref{Sect:docalc}.
 
 Algorithm~\ref{alg:identify} can also be used to detect unidentifiability. Let $F = \langle \+ V, \+ E \rangle$ be a graph of Figure \ref{kuva:grfF}(\subref{kuva:grfFa}) and a causal effect of interest $P_x(y)$, which is to be identified from $P(X,Y,Z_1,Z_2)$. Let the topological ordering of the nodes of $F$ be $Z_1 < X < Z_2 < Y$.
 
-\begin{figure}[H]
-	\centering
-	\begin{subfigure}[b]{0.35\textwidth}
-		\includegraphics[width=1\textwidth]{graphspdf/g2.pdf}
+\begin{figure}[t!]
+  \vspace*{-0.5cm}
+  \centering
+  \begin{subfigure}[b]{0.35\textwidth}
+    \includegraphics[width=1\textwidth]{g2.pdf}
     \caption{Graph $F$.}
-		\label{kuva:grfFa}
-	\end{subfigure}
-	\qquad
-	\begin{subfigure}[b]{0.27\textwidth}
-		\includegraphics[width=1\textwidth]{graphspdf/g2sub1.pdf}
+    \label{kuva:grfFa}
+  \end{subfigure}
+  \qquad
+  \begin{subfigure}[b]{0.27\textwidth}
+    \includegraphics[width=1\textwidth]{g2sub1.pdf}
     \caption{Subgraph $An(Z_2)_F$.}
-		\label{kuva:grfFb}
-	\end{subfigure}
-	\caption{Graph $F$ and its subgraph $F[An(Z_2)_F]$.}
+    \label{kuva:grfFb}
+  \end{subfigure}
+  \caption{Graph $F$ and its subgraph $F[An(Z_2)_F]$.}
   \label{kuva:grfF}
 \end{figure}
 \noindent
@@ -495,29 +514,30 @@ The programming language \proglang{R} \citep{rsoft} was chosen for the implement
 \subsection{Graph files} \label{Sect:files}
 A graph $G$ induced by the causal model is a crucial argument of Algorithm~\ref{alg:identify}. Many file formats for visualizing graphs are available, each with their own strengths and weaknesses. Some of these formats are very simple, and do not differentiate directed and undirected graphs. Some formats offer excessive features for describing causal models, or they might require handling complex syntax, which can be time consuming.
 
-GraphML \citep{graphml} is a user-friendly file format for graphs. Its features include support for directed graphs and visualizations. GraphML is based on the Extensible Markup Language (XML) \citep{Maler:04:EML}, which makes processing of graphs files almost effortless. One can also include the names of the nodes within the GraphML file itself, so the user is not limited to having to input the node names themselves inside the \proglang{R} environment. Graphical editors for creating GraphML files are freely available for the user. A special function called \code{parse.graphml} has been developed for processing GraphML files. However, the implementation of Algorithm~\ref{alg:identify} is not limited to GraphML files alone. Any file format supported by the \pkg{igraph} package can be used, as long as the graph follows one of the following notations for bidirected edges. 
+GraphML \citep{graphml} is a user-friendly file format for graphs. Its features include support for directed graphs and visualizations. GraphML is based on the extensible markup language XML \citep{Maler:04:EML}, which makes processing of graphs files almost effortless. One can also include the names of the nodes within the GraphML file itself, so the user is not limited to having to input the node names themselves inside the \proglang{R} environment. Graphical editors for creating GraphML files are freely available for the user. A special function called \code{parse.graphml} has been developed for processing GraphML files. However, the implementation of Algorithm~\ref{alg:identify} is not limited to GraphML files alone. Any file format supported by the \pkg{igraph} package can be used, as long as the graph follows one of the following notations for bidirected edges. 
 
 Bidirected edges can be separated from unidirected edges by using graphical parameters. For this purpose, three distinct notations have been selected to describe bidirected edges, which correspond to unobserved nodes.
 
-\begin{figure}[H]
-	\centering
-	\begin{subfigure}[b]{0.28\textwidth}
-		\includegraphics[width=1\textwidth]{graphspdf/format1.pdf}
+\begin{figure}[t!]
+  \vspace*{-0.35cm}
+  \centering
+  \begin{subfigure}[b]{0.28\textwidth}
+    \includegraphics[width=1\textwidth]{format1.pdf}
     \caption{Notation 1.}
-		\label{kuva:bidira}
-	\end{subfigure}
-	\qquad
-	\begin{subfigure}[b]{0.28\textwidth}
-		\includegraphics[width=1\textwidth]{graphspdf/format2.pdf}
-        	\caption{Notation 2.}
-		\label{kuva:bidirb}
-	\end{subfigure}
-	\qquad
-	\begin{subfigure}[b]{0.28\textwidth}
-		\includegraphics[width=1\textwidth]{graphspdf/format3.pdf}
+    \label{kuva:bidira}
+  \end{subfigure}
+  \qquad
+  \begin{subfigure}[b]{0.28\textwidth}
+    \includegraphics[width=1\textwidth]{format2.pdf}
+          \caption{Notation 2.}
+    \label{kuva:bidirb}
+  \end{subfigure}
+  \qquad
+  \begin{subfigure}[b]{0.28\textwidth}
+    \includegraphics[width=1\textwidth]{format3.pdf}
     \caption{Notation 3.}
-		\label{kuva:bidirc}
-	\end{subfigure}
+    \label{kuva:bidirc}
+  \end{subfigure}
   \caption{Notations for bidirected edges.}
   \label{kuva:bidir}
 \end{figure}
@@ -539,9 +559,9 @@ When the distribution is a product, the individual terms are defined in a list o
 
 For marginal distributions a string vector \code{sumset} has been defined. The contents of this vector correspond to the variables which the distribution is to be summed over in the discrete case, or integrated over in the continuous case. In simple situations this parameter is not needed, but often with more complex graphs one encounters instances, where the computation of conditionals is no longer straightorward. Suppose one had to compute the marginal distribution $P^*(X)$ of $X$ from the joint distribution $P^*(X,Y,Z)$ of the previous example. To achieve this, one has to set \code{sumset = c("Y","Z")} for the matching distribution object, because $P^*(X) = \sum_{Y,Z}P(Z \vert X)P(X|Y)P(Y)$.
 
-The level of complexity increases further when computing conditionals from distributions which consist of multiple product terms. The previously presented attributes are often insufficient to from an expression for the corresponding distribution object. Consider once more the joint distribution $P^*$. Computing the marginal conditional distribution $P^*(X | Y)$ results in
+The level of complexity increases further when computing conditionals from distributions which consist of multiple product terms. The previously presented attributes are often insufficient to form an expression for the corresponding distribution object. Consider once more the joint distribution $P^*$. Computing the marginal conditional distribution $P^*(X | Y)$ results in
 \begin{align*}
- P^*(X \vert Y) = \frac{P^*(X,Y)}{P^*(Y)} = \frac{\sum_{Z}P(Z \vert X)P(X|Y)P(Y)}{\sum_{X,Z}P(Z \vert X)P(X|Y)P(Y)} &= \\ \frac{P(X|Y)\sum_{Z}P(Z \vert X)}{\sum_{X}[P(X|Y)\sum_{Z}P(Z \vert X)]} &= P(X|Y).
+ P^*(X \vert Y) = \frac{P^*(X,Y)}{P^*(Y)} = \frac{\sum_{Z}P(Z \vert X)P(X|Y)P(Y)}{\sum_{X,Z}P(Z \vert X)P(X|Y)P(Y)} &= \\ \frac{P(X|Y)\sum_{Z}P(Z \vert X)}{\sum_{X}P(X|Y)\sum_{Z}P(Z \vert X)} &= P(X|Y).
 \end{align*}
 The implementation is able to handle similar situations, where the expression can easily be simplified using the following procedure. Any term which does not depend on the summation index, will be placed outside of the sum. Next, it is checked whether any expressions can be simplified by changing the order of summation. Corresponding terms are subtracted if possible.
 
@@ -567,36 +587,36 @@ The observed portion of \code{G} is saved as \code{G.obs}. This graph contains a
 
 \vspace{0.1cm}
 \begin{algorithmic}[1]
-	\If{$\+ x = \emptyset$,}
-		\Statex \textbf{\quad return}{ $\sum_{v \in \+ v \setminus \+ y}P(\+ v)$.}
-	\EndIf
+  \If{$\+ x = \emptyset$,}
+    \Statex \textbf{\quad return}{ $\sum_{v \in \+ v \setminus \+ y}P(\+ v)$.}
+  \EndIf
 \end{algorithmic}
 The truth value of the expression $\+ x = \emptyset$ is determined on line 1. This is done by computing the length of \code{x}. If the length is zero, then \code{id} combines the difference of the sets \code{v} and \code{y} with the \code{sumset} of \code{P} and returns \code{P}.
 
 \vspace{0.1cm}
 \begin{algorithmic}[1]
 \setcounter{ALG@line}{1}
-	\If{$\+ V \neq An(\+ Y)_G,$}
-		\Statex \textbf{\quad return}{ \textbf{ID}$(\+ y, \+ x \cap An(\+ Y)_G, P(An(\+ Y)_G), G[An(\+ Y)_G)]$.}
-	\EndIf	
+  \If{$\+ V \neq An(\+ Y)_G,$}
+    \Statex \textbf{\quad return}{ \textbf{ID}$(\+ y, \+ x \cap An(\+ Y)_G, P(An(\+ Y)_G), G[An(\+ Y)_G)]$.}
+  \EndIf  
 \end{algorithmic}
 The truth value of the condition on line 2 is determined by computing the length of the vector \code{setdiff(v, anc)}.
 If the length is not zero, then \code{id} is called with the arguments \code{id(y, intersect(x, anc), P, anc.graph, to)}, where \code{anc.graph} is the induced subgraph $G[An(\+ Y)_G]$, which is constructed by using the \texttt{induced.subgraph} function of the \pkg{igraph} package. This function takes a set of nodes and a graph as input, and constructs a subgraph, which retains all of the nodes given as input, and all of the edges between them in the original graph.
 \vspace{0.1cm}
 \begin{algorithmic}[1]
 \setcounter{ALG@line}{2}
-	\State \textbf{let}{ $\+ W = (\+ V \setminus \+ X) \setminus An(\+ Y)_{G_{\thickbar {\+ X}}}$.}
-	\Statex \textbf{if}{ $\+ W \neq \emptyset $,} \textbf{then}
-		\Statex \quad \textbf{return}{ \textbf{ID}$(\+ y, \+ x \cup \+ w, P, G)$.}
+  \State \textbf{let}{ $\+ W = (\+ V \setminus \+ X) \setminus An(\+ Y)_{G_{\thickbar {\+ X}}}$.}
+  \Statex \textbf{if}{ $\+ W \neq \emptyset $,} \textbf{then}
+    \Statex \quad \textbf{return}{ \textbf{ID}$(\+ y, \+ x \cup \+ w, P, G)$.}
 \end{algorithmic}
 To construct a vector \code{w} which represents the node set $\+ W$, one must first construct the subgraph $G_{\thickbar {\+ X}}$. To accomplish this, all incoming edges of $\+ X$ have to be determined. A useful operator is provided by the \pkg{igraph} package to accomplish this. The operator \code{\%->\%} can be used to find incoming or outgoing edges of a node. In this case, one finds the incoming nodes of \code{x} with the command \code{E(G) [1:length(E(G)) \%->\% x]}, where \code{E} is a function that returns all edges of \code{G}. When the subgraph has been constructed, \code{w} can also be constructed. If the length of \code{w} is not zero, then \code{id} is called with the arguments \code{id(y, union(x, w), P, G, to)}.
 
 \vspace{0.1cm}
 \begin{algorithmic}[1]
 \setcounter{ALG@line}{3}
-	\If{$C(G[\+ V \setminus \+ X]) = \{G[\+ S_1],\ldots,G[\+ S_k]\}$,}
-		\Statex \textbf{\quad return}{ $\sum_{v \in \+ v \setminus (\+ y \cup \+ x)} \prod_{i=1}^k$ \textbf{ID}($\+ s_i, \+ v \setminus \+ s_i, P, G)$.}
-	\EndIf
+  \If{$C(G[\+ V \setminus \+ X]) = \{G[\+ S_1],\ldots,G[\+ S_k]\}$,}
+    \Statex \textbf{\quad return}{ $\sum_{v \in \+ v \setminus (\+ y \cup \+ x)} \prod_{i=1}^k$ \textbf{ID}($\+ s_i, \+ v \setminus \+ s_i, P, G)$.}
+  \EndIf
 \end{algorithmic}
 The set $C(G[\+ V \setminus \+ X])$ can be found with the function \texttt{c.components}. This function determines the node set of every maximal C-component of the input graph, and returns them as a list \code{s}. If the length of this list is larger than one, then \code{id} returns a new distribution object with \code{sumset = setdiff(v, union(y, x)), recursive = TRUE, children = productlist}, where every object in \code{productlist} is determined by a new recursive call for every C-component $G[\+ S_i],\, i = 1,\ldots,k$ that was found. These components are constructed by calling \code{id} with the arguments \code{id(s[[i]], setdiff(v, s[[i]]), P, G, to)}, $i = 1,\ldots,k$.
 
@@ -605,8 +625,8 @@ If the algorithm did not proceed to any of the previous lines, then the addition
 \vspace{0.1cm}
 \begin{algorithmic}[1]
 \setcounter{ALG@line}{4}
-	\State \quad \textbf{if}{ $C(G) = \{G\}$,} \textbf{then}
-		\Statex \quad \quad \textbf{throw FAIL}{$(G, G[\+ S])$.}
+  \State \quad \textbf{if}{ $C(G) = \{G\}$,} \textbf{then}
+    \Statex \quad \quad \textbf{throw FAIL}{$(G, G[\+ S])$.}
 \end{algorithmic}
 The function \code{c.components} is utilized again in order to find the maximal C-components of $G$.
 If in addition to having only a single C-component this C-component is $G$ itself, then line five is triggered. This is checked by comparing \code{s} and \code{v}. If they are equal, then the computation is interrupted by the \code{stop} function and an error message is produced. The error message describes the C-forests which form the problematic hedge structure for the causal effect of the current recursion stage.
@@ -614,8 +634,8 @@ If in addition to having only a single C-component this C-component is $G$ itsel
 \vspace{0.1cm}
 \begin{algorithmic}[1]
 \setcounter{ALG@line}{5}
-	\State \quad \textbf{if}{ $G[\+ S] \in C(G)$,} \textbf{then} 
-		\Statex \quad \quad \textbf{return} {$\sum_{v \in \+ s \setminus \+ y} \prod_{V_i \in \+ S}{P(v_i \vert v_\pi^{(i-1)})}$.}
+  \State \quad \textbf{if}{ $G[\+ S] \in C(G)$,} \textbf{then} 
+    \Statex \quad \quad \textbf{return} {$\sum_{v \in \+ s \setminus \+ y} \prod_{V_i \in \+ S}{P(v_i \vert v_\pi^{(i-1)})}$.}
 \end{algorithmic}
 \vspace{0.1cm}
 If the single C-component found on line four is one of the maximal C-components of $G$, then the function \code{id} returns a new distribution object. The \code{sumset} of this object is set to \code{setdiff(s, y)}. The distribution is a product so it must also be set, that \code{recursive = TRUE} for this new object. The objects in the list \code{children} are determined by new recursive calls for every node $V_i$ in $\+ S$. The conditioning nodes are the ones that precede $V_i$ in the topological ordering \code{to}.
@@ -623,8 +643,8 @@ If the single C-component found on line four is one of the maximal C-components 
 \vspace{0.1cm}
 \begin{algorithmic}[1]
 \setcounter{ALG@line}{6}
-	\State \quad \textbf{if}{ $(\exists \+ S^\prime)\+ S \subset \+ S^\prime \text{ such that } G[\+ S^\prime] \in C(G)$,} \textbf{then}
-		\Statex \quad \quad \textbf{return} {\textbf{ID}$(\+ y, \+ x \cap \+ s^\prime, \prod_{V_i \in \+ S^\prime}{P(V_i \vert V_\pi^{(i-1)} \cap \+ S^\prime, v_\pi^{(i-1)} \setminus \+ s^\prime), G[\+ S^\prime}])$.}
+  \State \quad \textbf{if}{ $(\exists \+ S^\prime)\+ S \subset \+ S^\prime \text{ such that } G[\+ S^\prime] \in C(G)$,} \textbf{then}
+    \Statex \quad \quad \textbf{return} {\textbf{ID}$(\+ y, \+ x \cap \+ s^\prime, \prod_{V_i \in \+ S^\prime}{P(V_i \vert V_\pi^{(i-1)} \cap \+ S^\prime, v_\pi^{(i-1)} \setminus \+ s^\prime), G[\+ S^\prime}])$.}
 \end{algorithmic}
 If the single C-component found on line four is not one of the maximal C-components of $G$, then it must be a subgraph of some maximal C-component $G[\+ S^\prime]$. Vector \code{s} is replaced by a vector corresponding to the nodes of $\+ S^\prime$, since the nodes of $\+ S$ are no longer required. The function \code{id} is called with the following attributes \code{id(y, intersect(x, s), probability(recursive = TRUE, children = productlist), s.graph, to)}, where \code{s.graph} is the induced subgraph $G[\+ S^\prime]$ and every distribution object in \code{productlist} is constructed by setting \code{var <- s[i]} and \code{cond <- v[0:(ind[i]-1)]} for every node $V_i$ in $\+ S^\prime$.
 
@@ -638,14 +658,14 @@ The primary function which serves as a wrapper for the functions \code{id} and \
 \begin{Code}
   causal.effect(y, x, z = NULL, G, expr = TRUE)
 \end{Code}
-where the parameters \code{y}, \code{x} and \code{G} are identical to those of \code{id}. The parameter \code{z} is optional and it is used to represent the conditioning variables of \code{idc}. The initial probability object \code{P} which is a parameter of \code{id} does not have to be specified by the user. In essence, \code{causal.effect} starts from an empty distribution object, and gradually builds the final expression if possible. Also, the topological ordering \code{to} of the function \code{id} is automatically generated by the \code{topological.sort} function of the \pkg{igraph} package.  It is verified, that the vectors \code{y}, \code{x} and \code{z} actually contain nodes that are present in \code{G}. If \code{G} is not a DAG then \code{causal.effect} will also terminate. The last parameter \code{expr} is a logical variable. If assigned to \code{TRUE}, \code{causal.effect} will return the expression in LaTeX syntax. Otherwise, the \code{probability} object used internally by \code{id} is returned, which can be manually parsed by the user to gain the desired output. The function \code{get.expression} is also provided to get a string representation of a \code{probability} object. This function currently supports LaTeX syntax only.
+where the parameters \code{y}, \code{x} and \code{G} are identical to those of \code{id}. The parameter \code{z} is optional and it is used to represent the conditioning variables of \code{idc}. The initial probability object \code{P} which is a parameter of \code{id} does not have to be specified by the user. In essence, \code{causal.effect} starts from an empty distribution object, and gradually builds the final expression if possible. Also, the topological ordering \code{to} of the function \code{id} is automatically generated by the \code{topological.sort} function of the \pkg{igraph} package.  It is verified, that the vectors \code{y}, \code{x} and \code{z} actually contain nodes that are present in \code{G}. If \code{G} is not a DAG then \code{causal.effect} will also terminate. The last parameter \code{expr} is a logical variable. If assigned to \code{TRUE}, \code{causal.effect} will return the expression in {\LaTeX} syntax. Otherwise, the \code{probability} object used internally by \code{id} is returned, which can be manually parsed by the user to gain the desired output. The function \code{get.expression} is also provided to get a string representation of a \code{probability} object. This function currently supports {\LaTeX} syntax only.
 
 First, \pkg{causaleffect} is loaded to demonstrate the usage of the package.
 \begin{Sinput}
 R> library("causaleffect")
 \end{Sinput}
 The \code{causal.effect} function can be utilized without first importing a graph file. One can utilize the \pkg{igraph} package to construct graphs within \proglang{R} itself. This is demonstrated by replicating some of the graphs of Section~\ref{Sect:practice}. The graph of Figure~\ref{kuva:grfGm} is created as follows.
-
+%
 \begin{Sinput}
 R> library("igraph")
 R> fig1 <- graph.formula(W -+ X, W -+ Z, X -+ Z, Z -+ Y, X -+ Y, Y -+ X, 
@@ -655,17 +675,25 @@ R> fig1 <- set.edge.attribute(graph = fig1, name = "description",
 R> ce1 <- causal.effect(y = "Y", x = "X", z = NULL, G = fig1, expr = TRUE)
 R> ce1
 \end{Sinput}
+%\begin{Soutput}
+%[1] "\\sum_{w,z}[P(z\\vert w,x)P(w)\\sum_{x}[P(y\\vert w,x,z)P(x\\vert w)]]"
+%\end{Soutput}
+{\small
 \begin{Soutput}
-[1] "\\sum_{w,z}[P(z\\vert w,x)P(w)\\sum_{x}[P(y\\vert w,x,z)P(x\\vert w)]]"
+[1] "\\left(\\sum_{W,Z}P(W)P(Z|W,X)\\left(\\sum_{X}P(Y|W,X,Z)P(X|W)\\right)\\right)"
 \end{Soutput}
+}
 Here \code{X -+ Z} denotes a directed edge from $X$ to $Z$. The argument \code{simplify = FALSE} allows the insertion of duplicate edges for the purposes of forming bidirected arcs. Recalling the \code{internal} notation from Section~\ref{Sect:files} we must denote the unidirected edges that correspond to a bidirected edge with a special \code{description} parameter, and assign its value to \code{"U"}. This can be done with the \code{set.edge.attribute} function of the \pkg{igraph} package. Finally, the expression for the interventional distribution is obtained by using the \code{causal.effect} function. Usually one needs to apply the standard \proglang{R} function \code{cat} to obtain the expression with only singular slash symbols.
 \begin{Sinput}
 R> cat(ce1)
 \end{Sinput}
+%\begin{Soutput}
+%\sum_{w,z}[P(z\vert w,x)P(w)\sum_{x}[P(y\vert w,x,z)P(x\vert w)]]
+%\end{Soutput}
 \begin{Soutput}
-\sum_{w,z}[P(z\vert w,x)P(w)\sum_{x}[P(y\vert w,x,z)P(x\vert w)]]
+\left(\sum_{W,Z}P(W)P(Z|W,X)\left(\sum_{X}P(Y|W,X,Z)P(X|W)\right)\right)
 \end{Soutput}
-To observe unidentifiability, the graph of Figure~\ref{kuva:grfF}(\subref{kuva:grfFa}) is also constructed and an attempt is made to idenfity $P_x(y)$.
+To observe unidentifiability, the graph of Figure~\ref{kuva:grfF}(\subref{kuva:grfFa}) is also constructed and an attempt is made to identify $P_x(y)$.
 \begin{Sinput}
 R> fig5 <- graph.formula(Z_1 -+ X, X -+ Z_2, Z_2 -+ Y, Z_1 -+ X, X -+ Z_1,
 +    Z_1 -+ Z_2, Z_2 -+ Z_1, Z_1 -+ Y, Y -+ Z_1, X -+ Y, Y -+ X, 
@@ -690,22 +718,24 @@ Parameter \code{file} is the path to the GraphML file the user wishes to convert
 We provide an example GraphML file in the replication materials to demonstrate the use of the \code{parse.graphml} function. The file \code{g1.graphml} contains the graph of Figure~\ref{kuva:grfGm} in \code{standard} notation. This means that we do not have to provide names for the nodes or set the unidentified edges manually. First, we read the file into \proglang{R}. This produces several warnings which can be ignored because they are related to the visual attributes created by the graphical editor that was used to produce \code{g1.graphml}. These attributes play no role in the identification of $P_x(y)$. We omit these warnings from the code for clarity.
 \begin{Sinput}
 R> gml1 <- parse.graphml("g1.graphml", format = "standard")
-R> ce1gml <- causal.effect(y = "Y", x = "X", z = NULL, 
-+    G = gml1, expr = TRUE)
-R> cat(ce1gml)
+R> ce2 <- causal.effect(y = "Y", x = "X", z = NULL, G = gml1, expr = TRUE)
+R> cat(ce2)
 \end{Sinput}
+%\begin{Soutput}
+%\sum_{w,z}[P(z\vert w,x)P(w)\sum_{x}[P(y\vert w,x,z)P(x\vert w)]]
+%\end{Soutput}
 \begin{Soutput}
-\sum_{w,z}[P(z\vert w,x)P(w)\sum_{x}[P(y\vert w,x,z)P(x\vert w)]]
+\left(\sum_{W,Z}P(W)P(Z|W,X)\left(\sum_{X}P(Y|W,X,Z)P(X|W)\right)\right)
 \end{Soutput}
 We see that the result agrees with the one derived from the manually constructed graph.
 
 For conditional causal effects, we simply utilize the parameter \code{z} of the \code{causal.effect} function. For example, we can obtain the formula for $P_x(z|w)$ in the graph of Figure~\ref{kuva:grfGm}.
 \begin{Sinput}
-R> cond1 <- causal.effect(y = "Z", x = "X", z = "W", G = fig1, expr = TRUE)
+R> cond1 <- causal.effect(y = "Z", x = "X", z = "W", G = gml1, expr = TRUE)
 R> cat(cond1)
 \end{Sinput}
 \begin{Soutput}
-\frac{P(z\vert w,x)}{\sum_{z}[P(z\vert w,x)]}
+\frac{P(Z|W,X)}{\left(\sum_{Z}P(Z|W,X)\right)}
 \end{Soutput}
 In mathematical notation the result reads 
 $$ \frac{P(z\vert w,x)}{\sum_{z}[P(z\vert w,x)]}.$$
@@ -715,18 +745,19 @@ This is a typical case where the resulting expression is slightly awkward due to
 
 The conditional distributions $P(v_i \vert v_\pi^{(i-1)})$ that are computed on line 6 can sometimes produce difficult expressions when causal effects are determined from complex graphs. This is a result of the simplification rules which were described in the previous section, and their inability to handle every situation. The graph $G$ of Figure \ref{kuva:grfGtian} serves to demonstrate this phenomenon. An attempt is made to identify $P_x(z_1,z_2,z_3,y)$ in this graph.
 
-\begin{figure}[H]
+\begin{figure}[t!]
+  \vspace*{-0.25cm}
   \centering
-  \includegraphics[width=0.35\textwidth]{graphspdf/gtian.pdf}
+  \includegraphics[width=0.35\textwidth]{gtian.pdf}
   \caption{An example of a graph, where an identifiable causal effect results in a complex expression.}
   \label{kuva:grfGtian}
 \end{figure}
 
 \citet{tian02phd} proved this effect to be identifiable, and showed that its expression is
-$$P_x(z_1,z_2,z_3,y) = P(z_1|x,z_2)\sum_x \bigl[P(y,z_3|x,z_1,z_2)P(x,z_2)\bigr].$$
+$$P_x(z_1,z_2,z_3,y) = P(z_1|x,z_2)\sum_x P(y,z_3|x,z_1,z_2)P(x,z_2).$$
 \noindent
 When applying Algorithm~\ref{alg:identify} to this causal effect, it is necessary to compute a conditional distribution $P^*(Y\vert Z_2,Z_3),$ where
-$$P^*(Y,Z_2,Z_3) = \sum_{X}P(Y\vert Z_2,X,Z_3,Z_1)P(Z_3\vert Z_2,X)P(X\vert Z_2)P(Z_2)$$
+$$P^*(y,z_2,z_3) = \sum_{x}P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x\vert z_2)P(z_2)$$
 and $P$ is the joint distribution of the observed variables of $G$.
 Now, the function \code{causal.effect} is applied as follows.
 \begin{Sinput}
@@ -735,35 +766,36 @@ R> fig7 <- graph.formula(X -+ Z_1, Z_1 -+ Y, Z_3 -+ Y, Z_2 -+ X,
 +    X -+ Z_2, Z_2 -+ X, Y -+ Z_2, Z_2 -+ Y, simplify = FALSE)
 R> fig7 <- set.edge.attribute(graph = fig7, name = "description", 
 +    index = 7:14, value = "U")
-R> ce2 <- causal.effect(y = c("Z_1", "Z_2", "Z_3", "Y"), x = "X",
-+    z = NULL,G = fig7, expr = TRUE)
-R> cat(ce2)
+R> ce3 <- causal.effect(y = c("Z_1", "Z_2", "Z_3", "Y"), x = "X",
++    z = NULL, G = fig7, expr = TRUE)
+R> cat(ce3)
 \end{Sinput}
 This results in the expression
-$$
-P_x(z_1,z_2,z_3,y) =\\ P(z_1\vert z_2,x)P(z_3\vert z_2)P(z_2)\frac{\sum_{x}\bigl[P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x\vert z_2)\bigr]}{\sum_{x,y}\bigl[P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x\vert z_2)\bigr]}.
-$$
+\begin{align*}
+ P(z_1|z_2,x)&\frac{\left(\sum_{x}P(y|z_2,x,z_3,z_1)P(z_3|z_2,x)P(x|z_2)P(z_2)\right)}{\left(\sum_{x,y}P(y|z_2,x,z_3,z_1)P(z_3|z_2,x)P(x|z_2)P(z_2)\right)} \\
+ &\times \left(\sum_{x,z_3,y}P(y|z_2,x,z_3,z_1)P(z_3|z_2,x)P(x|z_2)P(z_2)\right)P(z_3|z_2)
+\end{align*}
 This result is clearly more cumbersome than the one determined by Tian. However, it can be shown that this expression is correct by using do-calculus. Because the set $\{X,Z_2\}$ d-separates all paths from $Z_1$ to $Z_3$, it follows that $(Z_3 \indep Z_1|X,Z_2)_G,$ so 
 \begin{align*}
- &P(z_1\vert z_2,x)P(z_2)\sum_{x}\bigl[P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x\vert z_2)\bigr] \\ 
- =\;& P(z_1\vert z_2,x)\sum_{x}\bigl[P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x,z_2)\bigr] \\
- =\;& P(z_1\vert z_2,x)\sum_{x}\bigl[P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x,z_1)P(x,z_2)\bigr] \\
- =\;& P(z_1\vert z_2,x)\sum_{x}\bigl[P(y,z_3\vert z_2,x,z_1)P(x,z_2)\bigr],
+ &P(z_1\vert z_2,x)\sum_{x}P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x\vert z_2)P(z_2) \\ 
+ %=\;& P(z_1\vert z_2,x)\sum_{x}P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x,z_2)\\
+ =\;& P(z_1\vert z_2,x)\sum_{x}P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x,z_1)P(x,z_2) \\
+ =\;& P(z_1\vert z_2,x)\sum_{x}P(y,z_3\vert z_2,x,z_1)P(x,z_2),
  \end{align*}
 where the second equality is due to the conditional independence of $Z_1$ and $Z_3$ given $X$ and $Z_2$. The last line is equivalent with Tian's expression up to the ordering of terms. It can be shown, that the remaining terms are subtracted from the expression.
 \begin{align*}
- &\frac{P(z_3\vert z_2)}{\sum_{x,y}\bigl[P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x\vert z_2)\bigr]} \\
- =\;& \frac{P(z_3\vert z_2)P(z_2)}{\sum_{x,y}\bigl[P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x, z_2)\bigr]}.
+ &\frac{P(z_3\vert z_2)\sum_{x,z_3,y}P(y|z_2,x,z_3,z_1)P(z_3|z_2,x)P(x|z_2)P(z_2)}{\sum_{x,y}P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x\vert z_2)P(z_2)} \\
+ =\;& \frac{P(z_3\vert z_2)P(z_2)}{\sum_{x,y}P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x, z_2)}.
  \end{align*} 
 By applying the same logic to the denominator, it follows that
 $$
- \frac{P(z_3\vert z_2)P(z_2)}{\sum_{x,y}\bigl[P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x, z_2)\bigr]} =
-\frac{P(z_3\vert z_2)P(z_2)}{\sum_{x,y}\bigl[P(y,z_3\vert z_2,x,z_1)P(x,z_2)\bigr]}.
+ \frac{P(z_3\vert z_2)P(z_2)}{\sum_{x,y}P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x, z_2)} =
+\frac{P(z_3\vert z_2)P(z_2)}{\sum_{x,y}P(y,z_3\vert z_2,x,z_1)P(x,z_2)}.
 $$
 By using the conditional independence of $Z_1$ and $Z_3$ given $X$ and $Z_2$ one gets
  \begin{align*}
- &\frac{P(z_3, z_2)}{\sum_{x}\bigl[P(z_3\vert z_2,x,z_1)P(x,z_2)\bigr]} = \frac{P(z_3, z_2)}{\sum_{x}\bigl[P(z_3\vert z_2,x)P(x,z_2)\bigr]} \\
- =\;& \frac{P(z_3, z_2)}{\sum_{x}\bigl[P(z_3\vert z_2,x)P(x,z_2)\bigr]} 
+ &\frac{P(z_3, z_2)}{\sum_{x}P(z_3\vert z_2,x,z_1)P(x,z_2)} = \frac{P(z_3, z_2)}{\sum_{x}P(z_3\vert z_2,x)P(x,z_2)} \\
+ =\;& \frac{P(z_3, z_2)}{\sum_{x}P(z_3\vert z_2,x)P(x,z_2)} 
  = \frac{P(z_3, z_2)}{\sum_{x}P(z_3,z_2,x)} = \frac{P(z_3, z_2)}{P(z_3,z_2)} = 1.
  \end{align*}
 The expression produced by \code{causal.effect} is correct despite its complexity.
@@ -771,22 +803,23 @@ The expression produced by \code{causal.effect} is correct despite its complexit
 \subsection{d-separation}\label{Sect:dsep}
 Algorithm~\ref{alg:identify} does not utilize every possible independence property of a given graph $G$. For example, the conditional distribution of line six is conditioned on all nodes preceding $V_i$ in the topological ordering $\pi$, even though at least some nodes on paths preceding $V_i$ are often d-separated by some sets of nodes. In these cases, the nodes that are d-separated with $V_i$ could be excluded from the expression, because they are conditionally independent from $V_i$ in $G$. This situation is demonstrated by determining the expression of $P_{x,w}(y)$ in the graph $G$ of Figure \ref{kuva:grfGdsep}.
 
-\begin{figure}[H]
+\begin{figure}[t!]
+  \vspace*{-0.25cm}
   \centering
-  \includegraphics[width=0.30\textwidth]{graphspdf/grule1a.pdf}
+  \includegraphics[width=0.30\textwidth]{grule1a.pdf}
   \caption{An example of a graph with additional conditional independences.}
   \label{kuva:grfGdsep}
 \end{figure}
 \noindent
 The function \code{causal.effect} is utilized
 \begin{Sinput}
-R> fig8 <- graph.formula(Z -+ X, Z -+ W, X -+ Y, W -+ Y)
-R> ce3 <- causal.effect(y = "Y", x = c("X", "W"), z = NULL, G = fig8,
+R> fig8 <- graph.formula(z -+ x, z -+ w, x -+ y, w -+ y)
+R> ce3 <- causal.effect(y = "y", x = c("x", "w"), z = NULL, G = fig8,
 +    expr = TRUE)
 R> cat(ce3)
 \end{Sinput}
-
-The function returns $P(y\vert z,x,w)$ even though $(Y \indep Z \vert X,W)_G$. This means that one could further simplify the expression to $P(y\vert x,w)$.
+%
+The function returns $P(y\vert x,w)$ even though Algorithm~\ref{alg:identify} would return $P(y|z,x,w)$. This is possible because $(Y \indep Z \vert X,W)_G$. This means that our implementation is able to simplify the expression into $P(y\vert x,w)$.
 
 %\subsection{Formation of expressions}\label{Sect:formation}
 %The common factor of Section~\ref{Sect:dsep} and Section~\ref{Sect:comxplex} is the complexity of the expression produced by \code{causal.effect}. From the viewpoint of the user, it is unpractical that the resulting every possible observed variable is always included in the expression in some context, even though the expression is notably simpler in reality. It is not clear, in which situation the expressions produced by Algorithm~\ref{alg:identify} are simplified as much as possible, but the formation of the expressions can be inspected through the properties of the algorithm and through the structure of the graph.
@@ -799,18 +832,18 @@ The function returns $P(y\vert z,x,w)$ even though $(Y \indep Z \vert X,W)_G$. T
 %$$\sum_{z,w}\bigl[P(y\vert z,x,w)P(w\vert z,x)P(z)\bigr] = \sum_{z,w}\bigl[P(y,w\vert z,x)P(z)\bigr] = \sum_{z}\bigl[P(y\vert z,x)P(z)\bigr].$$
 %It follows, that the variable $W$ was unnecessary in the expression. 
 %\begin{figure}[H]
-%	\centering
-%	\begin{subfigure}[b]{0.28\textwidth}
-%		\includegraphics[width=1\textwidth]{graphspdf/cexp1.pdf}
+% \centering
+% \begin{subfigure}[b]{0.28\textwidth}
+%   \includegraphics[width=1\textwidth]{cexp1.pdf}
 %    \caption{Observed confounder $Z$.}
-%		\label{kuva:cexp1}
-%	\end{subfigure}
-%	\qquad
-%	\begin{subfigure}[b]{0.28\textwidth}
-%		\includegraphics[width=1\textwidth]{graphspdf/cexp2.pdf}
+%   \label{kuva:cexp1}
+% \end{subfigure}
+% \qquad
+% \begin{subfigure}[b]{0.28\textwidth}
+%   \includegraphics[width=1\textwidth]{cexp2.pdf}
 %    \caption{Unobserved confounder.}
-%		\label{kuva:cexp2}
-%	\end{subfigure}
+%   \label{kuva:cexp2}
+% \end{subfigure}
 %  \caption{An example of the formation of the expression of the interventional distribution.}
 %  \label{kuva:cexp}
 %\end{figure}
@@ -820,7 +853,7 @@ The function returns $P(y\vert z,x,w)$ even though $(Y \indep Z \vert X,W)_G$. T
 
 \section{Discussion} \label{Sect:discussion}
 We have introduced \proglang{R} package \pkg{causaleffect} for deriving expressions of joint interventional distributions in causal models. The task is a specific but important part of causal inference. We believe that our
-implementation has two practical use cases. First, \pkg{causaleffect} can be simply used to derive expressions of interventional distributions for complex causal models or to check manual derivations. This is an important step in the estimation of causal effects in complicated settings \citep{karvanen2015}. Second, \pkg{causaleffect} can be used as a building block in simulation studies and automated systems where identifibility needs to be checked for a large number of causal models. An example of this kind usage is already given by \citet{hyttinen2015}.
+implementation has two practical use cases. First, \pkg{causaleffect} can be simply used to derive expressions of interventional distributions for complex causal models or to check manual derivations. This is an important step in the estimation of causal effects in complicated settings \citep{karvanen2015}. Second, \pkg{causaleffect} can be used as a building block in simulation studies and automated systems where identifiability needs to be checked for a large number of causal models. An example of this kind usage is already given by \citet{hyttinen2015}.
 
 The efficiency of the presented implementation \pkg{causaleffect} could be analyzed further for example by simulation studies. However, an attempt to maximize performance was made by utilizing the most efficient packages available for the processing of graph files and for the objects corresponding to them. The existing simplification rules of the expressions could also be further improved, but it should be noted that sometimes the more complex expression can prove useful. 
 
@@ -834,10 +867,12 @@ There have been many recent developments in the field of causality resulting in 
 \noindent
 The work presented in this paper could be utilized to implement these algorithms.
 
-\bibliography{causaleffect}
+\bibliography{v76i12}
 
 \newpage
-\appendix
+
+\begin{appendix}
+
 \section{Graphs, causal models and causal effects}\label{App:AppendixA}
 \subsection{Graphs}
 The definitions that are presented here follow those of \citep{koller09}. \emph{Graph} is an ordered pair $G = \langle \+ V,\+ E \rangle$, where $\+ V$ and $\+ E$ are sets such that 
@@ -852,28 +887,28 @@ or
 $$\+ E = \{(V_1,V_2),(V_2,V_3),\ldots,(V_{n-1},V_n),(V_n,V_1)\}.$$
 A node $V_2$ is a \emph{descendant} of $V_1$ in $G$, if there exists a directed path $H$ from $V_1$ to $V_2$ and $H \subset G$. Respectively, $V_2$ is an \emph{ancestor} of $V_1$ in $G$, if there exists a directed path $H$ from $V_2$ to $V_1$ and $H \subset G$. If a graph $G$ does not contain any cycles, it is \emph{acyclic}. A graph $G = \langle \+ V,\+ E \rangle$ is \emph{connected} if there exists a path $H \subset G$ between every pair of nodes $V_i,V_j \in \+ V$. Examples of paths are cycles are presented in Figure \ref{kuva:grfManypaths}.
 
-\begin{figure}[H]
+\begin{figure}[t!]
   \centering
   \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=1\textwidth]{graphspdf/path.pdf}
+    \includegraphics[width=1\textwidth]{path.pdf}
     \caption{A path.}
     \label{kuva:grfPath}
   \end{subfigure}
   \qquad
   \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=1\textwidth]{graphspdf/dirpath.pdf}
+    \includegraphics[width=1\textwidth]{dirpath.pdf}
     \caption{A directed path.}
     \label{kuva:grfDirpath}
   \end{subfigure}
   \\
   \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=1\textwidth]{graphspdf/cycle.pdf}
+    \includegraphics[width=1\textwidth]{cycle.pdf}
     \caption{A cycle.}
     \label{kuva:grfCycle}
   \end{subfigure}
   \qquad
   \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=0.95\textwidth]{graphspdf/dircycle.pdf}
+    \includegraphics[width=0.95\textwidth]{dircycle.pdf}
     \caption{A directed cycle.}
     \label{kuva:grfDircycle}
   \end{subfigure}
@@ -883,9 +918,9 @@ A node $V_2$ is a \emph{descendant} of $V_1$ in $G$, if there exists a directed 
 
 If a graph is directed it is also possible to consider its subgraphs as undirected graphs, when all of the edges of the graph are regarded as undirected edges. For example, a directed graph contain paths, even if it does not contain any directed paths. The directed graph in Figure \ref{kuva:grfPathSub} contains a path connecting the nodes $X$ and $Y$, even though they are not connected by a directed path.
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.3\textwidth]{graphspdf/nodirpath.pdf}
+\begin{figure}[t!]
+  \centering
+  \includegraphics[width=0.3\textwidth]{nodirpath.pdf}
   \caption{An undirected path in a directed graph.}
   \label{kuva:grfPathSub}
 \end{figure}
@@ -913,18 +948,18 @@ For each causal model $M$ there is a corresponding graph $G = \langle \+ W,\+ E 
 The definition of causal model does not set any limitations for the unobserved variables. Thus any unobserved node can be a parent of an arbitrary number of observed nodes. If every unobserved node is a parent of exactly two observed nodes, then the causal model is a \emph{semi-Markovian causal model}. \citet{verma93} showed, that for any causal model with unobserved variables one can construct a semi-Markovian causal model that encodes the same set of conditional independences. This is why only semi-Markovian models are considered in this paper. 
 
 The edges coming from unobserved variables are sometimes denoted as in Figure \ref{kuva:grfLatent}.
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.3\textwidth]{graphspdf/formatreal.pdf}
+\begin{figure}[t!]
+  \centering
+  \includegraphics[width=0.3\textwidth]{formatreal.pdf}
   \caption{Example notation of unobserved edges.}
   \label{kuva:grfLatent}
 \end{figure}
 \noindent 
 However, it is common not to include the unobserved nodes in the visual representation of the graph, which serves to simplify the notation. Instead, it is said that there exists a \emph{bidirected edge} between $X$ and $Y$, which corresponds to the effect of the unobserved variable. Thus the notation of Figure \ref{kuva:grfShort} is utilized instead of the one in Figure \ref{kuva:grfLatent}.
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.3\textwidth]{graphspdf/format1.pdf}
+\begin{figure}[t!]
+  \centering
+  \includegraphics[width=0.3\textwidth]{format1.pdf}
   \caption{Notation for bidirected edges.}
   \label{kuva:grfShort}
 \end{figure}
@@ -961,5 +996,8 @@ For every action $do(\+ X = \+ x)$ it is required that $P(\+ x\vert Pa(\+ X)_G\s
 \end{definition}
 
 It is often impossible to show that a causal effect is identifiable by using solely the definition, because one would have to compare every causal model that agree on the distribution of the observed variables. However, the definition serves as a tool to prove unidentifiability in certain cases by constructing two causal models with the same induced graph and observational distribution, and by showing further that the interventional distributions differ. The reader is referred to \citep{shpitser06} for examples.
+
+\end{appendix}
+
 \end{document}
 

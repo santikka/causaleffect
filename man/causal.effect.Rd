@@ -6,7 +6,7 @@ given the intervention on the set of variables (\code{x}) conditional on (\code{
 an error is thrown describing the graphical structure that witnesses unidentifiability.  If \code{steps = TRUE}, returns instead
 a list where the first element is the expression and the second element is a list of the intermediary steps taken by the algorithm.}
 
-\usage{causal.effect(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE)}
+\usage{causal.effect(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE)}
 
 \arguments{
   \item{y}{A character vector of variables of interest given the intervention. }

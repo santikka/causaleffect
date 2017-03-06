@@ -1,4 +1,4 @@
-causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
+causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE) {
   G.obs <- observed.graph(G)
   if (!is.dag(G.obs)) stop("Graph 'G' is not a DAG")
   to <- topological.sort(G.obs)

@@ -64,4 +64,6 @@ Shpitser I., Pearl J. 2006b Identification of Conditional Interventional Distrib
 Tian J. 2002 Studies in Causal Reasoning and Learning. PhD thesis, Department of Computer Science, University of California, Los Angeles.
 
 Tian, J., Pearl J. 2002 On Testable Implications of Causal Models with Hidden variables. \emph{Proceedings of the Eighteenth Conference on Uncertainty in Artificial Intelligence}, 519--527.
+
+Tikka, S., Karvanen J. 2017 Identifying Causal Effects with the R Package causaleffect. Journal of Statistical Software, \bold{76(12)}, 1--30.
 }

@@ -2,7 +2,7 @@
 \alias{generalize}
 \title{Derive a transport formula for a causal effect between a target domain and multiple source domains with limited experiments}
 \description{This function returns an expression for the transport formula of a causal effect between a target domain and multiple source domains with limited experiments. The formula is returned for the interventional distribution of the set of variables (\code{y}) given the intervention on the set of variables (\code{x}). Available experiments are depicted by a list (\code{Z}) where the first element describes the elements available at the target and the rest at the sources. The multiple domains are given as a list (\code{D}) where the first element is the underlying causal diagram without selection variables, and the rest correspond to the selection diagrams. If the effect is non-transportable, an error is thrown describing the graphical structure that witnesses non-transportability. The vertices of any diagram in (\code{D}) that correspond to selection variables must have a description parameter of a single character "S" (shorthand for "selection").  }
-\usage{generalize(y, x, Z, D, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE)}
+\usage{generalize(y, x, Z, D, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE)}
 
 \arguments{
   \item{y}{A character vector of variables of interest given the intervention. }

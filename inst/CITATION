@@ -1,0 +1,22 @@
+bibentry(bibtype = "Article",
+  title        = "Identifying Causal Effects with the {R} Package {causaleffect}",
+  author       = c(person(given = "Santtu",
+                          family = "Tikka",
+                          email = "santtu.tikka@jyu.fi"),
+                   person(given = "Juha",
+                          family = "Karvanen")),
+  journal      = "Journal of Statistical Software",
+  year         = "2017",
+  volume       = "76",
+  number       = "12",
+  pages        = "1--30",
+  doi          = "10.18637/jss.v076.i12",
+
+  header       = "To cite causaleffect in publications use:",
+  textVersion  =
+  paste("Santtu Tikka, Juha Karvanen (2017).",
+        "Identifying Causal Effects with the R Package causaleffect.",
+        "Journal of Statistical Software, 76(12), 1-30.",
+        "doi:10.18637/jss.v076.i12")
+)
+

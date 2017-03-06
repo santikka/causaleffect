@@ -1,4 +1,4 @@
-generalize <- function(y, x, Z, D, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
+generalize <- function(y, x, Z, D, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE) {
   d <- length(D)
   z <- length(Z)
   v <- get.vertex.attribute(D[[1]], "name")

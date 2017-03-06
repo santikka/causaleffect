@@ -126,16 +126,21 @@ id <- function(y, x, P, G, G.obs, v, to, tree) {
     tree$call$line <- 7
     tree$call$s.prime <- s
     s.len <- length(s)
-    product.list <- vector(mode = "list", length = s.len)
     ind <- which(v %in% s)
     G.s <- induced.subgraph(G, s)
     G.s.obs <- observed.graph(G.s)
+    product.list <- vector(mode = "list", length = s.len)
+    P.prod <- probability()
     for (i in s.len:1) {
       # cond.set <- causal.parents(s[i], v[1:ind[i]], G, G.obs, to)
       cond.set <- v[0:(ind[i]-1)]
-      P.prod <- P
-      P.prod$var <- s[i]
-      P.prod$cond <- cond.set
+      if (P$product) {
+        P.prod <- parse.joint(P, s[i], cond.set, v, to)
+      } else {
+        P.prod <- P
+        P.prod$var <- s[i]
+        P.prod$cond <- cond.set
+      }
       product.list[[s.len - i + 1]] <- P.prod
     }
     x.new <- intersect(x, s)

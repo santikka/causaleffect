@@ -19,7 +19,7 @@
 \usepackage{float}
 %\floatstyle{plaintop}
 %\restylefloat{table}
-\usepackage{caption}
+%\usepackage{caption}
 %\usepackage{subcaption}
 \usepackage{grffile}
 \usepackage{amsmath}
@@ -44,13 +44,14 @@
 \newcommand{\vectornorm}[1]{\left\|#1\right\|}
 \newcommand{\trans}{\mathsf{T}}
 \newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+\newcommand{\lineref}[2]{A\ref{#1}:\ref{#2}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 
 % Algorithm
 \usepackage{algorithm} 
 \usepackage{algorithmicx} 
 \usepackage[noend]{algpseudocode}
-\captionsetup[algorithm]{format=hang,singlelinecheck=false}
+%\captionsetup[algorithm]{format=hang,singlelinecheck=false}
 \newcommand*\Let[2]{\State #1 $\gets$ #2}
 \algnewcommand\algorithmicinput{\textbf{INPUT:}}
 \algnewcommand\INPUT{\item[\algorithmicinput]}
@@ -59,7 +60,7 @@
 \usepackage{listings}
 
 
-%\jmlrheading{1}{2016}{1-48}{4/16}{}{Santtu Tikka and Juha Karvanen}
+\jmlrheading{18}{2017}{1-30}{4/16; Revised 3/17}{4/17}{16-166}{Santtu Tikka and Juha Karvanen}
 
 \ShortHeadings{Simplifying Probabilistic Expressions}{Tikka and Karvanen}
 \firstpageno{1}
@@ -84,7 +85,8 @@ Often we are left with a complicated expression which can lead to biased or inef
 
 We present an automatic simplification algorithm that seeks to eliminate symbolically unnecessary variables from these expressions by taking advantage of the structure of the underlying graphical model. Our method is applicable to all causal effect expressions and is readily available in the R package causaleffect. 
 
-This work is a modification of a manuscript submitted to \textit{Journal of Machine Learning Research}
+A modification of \citep{tikka17b} published in the Journal of Machine Learning Research.
+
 \end{abstract}
 
 \begin{keywords} 
@@ -93,7 +95,7 @@ simplification, probabilistic expression, causal inference, graphical model, gra
 
 
 
-\section{Introduction} \label{sect:intro} 
+\section{Introduction} \label{sect:intro}
 Symbolic derivations resulting in complicated expressions are often encountered in many fields working with mathematical notation. These expressions can be derived manually or they can be outputs from a computer algorithm. In both cases, the expressions may be correct but unnecessarily complex in a sense that some unrecognized identities or properties would lead to simpler expressions.
 
 We will consider simplification in the context of causal inference in graphical models \citep{pearl09}. Advances in causal inference have led to algorithmic solutions to problems such as identifiability of causal effects and conditional causal effects \citep{shpitser06, shpitser06cond}, $z$-identifiability \citep{Bareinboim:zidentifiability}, transportability and meta-transportability \citep{bareinboim2013general, Bareinboim:metatransportability} among others. The aforementioned algorithmic solutions operate symbolically on the joint distribution of the variables of interest and return expressions for the desired queries. These algorithms have been previously implemented in the R package causaleffect \citep{tikka15}. However, the algorithms are imperfect in a sense that they often output an expression that is complicated and far from ideal. The question is whether there exists a simpler expression that is still a solution to the original problem. 

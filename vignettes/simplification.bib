@@ -47,7 +47,6 @@
   author = {Carette, J.},
   title = {Understanding expression simplification},
   booktitle = {Proceedings of the 2004 International Symposium on Symbolic and Algebraic Computation},
-  series = {ISSAC '04},
   year = {2004},
   pages = {72--79},
   numpages = {8},
@@ -94,7 +93,7 @@
 @inproceedings{Bareinboim:metatransportability,
   author = {Bareinboim, E. and Pearl, J.},
   title ={Meta-transportability of causal effects: a formal approach},
-  booktitle = {Proceedings of the 16th International Conference on Artificial Intelligence and Statistics (AISTATS)}, 
+  booktitle = {Proceedings of the 16th International Conference on Artificial Intelligence and Statistics}, 
   pages = {135--143}, 
   year = {2013}
 }
@@ -109,12 +108,14 @@
   year = {2013}
 }
 
-@manuscript{tikka15,
+@article{tikka17,
+  title = {Identifying Causal Effects with the {R} Package {causaleffect}},
   author = {Tikka, S. and Karvanen, J.},
-  title = {Identifying causal effects with the {R} package causaleffect},
-  year = {2015},
-  note = {Accepted for publication in Journal of Statistical Software},
-  url = {https://cran.r-project.org/web/packages/causaleffect/vignettes/causaleffect.pdf},
+  journal = {Journal of Statistical Software},
+  year = {2017},
+  volume = {76},
+  number = {12},
+  pages = {1--30}
 }
 
 @article{Bailey2014120,
@@ -136,16 +137,16 @@
 }
 
 @inproceedings{shpitser06cond,
-  title = {Identification of conditional interventional distributions},
+  title = {Identification of Conditional Interventional Distributions},
   author = {Shpitser, I. and Pearl, J.},
-  booktitle = {Proceedings of the Twenty-Second Conference on Uncertainty in Artificial Intelligence (UAI2006)},
+  booktitle = {Proceedings of the 22nd Conference on Uncertainty in Artificial Intelligence},
   pages = {437--444},
   publisher = {AUAI Press},
   year = {2006}
 }
 
 @article{lauritzen98, 
-  title = {Local computations with probabilities on graphical structures and their application to expert systems},
+  title = {Local Computations with Probabilities on Graphical Structures and Their Application to Expert Systems},
   author = {Lauritzen, S. L. and Spiegelhalter, D. J.},
   year = {1988},
   pages = {157--224},
@@ -162,5 +163,49 @@
  address = {San Francisco},
 } 
 
-  
+@inproceedings{huang06,
+  author = {Huang, Y. and Valtorta, M.},
+  title = {Pearl's Calculus of Intervention is Complete},
+  booktitle = {Proceedings of the 22nd Conference on Uncertainty in Artificial Intelligence},
+  pages = {217--224},
+  publisher = {AUAI Press},
+  year = {2006}
+}
 
+@inproceedings{shpitser11,
+  author = {Shpitser, I. and Richardson, T. S. and Robins, J. M.},
+  title = {An Efficient Algorithm for Computing Interventional Distributions in Latent Variable Causal Models},
+  booktitle = {Proceedings of the 27th Conference on Uncertainty in Artificial Intelligence},
+  pages = {661--670},
+  publisher = {AUAI Press},
+  year = {2011}
+}
+
+@article{shpitser16,
+  author = {Shpitser, I. and Tchetgen Tchetgen, E.},
+  title = {Causal Inference with a Graphical Hierarchy of Interventions},
+  journal = {Annals of Statistics},
+  year = {2016},
+  volume = {44},
+  number = {6},
+  pages = {2433-2466}
+}
+
+@inproceedings{pearl91,
+  author = {Pearl, J. and Verma, T. S.},
+  title = {A Theory of Inferred Causation},
+  booktitle = {Principles of Knowledge Representation and Reasoning: Proceedings of the Second International Conference},
+  year = {1991},
+  pages = {441--452}
+}
+
+@article{tikka17b,
+  author  = {Santtu Tikka and Juha Karvanen},
+  title   = {Simplifying Probabilistic Expressions in Causal Inference},
+  journal = {Journal of Machine Learning Research},
+  year    = {2017},
+  volume  = {18},
+  number  = {36},
+  pages   = {1-30},
+  url     = {http://jmlr.org/papers/v18/16-166.html}
+}

@@ -43,8 +43,8 @@ d1 <-  graph.formula(Z_1 -+ X, Z_2 -+ X, X -+ Z_3, Z_3 -+ W,
 d1 <- set.edge.attribute(d1, "description", 9:18, "U")
 
 # We can use the causal diagram d1 to create selection diagrams 
-# for two source domains, a and b. %u% is the igraph union operator.
-d1a <- d1 %u% graph.formula(S_1 -+ Z_2, S_2 -+ Z_3, S_3 -+ W)
+# for two source domains, a and b.
+d1a <- union(d1, graph.formula(S_1 -+ Z_2, S_2 -+ Z_3, S_3 -+ W))
 
 # The variables "S_1", "S_2", and "S_3" are selection variables.
 # This is denoted by giving them a description attribute with the value "S".
@@ -53,7 +53,7 @@ d1a <- set.vertex.attribute(d1a, "description", 8:10, "S")
 
 # Selection diagram corresponding to the second 
 # source domain is constructed in a similar fashion.
-d1b <- d1 %u% graph.formula(S_1 -+ Z_1, S_2 -+ W, S_3 -+ U)
+d1b <- union(d1, graph.formula(S_1 -+ Z_1, S_2 -+ W, S_3 -+ U))
 d1b <- set.vertex.attribute(d1b, "description", 8:10, "S")
 
 # We combine the diagrams as a list.

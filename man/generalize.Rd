@@ -31,10 +31,10 @@ library(igraph)
 
 # Selection diagram corresponding to the target domain (no selection variables).
 # We set simplify = FALSE to allow multiple edges.
-d1 <-  graph.formula(Z_1 -+ X, Z_2 -+ X, X -+ Z_3, Z_3 -+ W, 
+d1 <-  graph.formula(Z_1 -+ X, Z_2 -+ X, X -+ Z_3, Z_3 -+ W,
  Z_3 -+ U, U -+ Y, W -+ U, Z_1 -+ Z_3, # Observed edges
- Z_1 -+ Z_2, Z_2 -+ Z_1, Z_1 -+ X, X -+ Z_1, 
- Z_2 -+ Z_3, Z_3 -+ Z_2, Z_2 -+ U, U -+ Z_2, 
+ Z_1 -+ Z_2, Z_2 -+ Z_1, Z_1 -+ X, X -+ Z_1,
+ Z_2 -+ Z_3, Z_3 -+ Z_2, Z_2 -+ U, U -+ Z_2,
  W -+ Y, Y -+ W, simplify = FALSE)
 
 # Here the bidirected edges are set to be unobserved in the selection diagram d1.

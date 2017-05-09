@@ -2,10 +2,10 @@ verma.constraints <- function(G) {
   G.obs <- observed.graph(G)
   G.unobs <- unobserved.graph(G)
   G.adj <- as.matrix(get.adjacency(G.unobs))
-  to <- topological.sort(G.obs)
-  to.u <- topological.sort(G.unobs)
-  v <- get.vertex.attribute(G, "name")[to]
-  v.unobs <- get.vertex.attribute(G.unobs, "name")[to.u]
+  topo <- topological.sort(G.obs)
+  topo.u <- topological.sort(G.unobs)
+  v <- get.vertex.attribute(G, "name")[topo]
+  v.unobs <- get.vertex.attribute(G.unobs, "name")[topo.u]
   constraints <- list()
   s <- NULL
   for (i in 1:length(v)) {

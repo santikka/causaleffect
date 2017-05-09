@@ -4,23 +4,23 @@ recover <- function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = F
   if (length(sel) == 0) stop("No selection variables present in the diagram.")
   if (length(sel) > 1) stop("Multiple selection variables are not supported.")
   G.obs <- observed.graph(G)
-  to <- topological.sort(G.obs)
+  topo <- topological.sort(G.obs)
   v.s <- get.vertex.attribute(G, "name")
-  to <- v.s[to]
-  if (length(setdiff(y, to)) > 0) stop("Set 'y' contains variables not present in the graph.")
-  if (length(setdiff(x, to)) > 0) stop("Set 'x' contains variables not present in the graph.")
+  topo <- v.s[topo]
+  if (length(setdiff(y, topo)) > 0) stop("Set 'y' contains variables not present in the graph.")
+  if (length(setdiff(x, topo)) > 0) stop("Set 'x' contains variables not present in the graph.")
   if (length(intersect(x, y)) > 0) stop("Sets 'x' and 'y' are not disjoint. ")
   s <- v.s[sel]
-  s <- to[which(to %in% s)]
+  s <- topo[which(topo %in% s)]
   G.causal <- induced.subgraph(G, v.s[!(v.s %in% s)])
   v <- get.vertex.attribute(G.causal, "name")
-  v <- to[which(to %in% v)]
+  v <- topo[which(topo %in% v)]
   T.prime <- setdiff(v, x)
   G.T.prime <- induced.subgraph(G.causal, T.prime)
   G.T.prime.obs <- observed.graph(G.T.prime)
-  D <- ancestors(y, G.T.prime.obs, to)
+  D <- ancestors(y, G.T.prime.obs, topo)
   G.D <- induced.subgraph(G.causal, D)
-  cc <- c.components(G.D, to)
+  cc <- c.components(G.D, topo)
   cg <- length(cc)
   res <- probability()
   tree <- list()
@@ -29,7 +29,7 @@ recover <- function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = F
   product.list <- list()
   nxt.list <- list()
   for (i in 1:cg) {
-    nxt.list[[i]] <- rc(cc[[i]], probability(var = v, cond = s), G, to, tree)
+    nxt.list[[i]] <- rc(cc[[i]], probability(var = v, cond = s), G, topo, tree)
     product.list[[i]] <- nxt.list[[i]]$P
     tree$branch[[i]] <- nxt.list[[i]]$tree
   }

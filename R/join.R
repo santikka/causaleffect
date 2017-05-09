@@ -1,4 +1,4 @@
-join <- function(J, D, vari, cond, S, M, O, G.adj, G, G.obs, to) {
+join <- function(J, D, vari, cond, S, M, O, G.adj, G, G.obs, topo) {
   J.new <- character()
   D.new <- character()
   if (length(J) == 0) {
@@ -8,9 +8,9 @@ join <- function(J, D, vari, cond, S, M, O, G.adj, G, G.obs, to) {
   }
   non.mis <- min(which(J %in% O))
   V.prev <- J[non.mis]
-  ind <- which(to == V.prev)
-  V.pi <- to[0:(ind-1)]
-  anc <- ancestors(vari, G.obs, to)
+  ind <- which(topo == V.prev)
+  V.pi <- topo[0:(ind-1)]
+  anc <- ancestors(vari, G.obs, topo)
   cond.diff <- setdiff(union(vari, setdiff(V.pi, anc)), J)
   ds <- powerset(cond.diff, nonempty = FALSE)
   n <- length(ds)
@@ -27,7 +27,7 @@ join <- function(J, D, vari, cond, S, M, O, G.adj, G, G.obs, to) {
     }
   }
   if (any(M %in% D)) {
-    joint <- insert(J, D, M, cond, S, O, G.adj, G, G.obs, to)
+    joint <- insert(J, D, M, cond, S, O, G.adj, G, G.obs, topo)
     if (length(joint[[1]]) > length(J)) {
       return(joint)
     }

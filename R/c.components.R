@@ -1,4 +1,4 @@
-c.components <- function(G, to) {
+c.components <- function(G, topo) {
   A <- as.matrix(get.adjacency(G))
   v <- get.vertex.attribute(G, "name")
   indices <- which(A >= 1 & t(A) >= 1, arr.ind = TRUE)
@@ -13,7 +13,7 @@ c.components <- function(G, to) {
   subgraphs <- decompose.graph(G.bidirected)
   cc <- lapply(subgraphs, function(x) {
     v.sub <- get.vertex.attribute(x, "name")
-    return(v.sub %ts% to)
+    return(v.sub %ts% topo)
   })
   return(cc)
 }

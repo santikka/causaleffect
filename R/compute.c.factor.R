@@ -1,4 +1,4 @@
-compute.c.factor <- function(cc, v, P, to) {
+compute.c.factor <- function(cc, v, P, topo) {
   v.len <- length(v)
   cc.len <- length(cc)
   product.list <- list()
@@ -11,14 +11,14 @@ compute.c.factor <- function(cc, v, P, to) {
     if (P$product | P$fraction) {
       P.num <- P.prod
       P.den <- P.prod
-      P.den$sumset <- union(P$sumset, sum.new) %ts% to
+      P.den$sumset <- union(P$sumset, sum.new) %ts% topo
       P.prod <- probability(fraction = TRUE, num = P.num, den = P.den)
     }
     else {
       P.prod$var <- setdiff(P.prod$var, P.prod$sumset)
       P.prod$sumset <- character(0)
       if (!identical(P.prod$var, sum.new)) {
-        P.prod$cond <- union(P.prod$cond, setdiff(P.prod$var, v[ind[i]])) %ts% to
+        P.prod$cond <- union(P.prod$cond, setdiff(P.prod$var, v[ind[i]])) %ts% topo
         P.prod$var <- v[ind[i]]
       }
     }

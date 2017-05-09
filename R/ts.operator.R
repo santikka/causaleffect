@@ -1,3 +1,3 @@
-"%ts%" <- function(nodes, topological.order) {
-  nodes[order(match(nodes, topological.order))]
+"%ts%" <- function(nodes, topo.order) {
+  nodes[order(match(nodes, topo.order))]
 }

@@ -1,4 +1,4 @@
-factorize <- function(J, D, P, to, i) {
+factorize <- function(J, D, P, topo, i) {
   P.factorize <- probability(sumset = P$sumset, product = TRUE, children = list())
   vars <- unlist(lapply(P$children, FUN = function(x) x$var))
   r <- which(J == vars[i])

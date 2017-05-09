@@ -1,12 +1,12 @@
-insert <- function(J, D, M, cond, S, O, G.adj, G, G.obs, to) {
+insert <- function(J, D, M, cond, S, O, G.adj, G, G.obs, topo) {
   mis <- M[which(M %in% D)]
   M <- M[length(mis)]
   if (M %in% cond) return(list(J, D))
   non.mis <- min(which(J %in% O))
   V.prev <- J[non.mis]
-  ind <- which(to == V.prev)
-  V.pi <- to[0:(ind-1)]
-  anc <- ancestors(M, G.obs, to)
+  ind <- which(topo == V.prev)
+  V.pi <- topo[0:(ind-1)]
+  anc <- ancestors(M, G.obs, topo)
   cond.diff <- setdiff(union(M, setdiff(V.pi, anc)), J)
   ds <- powerset(cond.diff, nonempty = FALSE)
   n <- length(ds)

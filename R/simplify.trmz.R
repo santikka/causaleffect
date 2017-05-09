@@ -1,10 +1,10 @@
-simplify.trmz <- function(P.num, P.den, to) {
+simplify.trmz <- function(P.num, P.den, topo) {
   if (is.null(P.den)) {
     if (P.num$fraction) {
       P.num$fraction <- FALSE
       P.den <- P.num$divisor
       P.num$divisor <- NULL
-      return(simplify.trmz(P.num, P.den, to))
+      return(simplify.trmz(P.num, P.den, topo))
     }
     P <- P.num
     if (P$recursive) {
@@ -27,8 +27,8 @@ simplify.trmz <- function(P.num, P.den, to) {
         domain = P$domain, do = P$do))
     }
   } else
-  P.num <- simplify.trmz(P.num, NULL, to)
-  P.den <- simplify.trmz(P.den, NULL, to)
+  P.num <- simplify.trmz(P.num, NULL, topo)
+  P.den <- simplify.trmz(P.den, NULL, topo)
   if (length(P.den$sumset) > 0) {
     P.num$fraction <- TRUE
     P.num$divisor <- P.den

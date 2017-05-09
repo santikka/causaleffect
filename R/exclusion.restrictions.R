@@ -1,9 +1,9 @@
 exclusion.restrictions <- function(G) {
   G.obs <- observed.graph(G)
-  to <- topological.sort(G.obs)
-  v <- get.vertex.attribute(G, "name")[to]
+  topo <- topological.sort(G.obs)
+  v <- get.vertex.attribute(G, "name")[topo]
   ex <- lapply(v, function(y) {
-    pa <- setdiff(parents(y, G.obs, to), y)
+    pa <- setdiff(parents(y, G.obs, topo), y)
     Z <- setdiff(v, union(y, pa))
     if (length(Z) > 0) {
       Z.pow <- powerset(setdiff(v, union(y, pa)), nonempty = TRUE)

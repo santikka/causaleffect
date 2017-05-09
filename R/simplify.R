@@ -1,4 +1,4 @@
-simplify <- function(P, to, G.adj, G, G.obs) {
+simplify <- function(P, topo, G.adj, G, G.obs) {
   j <- 0
   while (j < length(P$sumset)) {
     P.orig <- P
@@ -23,10 +23,10 @@ simplify <- function(P, to, G.adj, G, G.obs) {
         vars <- vars[-irrel]
       }
     }
-    M <- to[!(to %in% vars)]
-    O <- to[(to %in% vars)]
+    M <- topo[!(topo %in% vars)]
+    O <- topo[(topo %in% vars)]
     while (k <= i) {
-      joint <- join(J, D, P$children[[k]]$var, P$children[[k]]$cond, P$sumset[j], M, O, G.adj, G, G.obs, to)
+      joint <- join(J, D, P$children[[k]]$var, P$children[[k]]$cond, P$sumset[j], M, O, G.adj, G, G.obs, topo)
       if (length(joint[[1]]) <= length(J)) {
         J <- character()
         D <- character()
@@ -45,7 +45,7 @@ simplify <- function(P, to, G.adj, G, G.obs) {
       }
     }
     if (k == i + 1) {
-      P <- factorize(J, D, P, to, i)
+      P <- factorize(J, D, P, topo, i)
       S <- P$sumset[j]
       P$sumset <- P$sumset[-j]
       if (irl.len > 0) P$children <- c(terms, P$children)

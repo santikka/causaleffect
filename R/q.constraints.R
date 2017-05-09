@@ -1,25 +1,25 @@
-q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
+q.constraints <- function(s, node, G, G.obs, G.unobs, topo, topo.u, constraints) {
   G.s <- induced.subgraph(G, s)
   v <- get.vertex.attribute(G, "name")
-  v <- v %ts% to
+  v <- v %ts% topo
   G.s.obs <- observed.graph(G.s)
-  desc.sets <- descendent.sets(node, s, G.s.obs, to)
+  desc.sets <- descendent.sets(node, s, G.s.obs, topo)
   e <- NULL
   if (length(desc.sets) > 0) {
     for (d in desc.sets) {
       s_d <- setdiff(s, d)
-      s.pa <- parents(s, G.obs, to)
+      s.pa <- parents(s, G.obs, topo)
       eff.d <- setdiff(s.pa, d)
-      eff.s_d <- parents(s_d, G.obs, to)
+      eff.s_d <- parents(s_d, G.obs, topo)
       prod <- probability()
 
       # C factor of the left hand side
-      ind <- which(to %in% s)
+      ind <- which(topo %in% s)
       s.len <- length(s)
       product.list <- vector(mode = "list", length = s.len)
       for (i in s.len:1) {
         prod$var <- s[i]
-        prod$cond <- to[0:(ind[i]-1)]
+        prod$cond <- topo[0:(ind[i]-1)]
         product.list[[s.len - i + 1]] <- prod
       }
       q.factor <- probability(sumset = d, product = TRUE, children = product.list)
@@ -32,7 +32,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
       product.list.rhs <- vector(mode = "list", length = s_d.len)
       for (i in s_d.len:1) {
         prod$var <- s_d[i]
-        pa <- setdiff(parents(s_d[i], G.unobs, to.u), s_d[i])
+        pa <- setdiff(parents(s_d[i], G.unobs, topo.u), s_d[i])
         cond.unobs <- pa %ts% u
         cond.obs <- setdiff(pa, cond.unobs)
         prod$cond <- c(cond.obs, cond.unobs)
@@ -67,8 +67,8 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
       d.prime <- s_d
       G.d <- induced.subgraph(G.s, d.prime)
       v <- get.vertex.attribute(G.d, "name")
-      v <- v %ts% to
-      cc.d <- c.components(G.d, to)
+      v <- v %ts% topo
+      cc.d <- c.components(G.d, topo)
       if (length(cc.d) > 1) e <- Find(function(x) node %in% x, cc.d)
       else e <- cc.d[[1]]
 
@@ -76,7 +76,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
       
       q.d.factor <- probability(fraction = TRUE)
       q.d.factor$num <- q.factor
-      q.factor$sumset <- union(q.factor$sumset, node) %ts% to
+      q.factor$sumset <- union(q.factor$sumset, node) %ts% topo
       q.d.factor$den <- q.factor
       q.factor.lhs <- NULL
 
@@ -86,7 +86,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
       product.list.rhs <- vector(mode = "list", length = e.len)
       for (i in e.len:1) {
         prod$var <- e[i]
-        pa <- setdiff(parents(e[i], G.unobs, to.u), e[i])
+        pa <- setdiff(parents(e[i], G.unobs, topo.u), e[i])
         cond.unobs <- pa %ts% u
         cond.obs <- setdiff(pa, cond.unobs)
         prod$cond <- c(cond.obs, cond.unobs)
@@ -106,7 +106,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
         q.factor.rhs <- probability(product = TRUE, children = product.list.rhs)
       }
 
-      eff.e <- parents(e, G.obs, to)
+      eff.e <- parents(e, G.obs, topo)
       eff.diff <- setdiff(eff.s_d, eff.e)
       if (length(eff.diff) > 0) {
         constraints <- c(constraints, list(list(
@@ -117,7 +117,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, to, to.u, constraints) {
           "vars" = eff.diff
         )))
       }
-      constraints <- c(constraints, q.constraints(e, node, G, G.obs, G.unobs, to, to.u, list()))
+      constraints <- c(constraints, q.constraints(e, node, G, G.obs, G.unobs, topo, topo.u, list()))
     }
   }
   return(constraints)

@@ -1,6 +1,7 @@
 Changes from version 1.3.3 to 1.3.4
  * Updated vignettes.
  * Fixed an issue with identification.
+ * Fixed an issue with simplification where expressions were not being simplified even when it was feasible.
 
 Changes from version 1.3.2 to 1.3.3
  * Updated citation.

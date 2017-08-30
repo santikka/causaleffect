@@ -1,4 +1,4 @@
-id <- function(y, x, P, G, G.obs, v, topo, tree) {
+aid <- function(y, x, P, G, G.obs, v, topo, tree) {
   to <- NULL
   if (length(P$var) == 0 & !(P$product | P$fraction)) tree$call <- list(y = y, x = x, P = probability(var = v), G = G, line = "", v = v)
   else tree$call <- list(y = y, x = x, P = P, G = G, line = "", v = v)
@@ -7,7 +7,6 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
   if (length(x) == 0) {
     if (P$product | P$fraction) {
       P$sumset <- union(setdiff(v, y), P$sumset) %ts% topo
-      # P <- simplify.expression(P, NULL)
     } else {
       P$var <- y
     }
@@ -24,11 +23,10 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
     G.an.obs <- observed.graph(G.an)
     if (P$product | P$fraction) {
       P$sumset <- union(setdiff(v, an), P$sumset) %ts% topo
-      # P <- simplify.expression(P, NULL)
     } else {
       P$var <- an
     }
-    nxt <- id(y, intersect(x, an), P, G.an, G.an.obs, an, topo, list())
+    nxt <- aid(y, intersect(x, an), P, G.an, G.an.obs, an, topo, list())
     tree$branch[[1]] <- nxt$tree
     tree$call$line <- 2
     tree$call$an <- an
@@ -37,11 +35,104 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
 
   # line 3
   G.xbar <- subgraph.edges(G, E(G)[!(to(x) | (from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
+  co <- connected(y, G.xbar, topo)
+  z <- setdiff(an, co)
+  if (length(z) > 0) {
+    v.new <- setdiff(v, z) %ts% topo
+    G.z <- induced.subgraph(G, v.new)
+    G.z.obs <- observed.graph(G.z)
+    G.z.l <- latent.projection(G, z)
+    if (compare.graphs(G.z, G.z.l)) {
+      if (P$product | P$fraction) {
+        P$sumset <- union(z, P$sumset) %ts% topo
+      } else {
+        P$var <- v.new
+      }
+      nxt <- aid(y, setdiff(x, z), P, G.z, G.z.obs, v.new, topo, list())
+      tree$branch[[1]] <- nxt$tree
+      tree$call$line <- 3
+      tree$call$z <- z
+      return(list(P = nxt$P, tree = tree))
+    }
+  }
+
+  # line 4
+  v.x <- setdiff(v, x)
+  G.xbar.obs <- observed.graph(G.xbar)
+  de <- descendants(x, G.obs, topo)
+  t <- c()
+  for (i in 1:length(v.x)) {
+    r <- setdiff(ancestors(v.x[i], G.xbar.obs, topo), de)
+    G.vbar <- subgraph.edges(G, E(G)[!(to(v.x[i]) | (from(v.x[i]) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
+    co.vi <-  connected(setdiff(v, r), G.vbar, topo)
+    t <- union(t, setdiff(r, co.vi))
+  }
+  if (length(t) > 0) {
+    v.new <- setdiff(v, t) %ts% topo
+    G.t <- induced.subgraph(G, v.new)
+    G.t.obs <- observed.graph(G.t)
+    if (P$product | P$fraction) {
+      P$sumset <- union(t, P$sumset) %ts% topo
+    } else {
+      P$var <- v.new
+    }
+    nxt <- aid(y, x, P, G.t, G.t.obs, v.new, topo, list())
+    tree$branch[[1]] <- nxt$tree
+    tree$call$line <- 4
+    tree$call$t <- t
+    return(list(P = nxt$P, tree = tree))
+  }
+
+  # line 5
+  if (length(x) == 1) {
+    cc <- c.components(G, topo)
+    s <- Find(function(z) x %in% z, cc)
+    G.s <- induced.subgraph(G, s)
+    G.s.obs <- observed.graph(G.s)
+    ch <- setdiff(children(x, G.s.obs, topo), x)
+    if (length(ch) == 0) {
+      v.xy <- setdiff(v, c(x,y)) %ts% topo
+      v.xy.len <- length(v.xy)
+      proj <- FALSE
+      if (v.xy.len > 0 ){
+        for (i in 1:v.xy.len) {
+          G.prime <- latent.projection(G, v.xy[i])
+          cc.prime <- c.components(G.prime, topo)
+          s.prime <- Find(function(z) x %in% z, cc.prime)
+          G.s.prime <- induced.subgraph(G.prime, s.prime)
+          G.s.prime.obs <- observed.graph(G.s.prime)
+          ch.prime <- setdiff(children(x, G.s.prime.obs, topo), x)
+          if (length(ch.prime) == 0) {
+            G.prime.obs <- observed.graph(G.prime)
+            v.new <- setdiff(v, v.xy[i])
+            if (P$product | P$fraction) {
+              P$sumset <- union(v.xy[i], P$sumset) %ts% topo
+            } else {
+              P$var <- v.new
+            }
+            G <- G.prime
+            G.obs <- G.prime.obs
+            v <- v.new
+            proj <- TRUE
+          }
+        }
+        if (proj) {
+          nxt <- aid(y, x, P, G, G.obs, v, topo, list())
+          tree$branch[[1]] <- nxt$tree
+          tree$call$line <- 5
+          tree$call$vi <- v.xy[i]
+          return(list(P = nxt$P, tree = tree))
+        }
+      }
+    }
+  }
+
+  # line 6
   an.xbar <- ancestors(y, observed.graph(G.xbar), topo)
   w <- setdiff(setdiff(v, x), an.xbar)
   w.len <- length(w)
   if (w.len != 0) {
-    nxt <- id(y, union(x, w) %ts% topo, P, G, G.obs, v, topo, list())
+    nxt <- aid(y, union(x, w) %ts% topo, P, G, G.obs, v, topo, list())
     tree$branch[[1]] <- nxt$tree
     tree$call$line <- 3
     tree$call$w <- w
@@ -49,13 +140,13 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
     return(list(P = nxt$P, tree = tree))
   }
 
-  # line 4
+  # line 7
   G.remove.x <- induced.subgraph(G, v[!(v %in% x)])
   s <- c.components(G.remove.x, topo)
   if (length(s) > 1) {
     tree$call$line <- 4
     nxt <- lapply(s, function(t) {
-      return(id(t, setdiff(v, t), P, G, G.obs, v, topo, list()))
+      return(aid(t, setdiff(v, t), P, G, G.obs, v, topo, list()))
     })
     product.list <- lapply(nxt, "[[", "P")
     tree$branch <- lapply(nxt, "[[", "tree")
@@ -66,7 +157,7 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
   } else {
     s <- s[[1]]
 
-    # line 5 
+    # line 8
     cc <- c.components(G, topo)
     if (identical(cc[[1]], v)) {
       v.string <- paste(v, sep = "", collapse = ",")
@@ -75,7 +166,7 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
       stop("Graph contains a hedge formed by C-forests of nodes: \n {", v.string , "} and {", s.string , "}.", call. = FALSE)
     }
    
-    # line 6
+    # line 9
     pos <- Position(function(x) identical(s, x), cc, nomatch = 0)
     if (pos > 0) {
       tree$call$line <- 6
@@ -113,7 +204,7 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
       return(list(P = P.prod, tree = tree))
     }
 
-    # line 7
+    # line 10
     tree$call$s <- s
     s <- Find(function(x) all(s %in% x), cc)
     tree$call$line <- 7
@@ -138,8 +229,8 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
     }
     x.new <- intersect(x, s)
     nxt <- NULL
-    if (s.len > 1) nxt <- id(y, x.new, probability(product = TRUE, children = product.list), G.s, G.s.obs, s, topo, list())
-    else nxt <- id(y, x.new, product.list[[1]], G.s, G.s.obs, s, topo, list())
+    if (s.len > 1) nxt <- aid(y, x.new, probability(product = TRUE, children = product.list), G.s, G.s.obs, s, topo, list())
+    else nxt <- aid(y, x.new, product.list[[1]], G.s, G.s.obs, s, topo, list())
     tree$branch[[1]] <- nxt$tree
     return(list(P = nxt$P, tree = tree))
   }

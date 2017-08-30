@@ -46,7 +46,7 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, topo, tree) {
   }
 
   # line 3
-  D.x.overbar <- subgraph.edges(D.causal, E(D.causal)[!to(x)], delete.vertices = FALSE)
+  D.x.overbar <- subgraph.edges(D.causal ,E(D.causal)[!(to(x) | (from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
   anc.xbar <- ancestors(y, observed.graph(D.x.overbar), topo[[1]])
   w <- setdiff(setdiff(v, x), anc.xbar)
   if (length(w) != 0) {

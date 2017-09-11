@@ -1,5 +1,7 @@
 trmz <- function(y, x, P, J, domain, w.index, D, Z, topo, tree) {
   to <- NULL
+  from <- NULL
+  description <- NULL
   d <- length(D)
   v.s <- lapply(D, function(x) get.vertex.attribute(x, "name"))
   s <- lapply(1:d, function(x) v.s[[x]][which(vertex.attributes(D[[x]])$description == "S")])

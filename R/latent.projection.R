@@ -1,5 +1,7 @@
 latent.projection <- function(G, l) {
   to <- NULL
+  from <- NULL
+  description <- NULL
   for (i in 1:length(l)) {
     e <- E(G)
     v <- get.vertex.attribute(G, "name")

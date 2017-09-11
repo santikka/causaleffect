@@ -2,3 +2,4 @@ export(aux.effect, causal.effect, generalize, get.expression, meta.transport, pa
 import(igraph,XML)
 importFrom(ggm,dSep,powerset)
 importFrom(stats,setNames)
+importFrom(utils,combn)

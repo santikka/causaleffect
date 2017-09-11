@@ -1,5 +1,7 @@
 id <- function(y, x, P, G, G.obs, v, topo, tree) {
   to <- NULL
+  from <- NULL
+  description <- NULL
   if (length(P$var) == 0 & !(P$product | P$fraction)) tree$call <- list(y = y, x = x, P = probability(var = v), G = G, line = "", v = v)
   else tree$call <- list(y = y, x = x, P = P, G = G, line = "", v = v)
 

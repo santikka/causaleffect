@@ -1,4 +1,4 @@
-idc <- function(y, x, z, P, G, G.obs, v, topo, tree, aug) {
+idc <- function(y, x, z, P, G, G.obs, v, topo, tree, prune) {
   to <- NULL
   if (length(P$var) == 0) tree$call <- list(y = y, x = x, z = z, P = probability(var = v), G = G, line = "", v = v)
   else tree$call <- list(y = y, x = x, z = z, P = P, G = G, line = "", v = v)
@@ -14,13 +14,13 @@ idc <- function(y, x, z, P, G, G.obs, v, topo, tree, aug) {
     if (dSep(A, y, node, union(x, cond))) {
       tree$call$line <- 9
       tree$call$z.prime <- node
-      nxt <- idc(y, union(x, node) %ts% topo, cond, P, G, G.obs, v, topo, list(), aug)
+      nxt <- idc(y, union(x, node) %ts% topo, cond, P, G, G.obs, v, topo, list(), prune)
       tree$branch[[1]] <- nxt$tree
       return(list(P = nxt$P, tree = tree))
     } 
   }
   tree$call$line <- 10
-  if (aug) nxt <- aid(union(y, z) %ts% topo, x, P, G, G.obs, v, topo, list())
+  if (prune) nxt <- pid(union(y, z) %ts% topo, x, P, G, G.obs, v, topo, list())
   else nxt <- id(union(y, z) %ts% topo, x, P, G, G.obs, v, topo, list())
   tree$branch[[1]] <- nxt$tree
   return(list(P = nxt$P, tree = tree))

@@ -1,4 +1,4 @@
-causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE, aug = FALSE) {
+causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE, prune = FALSE) {
   G.obs <- observed.graph(G)
   if (!is.dag(G.obs)) stop("Graph 'G' is not a DAG")
   topo <- topological.sort(G.obs)
@@ -15,13 +15,13 @@ causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = 
   algo <- ""
   res.prob <- probability()
   if (is.null(z) || identical(z, "") || identical(z, character(0))) {
-    if (aug) res <- aid(y, x, probability(), G, G.obs, topo, topo, list())
+    if (prune) res <- pid(y, x, probability(), G, G.obs, topo, topo, list())
     else res <- id(y, x, probability(), G, G.obs, topo, topo, list())
     res.prob <- res$P
     algo <- "id"
     #res.prob <- organize.terms(res$P, topo)
   } else {
-    res <- idc(y, x, z, probability(), G, G.obs, topo, topo, list(), aug)
+    res <- idc(y, x, z, probability(), G, G.obs, topo, topo, list(), prune)
     res.num <- res$P
     #res.num <- organize.terms(res$P, topo)
     res.den <- res.num

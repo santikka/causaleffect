@@ -3,10 +3,10 @@
 \title{Identify a causal effect}
 \description{This function returns an expression for the joint distribution of the set of variables (\code{y})
 given the intervention on the set of variables (\code{x}) conditional on (\code{z}) if the effect is identifiable.  Otherwise
-an error is thrown describing the graphical structure that witnesses unidentifiability.  If \code{steps = TRUE}, returns instead
+an error is thrown describing the graphical structure that witnesses non-identifiability.  If \code{steps = TRUE}, returns instead
 a list where the first element is the expression and the second element is a list of the intermediary steps taken by the algorithm.}
 
-\usage{causal.effect(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE)}
+\usage{causal.effect(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE, prune = FALSE)}
 
 \arguments{
   \item{y}{A character vector of variables of interest given the intervention. }
@@ -17,6 +17,7 @@ a list where the first element is the expression and the second element is a lis
   \item{simp}{A logical value. If \code{TRUE}, a simplification procedure is applied to the resulting probability object. d-separation and the rules of do-calculus are applied repeatedly to simplify the expression. }
   \item{steps}{A logical value. If \code{TRUE}, returns a list where the first element corresponds to the expression of the causal effect and the second to the a list describing intermediary steps taken by the algorithm.}
   \item{primes}{A logical value. If \code{TRUE}, prime symbols are appended to summation variables to make them distinct from their other instantiations. }
+  \item{prune}{A logical value. If \code{TRUE}, additional steps are taken to remove variables that are not necessary for identification. }
 }
 
 \value{If \code{steps = FALSE}, A character string or an object of class \code{probability} that describes the interventional distribution. Otherwise, a list as described in the arguments.}

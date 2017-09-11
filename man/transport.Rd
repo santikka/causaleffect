@@ -45,7 +45,7 @@ d <- set.edge.attribute(d, "description", 6:11, "U")
 # a description attribute with the value "S". 
 d <- set.vertex.attribute(d, "description", 6, "S")
 
-res <- transport(y = "Y", x = "X", D = d)
+transport(y = "Y", x = "X", D = d)
 
 
 }

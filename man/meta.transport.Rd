@@ -60,6 +60,6 @@ d2 <- set.vertex.attribute(d2, "description", 7:11, "S")
 
 # We combine the diagrams as a list.
 d.comb <- list(d1, d2)
-res <- meta.transport(y = "Y", x = "X", D = d.comb)
+meta.transport(y = "Y", x = "X", D = d.comb)
 }
 

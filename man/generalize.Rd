@@ -65,6 +65,6 @@ z <- list(c("Z_1"), c("Z_2"), c("Z_1"))
 # in both the target domain, and the second source domain. 
 # The variable "Z_2" is available for intervention in the first source domain.
 
-res <- generalize(y = "Y", x = "X", Z = z, D = d.comb)
+generalize(y = "Y", x = "X", Z = z, D = d.comb)
 }
 

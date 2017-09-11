@@ -46,7 +46,7 @@ g <- set.edge.attribute(g, "description", 5:8, "U")
 # a description attribute with the value "S".
 g <- set.vertex.attribute(g, "description", 5, "S")
 
-res <- recover(y = "Y", x = "X", G = g)
+recover(y = "Y", x = "X", G = g)
 
 }
 

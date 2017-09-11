@@ -41,6 +41,6 @@ f <- graph.formula(W -+ Z, Z -+ X, X -+ Y, W -+ Y, # Observed edges
 # The first 4 edges correspond to the observed edges, the rest are unobserved
 
 f <- set.edge.attribute(f, "description", 5:10, "U")
-res <- aux.effect(y = "Y", x = "X", z = "Z", G = f)
+aux.effect(y = "Y", x = "X", z = "Z", G = f)
 }
 

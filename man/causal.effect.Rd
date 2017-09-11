@@ -37,14 +37,41 @@ Shpitser I., Pearl J. 2006 Identification of Conditional Interventional Distribu
 library(igraph)
 
 # simplify = FALSE to allow multiple edges
-g <- graph.formula(X -+ Y, Z -+ X, Z -+ Y , X -+ Z, Z -+ X, simplify = FALSE)
+g <- graph.formula(x -+ y, z -+ x, z -+ y , x -+ z, z -+ x, simplify = FALSE)
 
 # Here the bidirected edge between X and Z is set to be unobserved in graph g
 # This is denoted by giving them a description attribute with the value "U"
 # The edges in question are the fourth and the fifth edge
 g <- set.edge.attribute(graph = g, name = "description", index = c(4,5), value = "U")
+causal.effect(y = "y", x = "x", G = g)
 
-res <- causal.effect(y = "Y", x = "X", G = g)
+# Examples on pruning
+p1 <- graph.formula(w_1 -+ w_2, w_1 -+ x, w_2 -+ x, z_2 -+ x, x -+ z_1,
+  z_2 -+ z_1, z_2 -+ z_3, z_4 -+ z_1, z_1 -+ y, z_3 -+ y, 
+  w_1 -+ w_2, w_2 -+ w_1, w_1 -+ x, x -+ w_1, w_2 -+ x, x -+ w_2, 
+  z_4 -+ z_1, Z_1 -+ z_4, x -+ y, y -+ x, z_2 -+ y, y -+ z_2, x -+ z_3,
+  z_3 -+ x, x -+ z_2, z_2 -+ x, simplify = FALSE)
+p1 <- set.edge.attribute(p1, "description", 11:26, "U")
+causal.effect("y", "x", G = p1, simp = FALSE, primes = TRUE, prune = TRUE)
 
-}
+p2 <- graph.formula(w_1 -+ x_1, x_1 -+ y_1, w_2 -+ w_1, w_2 -+ x_2,
+  x_2 -+ z, z -+ y_2, z -+ y_1, w_1 -+ w_2, w_2 -+ w_1, w_1 -+ x_1, x_1 -+ w_1,
+  w_2 -+ x_2, x_2 -+ w_2, x_1 -+ z, z -+ x_1, x_2 -+ y_2, y_2 -+ x_2, x_1 -+ x_2, x_2 -+ x_1, simplify = FALSE)
+p2 <- set.edge.attribute(p2, "description", 8:19, "U")
+causal.effect(c("y_1", "y_2"), c("x_1", "x_2"), G = p2, simp = TRUE, primes = TRUE, prune = TRUE)
 
+p3 <- graph.formula(x -+ y, z_1 -+ x, z_2 -+ z_1, w_1 -+ z_2, w_1 -+ w_2, w_2 -+ z_2,
+  x -+ z_2, z_2 -+ x, z_2 -+ y, y -+ z_2, w_1 -+ w_2, w_2 -+ w_1, w_2 -+ z_2, z_2 -+ w_2, simplify = FALSE)
+p3 <- set.edge.attribute(p3, "description", 7:14, "U")
+causal.effect("y", "x", G = p3, simp = FALSE, primes = TRUE, aug = TRUE)
+
+p4 <- graph.formula(x -+ z_1, z_1 -+ y, z_3 -+ y, z_2 -+ x, z_2 -+ z_1, z_2 -+ z_3,
+  x -+ y, y -+ x, x -+ z_3, z_3 -+ x, x -+ z_2, z_2 -+ x, y -+ z_2, z_2 -+ y, simplify = FALSE)
+p4 <- set.edge.attribute(graph = p4, name = "description", index = 7:14, value = "U")
+causal.effect("y", "x", G = p4, primes = TRUE, primes = TRUE, prune = TRUE)
+
+p5 <- graph.formula(x -+ z_4, z_4 -+ y, z_1 -+ x, z_2 -+ z_1, z_3 -+ z_2, z_3 -+ x,
+  z_5 -+ z_1, z_5 -+ z_4, x -+ z_2, z_2 -+ x, z_3 -+ z_2, z_2 -+ z_3, z_2 -+ y, y -+ z_2,
+  z_4 -+ y, y -+ z_4, z_5 -+ z_4, z_4 -+ z_5, simplify = FALSE)
+p5 <- set.edge.attribute(p5, "description", 9:18, "U")
+causal.effect("y", "x", G = p5, primes = TRUE, simp = TRUE, prune = TRUE)

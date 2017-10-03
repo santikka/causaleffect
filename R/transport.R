@@ -1,4 +1,7 @@
 transport <- function(y, x, z = NULL, D, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
+  if (length(edge.attributes(D)) == 0) {
+    D <- set.edge.attribute(D, "description", 1:length(E(D)), NA)
+  }
   v <- get.vertex.attribute(D, "name")
   s <- v[which(vertex.attributes(D)$description == "S")]
   if (is.null(z)) z <- setdiff(v, union(y, s))

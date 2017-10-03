@@ -1,4 +1,7 @@
 recover <- function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
+  if (length(edge.attributes(G)) == 0) {
+    G <- set.edge.attribute(G, "description", 1:length(E(G)), NA)
+  }
   if (!is.dag(observed.graph(G))) stop("Graph 'G' is not a DAG")
   sel <- which(vertex.attributes(G)$description == "S")
   if (length(sel) == 0) stop("No selection variables present in the diagram.")

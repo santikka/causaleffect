@@ -6,8 +6,14 @@ generalize <- function(y, x, Z, D, expr = TRUE, simp = FALSE, steps = FALSE, pri
   if (length(s) > 0) stop("The causal diagram cannot contain selection variables.")
   if (d != z) stop("Number of available experiments does not match number of domains.")
   if (length(intersect(x, y)) > 0) stop("Sets 'x' and 'y' are not disjoint.")
-  topo <- lapply(D, function(x) topological.sort(observed.graph(x)))
-  topo <- lapply(1:d, function(x) get.vertex.attribute(D[[x]], "name")[topo[[x]]])
+  topo <- lapply(D, function(k) topological.sort(observed.graph(k)))
+  topo <- lapply(1:d, function(k) get.vertex.attribute(D[[k]], "name")[topo[[k]]])
+  D <- lapply(D, function(k) {
+    if (length(edge.attributes(k)) == 0) {
+      k <- set.edge.attribute(k, "description", 1:length(E(k)), NA)
+    }
+    return(k)
+  })
   for (i in 1:d) {
     if (!is.dag(observed.graph(D[[i]]))) {
       if (i > 1) stop("Selection diagram 'D[", i, "]' is not a DAG.")

@@ -1,4 +1,7 @@
 verma.constraints <- function(G) {
+  if (length(edge.attributes(G)) == 0) {
+    G <- set.edge.attribute(G, "description", 1:length(E(G)), NA)
+  }
   G.obs <- observed.graph(G)
   G.unobs <- unobserved.graph(G)
   G.adj <- as.matrix(get.adjacency(G.unobs))

@@ -1,4 +1,7 @@
 causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE, prune = FALSE) {
+  if (length(edge.attributes(G)) == 0) {
+    G <- set.edge.attribute(G, "description", 1:length(E(G)), NA)
+  }
   G.obs <- observed.graph(G)
   if (!is.dag(G.obs)) stop("Graph 'G' is not a DAG")
   topo <- topological.sort(G.obs)

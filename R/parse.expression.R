@@ -23,7 +23,7 @@ parse.expression <- function(P, topo, G.adj, G, G.obs) {
   }
   if (length(P$sumset) == 0) return(P)
   if (!P$product) {
-    if (P$sumset == P$var) return (NULL)
+    if (identical(P$sumset, P$var)) return (NULL)
     else return (P)
   }
   ord.children <- order(unlist(lapply(P$children, FUN = function(x) which(topo == x$var))), decreasing = TRUE)

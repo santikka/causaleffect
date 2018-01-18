@@ -40,11 +40,11 @@ causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = 
     G.adj <- as.matrix(get.adjacency(G.unobs))
     topo.u <- topological.sort(G.unobs)
     topo.u <- get.vertex.attribute(G.unobs, "name")[topo.u]
-    res.prob <- deconstruct(res.prob, probability())
+    res.prob <- deconstruct(res.prob, probability(), topo)
     # cat(get.expression(res.prob), "\n")
     res.prob <- parse.expression(res.prob, topo, G.adj, G, G.obs)
     # cat(get.expression(res.prob), "\n")
-    res.prob <- deconstruct(res.prob, probability())
+    res.prob <- deconstruct(res.prob, probability(), topo)
     # cat(get.expression(res.prob), "\n")
     res.prob <- parse.deconstruct(res.prob)
     # cat(get.expression(res.prob), "\n")

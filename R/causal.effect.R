@@ -22,11 +22,9 @@ causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = 
     else res <- id(y, x, probability(), G, G.obs, topo, topo, list())
     res.prob <- res$P
     algo <- "id"
-    #res.prob <- organize.terms(res$P, topo)
   } else {
     res <- idc(y, x, z, probability(), G, G.obs, topo, topo, list(), prune)
     res.num <- res$P
-    #res.num <- organize.terms(res$P, topo)
     res.den <- res.num
     res.den$sumset <- union(res.den$sumset, y)
     res.prob$fraction <- TRUE
@@ -41,13 +39,9 @@ causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = 
     topo.u <- topological.sort(G.unobs)
     topo.u <- get.vertex.attribute(G.unobs, "name")[topo.u]
     res.prob <- deconstruct(res.prob, probability(), topo)
-    # cat(get.expression(res.prob), "\n")
     res.prob <- parse.expression(res.prob, topo, G.adj, G, G.obs)
-    # cat(get.expression(res.prob), "\n")
     res.prob <- deconstruct(res.prob, probability(), topo)
-    # cat(get.expression(res.prob), "\n")
     res.prob <- parse.deconstruct(res.prob)
-    # cat(get.expression(res.prob), "\n")
   }
   attr(res.prob, "algorithm") <- algo
   attr(res.prob, "query") <- list(y = y, x = x, z = z)

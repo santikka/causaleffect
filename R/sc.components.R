@@ -18,5 +18,8 @@ sc.components <- function(D, topo) {
     v.sub <- get.vertex.attribute(x, "name")
     return(topo[which(topo %in% v.sub)])
   })
-  return(cc.s)
+  cc.s.rank <- order(sapply(cc.s, function(x) {
+    sum(which(topo %in% x))
+  }), decreasing = TRUE)
+  return(cc.s[cc.s.rank])
 }

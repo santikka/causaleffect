@@ -56,7 +56,7 @@ deconstruct <- function(P, P.context, topo) {
       }
     } else {
       if (P.context$fraction) {
-        P.context$num <- deconstruct(P, P.context$num)
+        P.context$num <- deconstruct(P, P.context$num, topo)
         return(P.context)
       }
       if (P.context$product || P.context$sum) {
@@ -101,7 +101,7 @@ deconstruct <- function(P, P.context, topo) {
     if (length(P$sumset) == 0) {
       n <- length(P$var)
       for (i in n:1) {
-        P.context$children[[init + i]] <- probability(var = P$var[i], cond = union(P$cond, P$var[-(i:n)]) %ts% topo,
+        P.context$children[[init+n-i+1]] <- probability(var = P$var[i], cond = union(P$cond, P$var[-(i:n)]) %ts% topo,
           domain = P$domain, do = P$do)
       }
     } else {
@@ -109,7 +109,7 @@ deconstruct <- function(P, P.context, topo) {
       if (n > 1) {
         P.temp <- probability(product = TRUE, children = list(), sumset = P$sumset)
         for (i in n:1) {
-          P.temp$children[[n-1+1]] <- probability(var = P$var[i], cond = union(P$cond, P$var[-(i:n)]) %ts% topo,
+          P.temp$children[[n-i+1]] <- probability(var = P$var[i], cond = union(P$cond, P$var[-(i:n)]) %ts% topo,
             domain = P$domain, do = P$do)
         }
         P.context$children[[init + 1]] <- P.temp
@@ -120,7 +120,7 @@ deconstruct <- function(P, P.context, topo) {
 
   if (P.context$sum) {
     init <- length(P.context$children)
-    P.temp <- probability(product = TRUE, children = list(), sumset = P$sumset) 
+    P.temp <- probability(product = TRUE, children = list(), sumset = P$sumset)
     n <- length(P$var)
     for (i in n:1) {
       P.temp$children[[n-i+1]] <- probability(var = P$var[i], cond = union(P$cond, P$var[-(i:n)]) %ts% topo,

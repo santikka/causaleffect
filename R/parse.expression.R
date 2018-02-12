@@ -1,12 +1,17 @@
 parse.expression <- function(P, topo, G.adj, G, G.obs) {
   if (P$fraction) {
-    P$num <- parse.expression(P$num, topo, G.adj, G, G.obs)
     P$den <- parse.expression(P$den, topo, G.adj, G, G.obs)
     if (is.null(P$den)) {
       sum.P <- P$sumset
       P <- P$num
       P$sumset <- union(sum.P, P$sumset) %ts% topo
     }
+    if (length(P$sumset) > 0) {
+      nodep <- setdiff(P$sumset, dependencies(P$den))
+      P$num$sumset <- union(P$num$sumset, nodep) %ts% topo
+      P$sumset <- setdiff(P$sumset, nodep) %ts% topo
+    }
+    P$num <- parse.expression(P$num, topo, G.adj, G, G.obs)
     return(P)
   }
   if (P$product) {

@@ -4,13 +4,24 @@ deconstruct <- function(P, P.context, topo) {
   if (P$fraction) {
     if (length(P$sumset) == 0) {
       if (P.context$fraction) {
-        P.context$num <- deconstruct(P$num, P.context$num, topo)
-        P.context$den <- deconstruct(P$den, P.context$den, topo)
+        if (length(P.context$num$sumset) == 0) P.context$num <- deconstruct(P$num, P.context$num, topo)
+        else {
+          P.temp <- probability(product = TRUE)
+          P.temp$children[[1]] <- P.context$num
+          P.temp <- deconstruct(P$num, P.temp, topo)
+          P.context$num <- P.temp
+        }
+        if (length(P.context$den$sumset) == 0) P.context$den <- deconstruct(P$den, P.context$den, topo)
+        else {
+          P.temp <- probability(product = TRUE)
+          P.temp$children[[1]] <- P.context$den
+          P.temp <- deconstruct(P$den, P.temp, topo)
+          P.context$den <- P.temp
+        }
         return(P.context)
       }
       if (P.context$product) {
         P.temp <- probability(fraction = TRUE)
-        P.temp$fraction <- TRUE
         P.temp$sumset <- P.context$sumset
         P.context$sumset <- character(0)
         P.temp$num <- deconstruct(P$num, P.context, topo)
@@ -53,6 +64,7 @@ deconstruct <- function(P, P.context, topo) {
       }
       if (P.context$sum) {
         P.context$children[[length(P.context$children)+1]] <- deconstruct(P, probability(), topo)
+        return(P.context)
       }
     } else {
       if (P.context$fraction) {

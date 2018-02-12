@@ -31,6 +31,14 @@ parse.deconstruct <- function(P) {
       P$num$sumset <- P$sumset
       return(P$num)
     }
+    if (length(P$den$children) == 1) {
+      P$den$children[[1]]$sumset <- union(P$den$sumset, P$den$children[[1]]$sumset)
+      P$den <- P$den$children[[1]]
+    }
+    if (length(P$num$children) == 1) {
+      P$num$children[[1]]$sumset <- union(P$num$sumset, P$num$children[[1]]$sumset)
+      P$num <- P$num$children[[1]]
+    }
   }
   return(P)
 }

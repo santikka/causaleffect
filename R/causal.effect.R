@@ -39,10 +39,7 @@ causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = 
     topo.u <- topological.sort(G.unobs)
     topo.u <- get.vertex.attribute(G.unobs, "name")[topo.u]
     res.prob <- deconstruct(res.prob, probability(), topo)
-    res.prob <- parse.deconstruct(res.prob)
     res.prob <- parse.expression(res.prob, topo, G.adj, G, G.obs)
-    res.prob <- deconstruct(res.prob, probability(), topo)
-    res.prob <- parse.deconstruct(res.prob)
   }
   attr(res.prob, "algorithm") <- algo
   attr(res.prob, "query") <- list(y = y, x = x, z = z)

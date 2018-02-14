@@ -1,12 +1,12 @@
-parse.deconstruct <- function(P) {
+cancel.out <- function(P) {
   if (P$product) {
     for (i in 1:length(P$children)) {
-      P$children[[i]] <- parse.deconstruct(P$children[[i]])
+      P$children[[i]] <- cancel.out(P$children[[i]])
     }
   } 
   if (P$fraction) {
-    P$num <- parse.deconstruct(P$num)
-    P$den <- parse.deconstruct(P$den)
+    P$num <- cancel.out(P$num)
+    P$den <- cancel.out(P$den)
     i <- 1
     k <- 0
     if (length(P$num$sumset) == 0 && length(P$den$sumset) == 0) {

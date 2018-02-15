@@ -26,16 +26,18 @@ get.expression.internal <- function(x, primes, prime.counter, start.sum, target.
   if (x$sum) {
     P <- paste(P, "\\left(", sep = "", collapse = "")
     add.strings <- c()
+    n <- length(x$children)
     for (i in 1:length(x$children)) {
       add.strings[i] <- paste0(c("w_{", i, "}^{(", x$weight, ")}", 
-        get.expression.internal(x$children[[i]], primes, prime.counter, TRUE, target.sym, single.source)), collapse = "")
+        get.expression.internal(x$children[[i]], primes, prime.counter, n > 1, target.sym, single.source)), collapse = "")
     }
     add.strings <- paste(add.strings, sep = "", collapse = " + ") 
     P <- paste0(P, add.strings, "\\right)", collapse = "")
   }
   if (x$product) {
-    for (i in 1:length(x$children)) P <- paste0(P,
-      get.expression.internal(x$children[[i]], primes, prime.counter, TRUE, target.sym, single.source), collapse = "")
+    n <- length(x$children)
+    for (i in 1:n) P <- paste0(P,
+      get.expression.internal(x$children[[i]], primes, prime.counter, n > 1, target.sym, single.source), collapse = "")
   }
   if (!(x$sum || x$product || x$fraction)) {
     P <- paste0(P, "P", collapse = "")

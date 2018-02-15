@@ -48,8 +48,8 @@ parse.expression <- function(P, topo, G.adj, G, G.obs) {
   }
   if (length(P$sumset) == 0) return(P)
   if (!P$product) {
-    if (identical(P$sumset, P$var)) return (NULL)
-    else return (P)
+    if (identical(P$sumset, P$var)) return(NULL)
+    else return(P)
   }
   if (simplify_terms) {
     ord.children <- order(unlist(lapply(P$children, FUN = function(x) which(topo == x$var))), decreasing = TRUE)
@@ -57,7 +57,7 @@ parse.expression <- function(P, topo, G.adj, G, G.obs) {
     P$children <- P$children[ord.children]
     P$sumset <- P$sumset[ord.sum]
     P <- simplify(P, topo, G.adj, G, G.obs)
-    if (length(P$children) == 0) return (NULL)
+    if (length(P$children) == 0) return(NULL)
   }
   P.parse <- probability(product = TRUE, children = list())
   remove <- c()
@@ -70,7 +70,7 @@ parse.expression <- function(P, topo, G.adj, G, G.obs) {
         j <- j + 1
       }
     }
-  } else return (P)
+  } else return(P)
   if (j > 0) {
     P.parse$children <- P$children[remove]
     P.parse$collapse <- TRUE

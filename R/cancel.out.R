@@ -9,7 +9,7 @@ cancel.out <- function(P) {
     P$den <- cancel.out(P$den)
     i <- 1
     k <- 0
-    if (length(P$num$sumset) == 0 && length(P$den$sumset) == 0) {
+    if (length(P$num$sumset) == 0 && length(P$den$sumset) == 0 && P$num$product && P$den$product) {
       while (i <= length(P$num$children) && length(P$num$children) > 0 && length(P$den$children) > 0) {
         is.element <- FALSE
         for (j in 1:length(P$den$children)) {

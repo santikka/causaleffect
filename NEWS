@@ -1,5 +1,5 @@
 Changes from version 1.3.6 to 1.3.7
- * Fixed an issue in simplification introduced in version 1.3.6.
+ * Fixed an issue with simplification introduced in version 1.3.6.
 
 Changes from version 1.3.5 to 1.3.6
  * Fixed a bug regarding graphs where zero edges had the 'description' attribute.

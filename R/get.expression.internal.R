@@ -20,24 +20,28 @@ get.expression.internal <- function(x, primes, prime.counter, start.sum, target.
     }
   }
   if (x$fraction) {
-    P <- paste0(P, "\\frac{", get.expression.internal(x$num, primes, prime.counter, start.sum, target.sym, single.source),
-      "}{", get.expression.internal(x$den, primes, prime.counter, start.sum, target.sym, single.source), "}", collapse = "")
+    P <- paste0(P, "\\frac{", get.expression.internal(x$num, primes, prime.counter, FALSE, target.sym, single.source),
+      "}{", get.expression.internal(x$den, primes, prime.counter, FALSE, target.sym, single.source), "}", collapse = "")
   }
   if (x$sum) {
     P <- paste(P, "\\left(", sep = "", collapse = "")
     add.strings <- c()
-    n <- length(x$children)
     for (i in 1:length(x$children)) {
+      new.sum <- FALSE
+      if (x$children[[i]]$product || x$children[[i]]$sum) new.sum <- TRUE
       add.strings[i] <- paste0(c("w_{", i, "}^{(", x$weight, ")}", 
-        get.expression.internal(x$children[[i]], primes, prime.counter, n > 1, target.sym, single.source)), collapse = "")
+        get.expression.internal(x$children[[i]], primes, prime.counter, new.sum, target.sym, single.source)), collapse = "")
     }
     add.strings <- paste(add.strings, sep = "", collapse = " + ") 
     P <- paste0(P, add.strings, "\\right)", collapse = "")
   }
   if (x$product) {
-    n <- length(x$children)
-    for (i in 1:n) P <- paste0(P,
-      get.expression.internal(x$children[[i]], primes, prime.counter, n > 1, target.sym, single.source), collapse = "")
+    for (i in 1:length(x$children)) {
+      new.sum <- FALSE
+      if (x$children[[i]]$product || x$children[[i]]$sum) new.sum <- TRUE
+      P <- paste0(P,
+        get.expression.internal(x$children[[i]], primes, prime.counter, new.sum, target.sym, single.source), collapse = "")
+    }
   }
   if (!(x$sum || x$product || x$fraction)) {
     P <- paste0(P, "P", collapse = "")

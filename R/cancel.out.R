@@ -7,6 +7,7 @@ cancel.out <- function(P) {
   if (P$fraction) {
     P$num <- cancel.out(P$num)
     P$den <- cancel.out(P$den)
+    if (identical(P$num, P$den, attrib.as.set = TRUE)) return(NULL)
     i <- 1
     k <- 0
     if (length(P$num$sumset) == 0 && length(P$den$sumset) == 0 && P$num$product && P$den$product) {
@@ -35,10 +36,25 @@ cancel.out <- function(P) {
       P$den$children[[1]]$sumset <- union(P$den$sumset, P$den$children[[1]]$sumset)
       P$den <- P$den$children[[1]]
     }
+    if (P$num$product && length(P$num$sumset) == 0) {
+      j <- 1
+      while(j <= length(P$num$children)) {
+        if (identical(P$num$children[[j]], P$den, attrib.as.set = TRUE)) {
+          P$num$children <- P$num$children[-j]
+          if (length(P$num$children) == 1) {
+            P$num <- P$num$children[[1]]
+          }
+          P$num$sumset <- P$sumset
+          return(P$num)
+        }
+        j <- j + 1
+      }  
+    }
     if (length(P$num$children) == 1) {
       P$num$children[[1]]$sumset <- union(P$num$sumset, P$num$children[[1]]$sumset)
       P$num <- P$num$children[[1]]
     }
+    if (identical(P$num, P$den, attrib.as.set = TRUE)) return(NULL)
   }
   return(P)
 }

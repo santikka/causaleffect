@@ -1,4 +1,4 @@
-export(aux.effect, causal.effect, generalize, get.expression, meta.transport, parse.graphml, recover, transport, verma.constraints)
+export(aux.effect, causal.effect, generalize, get.expression, meta.transport, parse.graphml, recover, surrogate.outcome, transport, verma.constraints)
 import(igraph, XML)
 importFrom(ggm, dSep, powerset)
 importFrom(stats, setNames)

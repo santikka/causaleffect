@@ -1,4 +1,4 @@
-generalize <- function(y, x, Z, D, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE, prioritize = FALSE, weighted = TRUE, surrogate = FALSE) {
+generalize <- function(y, x, Z, D, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE) {
   d <- length(D)
   z <- length(Z)
   v <- get.vertex.attribute(D[[1]], "name")
@@ -24,7 +24,7 @@ generalize <- function(y, x, Z, D, expr = TRUE, simp = FALSE, steps = FALSE, pri
     if (length(setdiff(Z[[i]], topo[[i]])) > 0) stop("Set 'Z[", i, "]' contains variables not present in diagram 'D[", i, "]'.")
     if (length(intersect(y, Z[[i]])) > 0) stop("Sets 'y' and 'Z[", i, "]' are not disjoint.")
   }
-  res <- trmz(y, x, probability(domain = 1), c(), 1, 1, D, Z, topo, list(), prioritize | surrogate, weighted, surrogate)
+  res <- trmz(y, x, probability(domain = 1), c(), 1, 1, D, Z, topo, list())
   res.prob <- res$P
   attr(res.prob, "algorithm") <- "trmz"
   attr(res.prob, "query") <- list(y = y, x = x)

@@ -1,5 +1,5 @@
 Changes from version 1.3.7 to 1.3.8
- * Added a new parameter to control whether experimental information is prioritized in transportability queries.
+ * Added a new function 'surrogate.outcome' to compute causal effects using surrogate outcomes.
 
 Changes from version 1.3.6 to 1.3.7
  * Fixed an issue with simplification introduced in version 1.3.6.

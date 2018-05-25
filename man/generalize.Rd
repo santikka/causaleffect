@@ -13,8 +13,6 @@
   \item{simp}{A logical value. If \code{TRUE}, a simplification procedure is applied to the resulting probability object. d-separation and the rules of do-calculus are applied repeatedly to simplify the expression. }
   \item{steps}{A logical value. If \code{TRUE}, returns a list where the first element corresponds to the expression of the transport formula and the second to the a list describing intermediary steps taken by the algorithm.}
   \item{primes}{A logical value. If \code{TRUE}, prime symbols are appended to summation variables to make them distinct from their other instantiations. }
-  \item{prioritize}{A logical value. If \code{TRUE}, identification suing data from experimental domains is prioritized over the target domain. }
-  \item{weighted}{A logical value. If \code{TRUE}, effects that are transportable from multiple domains are given as a weighted sum over the domains. }
 }
 
 \value{If \code{steps = FALSE}, A character string or an object of class \code{probability} that describes the transport formula. Otherwise, a list as described in the arguments.}

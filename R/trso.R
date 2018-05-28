@@ -165,10 +165,15 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
       tree$call$c.prime <- cc
       ind <- which(v %in% cc)
       cc.graph <- lapply(1:d, function(x) induced.subgraph(D[[x]], cc.s[[x]]))
-      Z.prime <- vector(mode = "list", length = d)
+      Z.prime <- NULL
       s.cc <- lapply(1:d, function(x) intersect(s[[x]], cc.s[[x]]))
-      if (length(J) != 0 & length(s.cc[[domain]]) == 0) Z.prime <- Z
-      if (length(J) != 0 & length(s.cc[[domain]]) > 0) return(NULL)
+      if (length(J) != 0) {
+        if (length(s.cc[[domain]]) == 0) Z.prime <- Z
+        else return(NULL)
+      } else {
+        if (length(s.cc[[domain]]) == 0) Z.prime <- Z
+        else Z.prime <- vector(mode = "list", length = d)
+      }
       kappa <- c()
       if (cc.len > 1) {
         for (i in 1:cc.len) { 

@@ -19,11 +19,12 @@ so.factorize <- function(P, S, topo) {
           Pw <- probability(var = vars, cond = union(P$cond, newcond) %ts% topo, do = P$do)
           Pc <- probability(var = newcond, cond = P$cond)
           return(probability(product = TRUE, children = list(Pw, Pc)))
+        } else {
+          return(P)
         }
-      } else {
-        P$do <- character(0)
       }
     }
+    P$do <- character(0)
   }
   return(P)
 }

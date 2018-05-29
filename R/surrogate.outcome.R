@@ -1,4 +1,4 @@
-surrogate.outcome <- function(y, x, G, S, expr = TRUE, steps = FALSE, primes = FALSE) {
+surrogate.outcome <- function(y, x, S, G, expr = TRUE, steps = FALSE, primes = FALSE) {
   d <- length(S) + 1
   v <- get.vertex.attribute(G, "name")
   if (length(intersect(x, y)) > 0) stop("Sets 'x' and 'y' are not disjoint.")

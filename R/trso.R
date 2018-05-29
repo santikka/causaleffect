@@ -171,16 +171,14 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
         if (length(s.cc[[domain]]) == 0) Z.prime <- Z
         else return(NULL)
       } else {
-        if (length(s.cc[[domain]]) == 0) Z.prime <- Z
-        else Z.prime <- vector(mode = "list", length = d)
+        Z.prime <- vector(mode = "list", length = d)
       }
       kappa <- c()
       if (cc.len > 1) {
         for (i in 1:cc.len) { 
           kappa <- union(kappa, setdiff(v[0:(ind[i]-1)], cc))
           if (P$product) {
-            P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa), v, topo)
-            P.prod <- simplify.expression(P.prod, NULL)
+            P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa), v, topo)  
             product.list[[cc.len - i + 1]] <- P.prod
           } else {
             P.prod <- P
@@ -196,7 +194,6 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
         kappa <- setdiff(v[0:(ind[1]-1)], cc)
         if (P$product) {
           P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa) , v, topo)
-          P.prod <- simplify.expression(P.prod, NULL)
           nxt <- trso(y, intersect(x, cc), P.prod, J, domain, cc.graph, Z.prime, topo, list())
           tree$branch[[1]] <- nxt$tree
           return(list(P = nxt$P, tree = tree))

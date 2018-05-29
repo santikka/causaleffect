@@ -205,14 +205,9 @@ trmz <- function(y, x, P, J, domain, w.index, D, Z, topo, tree) {
 
         # line 11
         if (length(E.tr) > 1) {
-          if (weighted) {
-            P.new <- probability(sum = TRUE, children = E.tr, weight = w.index)
-            tree$root <- P.new
-            return(list(P = P.new, W = W.new, tree = tree))
-          } else {
-            tree$root <- E.tr[[1]]
-            return(list(P = E.tr[[1]], W = W.new, tree = tree))
-          }
+          P.new <- probability(sum = TRUE, children = E.tr, weight = w.index)
+          tree$root <- P.new
+          return(list(P = P.new, W = W.new, tree = tree))
         }
         if (length(E.tr) == 1) {
           tree$root <- E.tr[[1]]

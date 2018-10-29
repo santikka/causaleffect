@@ -18,9 +18,9 @@ surrogate.outcome <- function(y, x, S, G, expr = TRUE, steps = FALSE, primes = F
         Di <- Di + vertex(tr.node, description = "S")
         Di <- Di + edge(tr.node, tr.target[j])
       }
-      D[[i+1]] <- Di
-      Z[[i+1]] <- Zi
     }
+    D[[i+1]] <- Di
+    Z[[i+1]] <- Zi
   }
   topo <- lapply(D, function(k) topological.sort(observed.graph(k)))
   topo <- lapply(1:d, function(k) get.vertex.attribute(D[[k]], "name")[topo[[k]]])

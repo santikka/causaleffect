@@ -1,4 +1,4 @@
-causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE, prune = FALSE) {
+causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE, prune = FALSE, stop_on_nonid = TRUE) {
   if (length(edge.attributes(G)) == 0) {
     G <- set.edge.attribute(G, "description", 1:length(E(G)), NA)
   }
@@ -18,10 +18,14 @@ causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = 
   algo <- ""
   res.prob <- probability()
   if (is.null(z) || identical(z, "") || identical(z, character(0))) {
-    if (prune) res <- pid(y, x, probability(), G, G.obs, topo, topo, list())
-    else res <- id(y, x, probability(), G, G.obs, topo, topo, list())
+    if (prune) {
+      res <- pid(y, x, probability(), G, G.obs, topo, topo, list())
+      algo <- "pid"
+    } else {
+      res <- id(y, x, probability(), G, G.obs, topo, topo, list())
+      algo <- "id"
+    }
     res.prob <- res$P
-    algo <- "id"
   } else {
     res <- idc(y, x, z, probability(), G, G.obs, topo, topo, list(), prune)
     res.num <- res$P
@@ -33,17 +37,27 @@ causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = 
     algo <- "idc"
   }
   res.tree <- res$tree
-  if (simp) {
-    G.unobs <- unobserved.graph(G)
-    G.adj <- as.matrix(get.adjacency(G.unobs))
-    topo.u <- topological.sort(G.unobs)
-    topo.u <- get.vertex.attribute(G.unobs, "name")[topo.u]
-    res.prob <- deconstruct(res.prob, probability(), topo)
-    res.prob <- parse.expression(res.prob, topo, G.adj, G, G.obs)
+  if (res$tree$call$id) {
+    if (simp) {
+      G.unobs <- unobserved.graph(G)
+      G.adj <- as.matrix(get.adjacency(G.unobs))
+      topo.u <- topological.sort(G.unobs)
+      topo.u <- get.vertex.attribute(G.unobs, "name")[topo.u]
+      res.prob <- deconstruct(res.prob, probability(), topo)
+      res.prob <- parse.expression(res.prob, topo, G.adj, G, G.obs)
+    }
+    attr(res.prob, "algorithm") <- algo
+    attr(res.prob, "query") <- list(y = y, x = x, z = z)
+    if (expr) res.prob <- get.expression(res.prob, primes)
+    if (steps) return(list(P = res.prob, steps = res.tree, id = TRUE))
+    return(res.prob)
+  } else {
+    if (stop_on_nonid) stop("Not identifiable.", call. = FALSE)
+    res.prob <- probability()
+    attr(res.prob, "algorithm") <- algo
+    attr(res.prob, "query")<- list(y = y, x = x, z = z)
+    if (steps) return(list(P = res.prob, steps = res$tree, id = FALSE))
+    if (expr) return("")
+    return(NULL)
   }
-  attr(res.prob, "algorithm") <- algo
-  attr(res.prob, "query") <- list(y = y, x = x, z = z)
-  if (expr) res.prob <- get.expression(res.prob, primes)
-  if (steps) return(list(P = res.prob, steps = res.tree))
-  return (res.prob)
 }

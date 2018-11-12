@@ -1,4 +1,4 @@
-generalize <- function(y, x, Z, D, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE) {
+generalize <- function(y, x, Z, D, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE, stop_on_nonid = TRUE) {
   d <- length(D)
   z <- length(Z)
   v <- get.vertex.attribute(D[[1]], "name")
@@ -22,14 +22,24 @@ generalize <- function(y, x, Z, D, expr = TRUE, simp = FALSE, steps = FALSE, pri
     if (length(setdiff(y, topo[[i]])) > 0) stop("Set 'y' contains variables not present in diagram 'D[", i, "]'.")
     if (length(setdiff(x, topo[[i]])) > 0) stop("Set 'x' contains variables not present in diagram 'D[", i, "]'.")
     if (length(setdiff(Z[[i]], topo[[i]])) > 0) stop("Set 'Z[", i, "]' contains variables not present in diagram 'D[", i, "]'.")
-    if (length(intersect(y, Z[[i]])) > 0) stop("Sets 'y' and 'Z[", i, "]' are not disjoint.")
   }
   res <- trmz(y, x, probability(domain = 1), c(), 1, 1, D, Z, topo, list())
-  res.prob <- res$P
-  attr(res.prob, "algorithm") <- "trmz"
-  attr(res.prob, "query") <- list(y = y, x = x)
-  attr(res.prob, "sources") <- d - 1
-  if (expr) res.prob <- get.expression(res.prob, primes)
-  if (steps) return(list(P = res.prob, steps = res$tree))
-  return(res.prob)
+  if (res$tree$call$id) {
+    res.prob <- res$P
+    attr(res.prob, "algorithm") <- "trmz"
+    attr(res.prob, "query") <- list(y = y, x = x)
+    attr(res.prob, "sources") <- d - 1
+    if (expr) res.prob <- get.expression(res.prob, primes)
+    if (steps) return(list(P = res.prob, steps = res$tree, id = TRUE))
+    return(res.prob)
+  } else {
+    if (stop_on_nonid) stop("Not transportable.", call. = FALSE)
+    res.prob <- probability()
+    attr(res.prob, "algorithm") <- "trmz"
+    attr(res.prob, "query") <- list(y = y, x = x)
+    attr(res.prob, "sources") <- d - 1
+    if (steps) return(list(P = res.prob, steps = res$tree, id = FALSE))
+    if (expr) return("")
+    return(NULL)
+  }
 }

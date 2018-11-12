@@ -5,7 +5,7 @@ identify <- function(C, T, Q, G, topo, tree) {
   G.obs <- observed.graph(G)
   G.T <- induced.subgraph(G, T)
   G.T.obs <- observed.graph(G.T)
-  tree$call <- list(y = C, x = setdiff(v, C), C = C, T = T, P = activate.selection.variable(Q, s), G = G.T, line = "", v = v, alg = "Identify")
+  tree$call <- list(y = C, x = setdiff(v, C), C = C, T = T, P = activate.selection.variable(Q, s), G = G.T, line = "", v = v, alg = "Identify", id = FALSE)
   anc.c <- ancestors(C, G.T.obs, topo)
   A <- intersect(anc.c, T)
   tree$call$A <- A
@@ -18,13 +18,18 @@ identify <- function(C, T, Q, G, topo, tree) {
       Q$var <- C
     }
     tree$call$line <- 9
+    tree$call$id <- TRUE
     tree$call$anc.c <- anc.c
     tree$root <- Q
     return(list(P = Q, tree = tree))
   }
 
   # ii)
-  if (identical(A, T)) stop("Cannot compute Q[C].", call. = FALSE)
+  if (identical(A, T)) {
+    tree$call$line <- 10
+    tree$call$id <- FALSE
+    return(list(P = Q, tree = tree))
+  }
 
   # iii)
   if (all(C %in% A) && all(A %in% T)) {
@@ -41,6 +46,7 @@ identify <- function(C, T, Q, G, topo, tree) {
     Q.T.one <- compute.c.factor(T.one, A, Q.A, topo)
     nxt <- identify(C, T.one, Q.T.one, G, topo, list())
     tree$call$line <- 11
+    tree$call$id <- nxt$tree$call$id
     tree$call$T.prime <- T.prime
     tree$call$T.one <- T.one
     tree$branch[[1]] <- nxt$tree

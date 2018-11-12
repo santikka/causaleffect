@@ -1,4 +1,4 @@
-recover <- function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE) {
+recover <- function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE, stop_on_nonid = TRUE) {
   if (length(edge.attributes(G)) == 0) {
     G <- set.edge.attribute(G, "description", 1:length(E(G)), NA)
   }
@@ -28,26 +28,39 @@ recover <- function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = F
   res <- probability()
   tree <- list()
   tree$call <- list(y = y, x = x, d = D, T.prime = T.prime, 
-    P = probability(var = v, cond = paste0(s, " = 1")), G = G, line = 1, v = v)
-  product.list <- list()
-  nxt.list <- list()
+    P = probability(var = v, cond = paste0(s, " = 1")), G = G, line = 1, v = v, id = FALSE)
+  product.list <- vector(mode = "list", length = cg)
+  nxt.list <- vector(mode = "list", length = cg)
+  id.list <- logical(cg)
   for (i in 1:cg) {
     nxt.list[[i]] <- rc(cc[[i]], probability(var = v, cond = s), G, topo, tree)
     product.list[[i]] <- nxt.list[[i]]$P
     tree$branch[[i]] <- nxt.list[[i]]$tree
+    id.list[i] <- nxt.list[[i]]$tree$call$id
   }
-  if (length(product.list) > 1) {
-    res$sumset <- setdiff(D, y)
-    res$product <- TRUE
-    res$children <- product.list
+  tree$call$id <- all(id.list)
+  if (tree$call$id) {
+    if (length(product.list) > 1) {
+      res$sumset <- setdiff(D, y)
+      res$product <- TRUE
+      res$children <- product.list
+    } else {
+      res <- product.list[[1]]
+      res$sumset <- union(res$sumset, setdiff(D, y))
+    }
+    res <- activate.selection.variable(res, s)
+    attr(res, "algorithm") <- "rc"
+    attr(res, "query") <- list(y = y, x = x, s = s)
+    if (expr) res <- get.expression(res, primes)
+    if (steps) return(list(P = res, steps = tree, id = TRUE))
+    return(res)
   } else {
-    res <- product.list[[1]]
-    res$sumset <- union(res$sumset, setdiff(D, y))
+    if (stop_on_nonid) stop("Not recoverable.", call. = FALSE)
+    res <- probability()
+    attr(res, "algorithm") <- "rc"
+    attr(res, "query")<- list(y = y, x = x, s = s)
+    if (steps) return(list(P = res, steps = tree, id = FALSE))
+    if (expr) return("")
+    return(NULL)
   }
-  res <- activate.selection.variable(res, s)
-  attr(res, "algorithm") <- "rc"
-  attr(res, "query") <- list(y = y, x = x, s = s)
-  if (expr) res <- get.expression(res, primes)
-  if (steps) return(list(P = res, steps = tree))
-  return(res)
 }

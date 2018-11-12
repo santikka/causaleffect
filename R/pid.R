@@ -2,8 +2,8 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
   to <- NULL
   from <- NULL
   description <- NULL
-  if (length(P$var) == 0 & !(P$product | P$fraction)) tree$call <- list(y = y, x = x, P = probability(var = v), G = G, line = "", v = v)
-  else tree$call <- list(y = y, x = x, P = P, G = G, line = "", v = v)
+  if (length(P$var) == 0 & !(P$product | P$fraction)) tree$call <- list(y = y, x = x, P = probability(var = v), G = G, line = "", v = v, id = FALSE)
+  else tree$call <- list(y = y, x = x, P = P, G = G, line = "", v = v, id = FALSE)
 
   # line 1
   if (length(x) == 0) {
@@ -13,6 +13,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
       P$var <- y
     }
     tree$call$line <- 1
+    tree$call$id <- TRUE
     tree$root <- P
     return(list(P = P, tree = tree))
   }
@@ -31,6 +32,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
     nxt <- pid(y, intersect(x, an), P, G.an, G.an.obs, an, topo, list())
     tree$branch[[1]] <- nxt$tree
     tree$call$line <- 2
+    tree$call$id <- nxt$tree$call$id
     tree$call$an <- an
     return(list(P = nxt$P, tree = tree))
   }
@@ -53,6 +55,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
       nxt <- pid(y, setdiff(x, z), P, G.z, G.z.obs, v.new, topo, list())
       tree$branch[[1]] <- nxt$tree
       tree$call$line <- 3
+      tree$call$id <- nxt$tree$call$id
       tree$call$z <- z
       return(list(P = nxt$P, tree = tree))
     }
@@ -81,6 +84,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
     nxt <- pid(y, x, P, G.t, G.t.obs, v.new, topo, list())
     tree$branch[[1]] <- nxt$tree
     tree$call$line <- 4
+    tree$call$id <- nxt$tree$call$id
     tree$call$t <- t
     return(list(P = nxt$P, tree = tree))
   }
@@ -122,6 +126,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
           nxt <- pid(y, x, P, G, G.obs, v, topo, list())
           tree$branch[[1]] <- nxt$tree
           tree$call$line <- 5
+          tree$call$id <- nxt$tree$call$id
           tree$call$vi <- v.xy[i]
           return(list(P = nxt$P, tree = tree))
         }
@@ -136,7 +141,8 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
   if (w.len != 0) {
     nxt <- pid(y, union(x, w) %ts% topo, P, G, G.obs, v, topo, list())
     tree$branch[[1]] <- nxt$tree
-    tree$call$line <- 3
+    tree$call$line <- 6
+    tree$call$id <- nxt$tree$call$id
     tree$call$w <- w
     tree$call$an.xbar <- an.xbar
     return(list(P = nxt$P, tree = tree))
@@ -146,12 +152,13 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
   G.remove.x <- induced.subgraph(G, v[!(v %in% x)])
   s <- c.components(G.remove.x, topo)
   if (length(s) > 1) {
-    tree$call$line <- 4
+    tree$call$line <- 7
     nxt <- lapply(s, function(t) {
       return(pid(t, setdiff(v, t), P, G, G.obs, v, topo, list()))
     })
     product.list <- lapply(nxt, "[[", "P")
     tree$branch <- lapply(nxt, "[[", "tree")
+    tree$call$id <- all(sapply(nxt, function(x) x$tree$call$id))
     return(list(
       P = probability(sumset = setdiff(v, union(y, x)), product = TRUE, children = product.list),
       tree = tree
@@ -162,16 +169,17 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
     # line 8
     cc <- c.components(G, topo)
     if (identical(cc[[1]], v)) {
-      v.string <- paste(v, sep = "", collapse = ",")
-      s.string <- paste(s, sep = "", collapse = ",")
-      tree$call$line <- 5
-      stop("Graph contains a hedge formed by C-forests of nodes: \n {", v.string , "} and {", s.string , "}.", call. = FALSE)
+      tree$call$s <- cc[[1]]
+      tree$call$line <- 8
+      tree$call$id <- FALSE
+      tree$root <- P
+      return(list(P = P, tree = tree))
     }
    
     # line 9
     pos <- Position(function(x) identical(s, x), cc, nomatch = 0)
     if (pos > 0) {
-      tree$call$line <- 6
+      tree$call$line <- 9
       tree$call$s <- s
       ind <- which(v %in% s)
       s.len <- length(s)
@@ -194,6 +202,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
         P.new <- probability(sumset = setdiff(s, y), product = TRUE, children = product.list)
         # P.new <- simplify.expression(P.new, NULL)
         tree$root <- P.new
+        tree$call$id <- TRUE
         return(list(P = P.new, tree = tree))
       } 
       if (P.prod$product | P.prod$fraction) {
@@ -203,13 +212,14 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
         P.prod$var <- setdiff(P.prod$var, union(P.prod$sumset, setdiff(s, y)))
       }
       tree$root <- P.prod
+      tree$call$id <- TRUE
       return(list(P = P.prod, tree = tree))
     }
 
     # line 10
     tree$call$s <- s
     s <- Find(function(x) all(s %in% x), cc)
-    tree$call$line <- 7
+    tree$call$line <- 10
     tree$call$s.prime <- s
     s.len <- length(s)
     ind <- which(v %in% s)
@@ -234,6 +244,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
     if (s.len > 1) nxt <- pid(y, x.new, probability(product = TRUE, children = product.list), G.s, G.s.obs, s, topo, list())
     else nxt <- pid(y, x.new, product.list[[1]], G.s, G.s.obs, s, topo, list())
     tree$branch[[1]] <- nxt$tree
+    tree$call$id <- nxt$tree$call$id
     return(list(P = nxt$P, tree = tree))
   }
 

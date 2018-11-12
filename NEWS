@@ -1,4 +1,6 @@
 Changes from version 1.3.8 to 1.3.9
+ * Added a new parameter 'stop_on_nonid' to all identifiability algorithms. Value 'TRUE' mimics old functionality, where an error is produced when a non-identifiable effect is discovered. Value 'FALSE' continues the recursion.
+ * Fixed a bug in the recoverability algorithm.
  * Fixed a bug related to computing surrogate outcomes.
 
 Changes from version 1.3.7 to 1.3.8

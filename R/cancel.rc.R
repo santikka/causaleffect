@@ -15,7 +15,7 @@ cancel.rc <- function(product.list) {
   remove.den <- c()
   while (i <= length(dens)) {
     while (j <= length(nums)) {
-      if (identical(dens[[i]], nums[[j]]) && !(j %in% remove)) {
+      if (identical(dens[[i]], nums[[j]]) && !(j %in% remove.num)) {
         remove.num <- c(remove.num, j)
         remove.den <- c(remove.den, i)
         j <- 1

@@ -8,7 +8,7 @@ rc <- function(D, P, G, topo, tree) {
   G.s.obs <- observed.graph(G)
   anc.d.obs <- ancestors(D, G.obs, topo)
   anc.d <- ancestors(D, G.s.obs, topo)
-  tree$call <- list(y = D, x = setdiff(v, D), P = activate.selection.variable(P, s), G = G, line = "", v = v.s, alg = "RC")
+  tree$call <- list(y = D, x = setdiff(v, D), P = activate.selection.variable(P, s), G = G, line = "", v = v.s, alg = "RC", id = FALSE)
 
   # line 1
   anc.s <- ancestors(s, G.s.obs, topo)
@@ -21,6 +21,7 @@ rc <- function(D, P, G, topo, tree) {
     }
     nxt <- rc(D, P, induced.subgraph(G, anc.union), topo, list())
     tree$call$line <- 2
+    tree$call$id <- nxt$tree$call$id
     tree$call$anc.d <- anc.d
     tree$call$and.s <- anc.s
     tree$branch[[1]] <- nxt$tree
@@ -40,15 +41,21 @@ rc <- function(D, P, G, topo, tree) {
       if (all(D %in% cc[[i]])) {
         nxt <- identify(D, cc[[i]], compute.c.factor(cc[[i]], v, P, topo), G, topo, list())
         tree$call$line <- 5
+        tree$call$id <- nxt$tree$call$id
         tree$call$c.i <- cc[[i]]
         tree$branch[[1]] <- nxt$tree
-        return(list(P = nxt$P, tree = tree)) 
+        return(list(P = nxt$P, tree = tree))
       }
     }
   } 
 
   # line 3
-  if (length(c.set) == 0) stop("Unrecoverable", call. = FALSE)
+  if (length(c.set) == 0) {
+    tree$call$line <- 4
+    tree$call$id <- FALSE
+    tree$root <- P
+    return(list(P = P, tree = tree))
+  }
 
   # line 5
   c.len <- length(c.ind)
@@ -67,6 +74,7 @@ rc <- function(D, P, G, topo, tree) {
   }
   nxt <- rc(D, P.new, induced.subgraph(G, setdiff(v.s, c.set)), topo, list())
   tree$call$line <- 6
+  tree$call$id <- nxt$tree$call$id
   tree$call$c.set <- c.set
   tree$branch[[1]] <- nxt$tree
   return(list(P = nxt$P, tree = tree))

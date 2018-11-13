@@ -3,9 +3,10 @@
 \title{Identify a causal effect using surrogate experiments}
 \description{This function returns an expression for the joint distribution of the set of variables (\code{y})
 given the intervention on the set of variables (\code{x}) using auxiliary experiments on a set (\code{z}) if the effect is identifiable.  Otherwise
-an error is thrown describing the graphical structure that witnesses unidentifiability. }
+an error is thrown describing the graphical structure that witnesses non-identifiability. }
 
-\usage{aux.effect(y, x, z, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE)}
+\usage{aux.effect(y, x, z, G, expr = TRUE, simp = TRUE, 
+  steps = FALSE, primes = FALSE, stop_on_nonid = TRUE)}
 
 \arguments{
   \item{y}{A character vector of variables of interest given the intervention. }
@@ -16,6 +17,7 @@ an error is thrown describing the graphical structure that witnesses unidentifia
   \item{simp}{A logical value. If \code{TRUE}, a simplification procedure is applied to the resulting probability object. d-separation and the rules of do-calculus are applied repeatedly to simplify the expression. }
   \item{steps}{A logical value. If \code{TRUE}, returns a list where the first element corresponds to the expression of the causal effect and the second to the a list describing intermediary steps taken by the algorithm. }
   \item{primes}{A logical value. If \code{TRUE}, prime symbols are appended to summation variables to make them distinct from their other instantiations. }
+  \item{stop_on_nonid}{A logical value. If \code{TRUE}, an error is produced when a non-identifiable effect is discovered. Otherwise recursion continues normally. }
 }
 
 \value{If \code{steps = FALSE}, A character string or an object of class \code{probability} that describes the interventional distribution. Otherwise, a list as described in the arguments.}

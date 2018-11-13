@@ -66,4 +66,8 @@ Tian J. 2002 Studies in Causal Reasoning and Learning. PhD thesis, Department of
 Tian, J., Pearl J. 2002 On Testable Implications of Causal Models with Hidden variables. \emph{Proceedings of the Eighteenth Conference on Uncertainty in Artificial Intelligence}, 519--527.
 
 Tikka, S., Karvanen J. 2017 Identifying Causal Effects with the R Package causaleffect. Journal of Statistical Software, \bold{76(12)}, 1--30.
+
+Tikka, S., Karvanen J. 2017 Simplifying Probabilistic Expressions in Causal Inference. Journal of Machine Learning Research, \bold{18(36)}, 1--30.
+
+Tikka, S., Karvanen J. 2018 Enhancing Identification of Causal Effects by Pruning. Journal of Machine Learning Research, \bold{18(194)}, 1--23.
 }

@@ -2,7 +2,8 @@
 \alias{surrogate.outcome}
 \title{Derive a formula for a causal effect using surrogate outcomes}
 \description{This function returns an expression for the causal effect of interest using surrogate outcomes. The formula is returned for the interventional distribution of the set of variables (\code{y}) given the intervention on the set of variables (\code{x}). Available experimental data are depicted by a list (\code{S}) where each element is a list with two elements, \code{Z} and \code{W}, that are character vectors describing the experiments and the outcome variables, respectively. }
-\usage{surrogate.outcome(y, x, S, G, expr = TRUE, steps = FALSE, primes = FALSE)}
+\usage{surrogate.outcome(y, x, S, G, expr = TRUE, 
+  steps = FALSE, primes = FALSE, stop_on_nonid = TRUE)}
 
 \arguments{
   \item{y}{A character vector of variables of interest given the intervention. }
@@ -12,6 +13,7 @@
   \item{expr}{A logical value. If \code{TRUE}, a string is returned describing the expression in LaTeX syntax. Else, a list structure is returned which can be manually parsed by the function \code{get.expression}}
   \item{steps}{A logical value. If \code{TRUE}, returns a list where the first element corresponds to the expression of the transport formula and the second to the a list describing intermediary steps taken by the algorithm.}
   \item{primes}{A logical value. If \code{TRUE}, prime symbols are appended to summation variables to make them distinct from their other instantiations. }
+  \item{stop_on_nonid}{A logical value. If \code{TRUE}, an error is produced when a non-identifiable effect is discovered. Otherwise recursion continues normally. }
 }
 
 \value{If \code{steps = FALSE}, A character string or an object of class \code{probability} that describes the causal effect. Otherwise, a list as described in the arguments.}

@@ -2,7 +2,11 @@ simplify.expression <- function(P.num, P.den) {
   if (is.null(P.den)) {
     if (P.num$fraction) {
       P.new <- simplify.expression(P.num$num, P.num$den)
-      P.new$sumset <- P.num$sumset
+      if (P.new$product && length(P.new$children) == 1) {
+        ss <- P.new$sumset
+        P.new <- P.new$children[[1]]
+        P.new$sumset <- union(P.new$sumset, ss)
+      }
       return(P.new)
     }
     P <- P.num
@@ -10,15 +14,18 @@ simplify.expression <- function(P.num, P.den) {
       parse.children <- sapply(P$children, FUN = function(x) (x$product || length(x$sumset) > 0 || x$fraction || x$sum))
       if (sum(parse.children) > 0) return(P)
       while (length(P$sumset) > 0) {
-        if (P$children[[1]]$var %in% P$sumset && !(P$children[[1]]$cond %in% P$sumset)) {
+        if (P$children[[1]]$var %in% P$sumset) {
           P$sumset <- setdiff(P$sumset, P$children[[1]]$var)
           P$children <- P$children[-1]
         } else break
       }
       if (length(P$children) == 1) {
-        ch <- P$children[[1]] 
+        ch <- P$children[[1]]
         return(probability(var = ch$var, cond = ch$cond, sumset = P$sumset,
           domain = ch$domain, do = ch$do))
+      }
+      if (length(P$children) == 0) {
+        return(probability())
       } else return(P)
     } else {
       return(probability(var = setdiff(P$var, P$sumset), cond = P$cond, sumset = c(),
@@ -68,8 +75,12 @@ simplify.expression <- function(P.num, P.den) {
             }
           }
         } else {
-          P.num$children <- P.num$children[-1]
-          if (length(P.num$children) == 1) return(P.num$children[[1]])
+          P.num$children <- P.num$children[-length(P.num$children)]
+          if (length(P.num$children) == 1) {
+            ch <- P.num$children[[1]]
+            ch$sumset <- P.num$sumset
+            return(ch)
+          }
           return(P.num)
         }
       }

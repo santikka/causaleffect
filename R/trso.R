@@ -99,7 +99,7 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
           P.new <- P
           P.new$domain <- i
           xcapz <- intersect(Z[[i]], x)
-          D.remove.xcapz <- lapply(1:d, function(x) induced.subgraph(D[[x]], v[!(v %in% xcapz)]))
+          D.remove.xcapz <- lapply(1:d, function(x) induced.subgraph(D[[x]], v.s[[x]][!(v.s[[x]] %in% xcapz)]))
           nxt <- trso(y, setdiff(x, Z[[i]]), P.new, xcapz, i, D.remove.xcapz, Z, topo, list())
           if (nxt$tree$call$id) {
             ind <- ind + 1
@@ -134,7 +134,7 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
         cc.len <- length(cc)
         product.list <- vector(mode = "list", length = cc.len)
         tree$call$line <- 9
-        tree$call$c.zero <- cc
+        tree$call$czero <- cc
         for (i in 1:cc.len) {
           P.prod <- probability()
           P.num <- P
@@ -162,7 +162,7 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
       }
 
       # line 10
-      tree$call$c.zero <- cc
+      tree$call$czero <- cc
       cc.s <- lapply(cG.s, function(x) {
         x[[which(unlist(lapply(x, function(y) all(cc %in% y))))]]
       })
@@ -177,13 +177,19 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
       s.cc <- lapply(1:d, function(x) intersect(s[[x]], cc.s[[x]]))
       if (length(J) != 0) {
         if (length(s.cc[[domain]]) == 0) Z.prime <- Z
-        else return(NULL)
+        else {
+          tree$call$line <- 10
+          tree$call$czero <- cc
+          tree$call$id <- FALSE
+          tree$root <- P
+          return(list(P = P, tree = tree))
+        }
       } else {
         Z.prime <- vector(mode = "list", length = d)
       }
       kappa <- c()
       if (cc.len > 1) {
-        for (i in 1:cc.len) { 
+        for (i in 1:cc.len) {
           kappa <- union(kappa, setdiff(v[0:(ind[i]-1)], cc))
           if (P$product) {
             P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa), v, topo)
@@ -202,15 +208,15 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
       } else {
         kappa <- setdiff(v[0:(ind[1]-1)], cc)
         if (P$product) {
-          P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa) , v, topo)
+          P.prod <- parse.joint(P, cc, union(intersect(v[0:(ind[i]-1)], cc), kappa) , v, topo)
           nxt <- trso(y, intersect(x, cc), P.prod, J, domain, cc.graph, Z.prime, topo, list())
           tree$branch[[1]] <- nxt$tree
           tree$call$id <- nxt$tree$call$id
           return(list(P = nxt$P, tree = tree))
         } else {
           P.prod <- P
-          P.prod$var <- cc[1]
-          P.prod$cond <- union(intersect(v[0:(ind[1]-1)], cc), kappa) 
+          P.prod$var <- cc
+          P.prod$cond <- union(intersect(v[0:(ind[1]-1)], cc), kappa)
           nxt <- trso(y, intersect(x, cc), P.prod, J, domain, cc.graph, Z.prime, topo, list())
           tree$branch[[1]] <- nxt$tree
           tree$call$id <- nxt$tree$call$id

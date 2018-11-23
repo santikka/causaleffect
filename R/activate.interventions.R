@@ -2,6 +2,7 @@ activate.interventions <- function(P, domain, active) {
   if (P$fraction) {
     P$num <- activate.interventions(P$num, domain, active)
     P$den <- activate.interventions(P$den, domain, active)
+    return(P)
   }
   if (P$product) {
     const <- c()
@@ -15,13 +16,16 @@ activate.interventions <- function(P, domain, active) {
     } 
     if (length(const) > 0) {
       P$children <- P$children[-const]
+      if (length(P$children) == 1) {
+        ss <- P$sumset
+        P <- P$children[[1]]
+        P$sumset <- union(P$sumset, ss)
+      }
     }
-  }
-  else {
-    P$domain <- domain
-    P$cond <- setdiff(P$cond, active)
-    P$do <- active
     return(P)
   }
+  P$domain <- domain
+  P$cond <- setdiff(P$cond, active)
+  P$do <- active
   return(P)
 }

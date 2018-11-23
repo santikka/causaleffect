@@ -106,7 +106,7 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
             P.new <- P
             P.new$domain <- i
             xcapz <- intersect(Z[[i]], x)
-            D.remove.xcapz <- lapply(1:d, function(x) induced.subgraph(D[[x]], v[!(v %in% xcapz)]))
+            D.remove.xcapz <- lapply(1:d, function(x) induced.subgraph(D[[x]], v.s[[x]][!(v.s[[x]] %in% xcapz)]))
             nxt <- trmz_ex(y, setdiff(x, Z[[i]]), P, xcapz, i, W.new, D.remove.xcapz, Z, topo, list(), prioritize)
             if (nxt$tree$call$id) {
               ind <- ind + 1
@@ -211,7 +211,7 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
       } else {
         kappa <- setdiff(v[0:(ind[1]-1)], cc)
         if (P$product) {
-          P.prod <- parse.joint(P, cc[i], union(intersect(v[0:(ind[i]-1)], cc), kappa) , v, topo)
+          P.prod <- parse.joint(P, cc, union(intersect(v[0:(ind[i]-1)], cc), kappa) , v, topo)
           P.prod <- simplify.expression(P.prod, NULL)
           nxt <- trmz_ex(y, intersect(x, cc), P.prod, J, domain, w.index, cc.graph, Z, topo, list(), prioritize)
           tree$branch[[1]] <- nxt$tree
@@ -219,7 +219,7 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
           return(list(P = nxt$P, W = nxt$W, tree = tree))
         } else {
           P.prod <- P
-          P.prod$var <- cc[1]
+          P.prod$var <- cc
           P.prod$cond <- union(intersect(v[0:(ind[1]-1)], cc), kappa)
           nxt <- trmz_ex(y, intersect(x, cc), P.prod, J, domain, w.index, cc.graph, Z, topo, list(), prioritize)
           tree$branch[[1]] <- nxt$tree
@@ -252,7 +252,7 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
               P.new <- P
               P.new$domain <- i
               xcapz <- intersect(Z[[i]], x)
-              D.remove.xcapz <- lapply(1:d, function(x) induced.subgraph(D[[x]], v[!(v %in% xcapz)]))
+              D.remove.xcapz <- lapply(1:d, function(x) induced.subgraph(D[[x]], v.s[[x]][!(v.s[[x]] %in% xcapz)]))
               nxt <- trmz_ex(y, setdiff(x, Z[[i]]), P, xcapz, i, W.new, D.remove.xcapz, Z, topo, list(), prioritize)
               if (nxt$tree$call$id) {
                 ind <- ind + 1

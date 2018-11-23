@@ -11,12 +11,13 @@ surrogate.outcome <- function(y, x, S, G, expr = TRUE, steps = FALSE, primes = F
   for (i in 1:(d-1)) {
     Di <- G
     Zi <- S[[i]]$Z
-    tr.target <- setdiff(descendants(Zi, G.obs, topo.obs), S[[i]]$W)
-    if ((tr.len <- length(tr.target)) > 0) {
+    Wi <- S[[i]]$W
+    target <- tr.target(Zi, Wi, G.obs, G, topo.obs)
+    if ((tr.len <- length(target)) > 0) {
       for (j in 1:tr.len) {
         tr.node <- paste0(c("S_{",i,",",j,"}"), collapse = "")
         Di <- Di + vertex(tr.node, description = "S")
-        Di <- Di + edge(tr.node, tr.target[j])
+        Di <- Di + edge(tr.node, target[j])
       }
     }
     D[[i+1]] <- Di

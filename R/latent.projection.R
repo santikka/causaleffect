@@ -16,7 +16,7 @@ latent.projection <- function(G, l) {
     unobs.len <- length(unobs.ind)
     if (inc.len > 0 & out.len > 0) {
       obs.new <- t(as.matrix(expand.grid(inc.ind, out.ind)))
-      G <- G + edges(v[c(obs.new)]) # replace path v_1 -> L -> v_2 with v_1 -> v_2
+      G <- G + edges(v[c(obs.new)], description = rep(NA, ncol(obs.new))) # replace path v_1 -> L -> v_2 with v_1 -> v_2
     }
     if (out.len > 1) {
       unobs.new <- combn(out.ind, 2)
@@ -29,7 +29,7 @@ latent.projection <- function(G, l) {
     G <- induced.subgraph(G, setdiff(v, l[i]))
     e.dat <- as.data.frame(get.edges(G, E(G)))
     e.dat[ ,3] <- edge.attributes(G)
-    G <- subgraph.edges(G, which(!duplicated(e.dat)))
+    G <- subgraph.edges(G, which(!duplicated(e.dat)), delete.vertices = FALSE)
   }
   return(G)
 }

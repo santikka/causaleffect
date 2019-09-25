@@ -1,29 +1,31 @@
 parse.expression <- function(P, topo, G.adj, G, G.obs) {
   if (P$fraction) {
     P <- cancel.out(P)
-    P$den <- parse.expression(P$den, topo, G.adj, G, G.obs)
-    if (length(P$den) == 0) {
-      sum_p <- P$sumset
-      P <- P$num
-      P$sumset <- union(sum_p, P$sumset) %ts% topo
-      if (P$product) {
-        if (length(P$children) == 1) {
-          sum_p <- P$sumset
-          P <- P$children[[1]]
-          P$sumset <- union(sum_p, P$sumset) %ts% topo
+    if (P$fraction) {
+      P$den <- parse.expression(P$den, topo, G.adj, G, G.obs)
+      if (length(P$den) == 0) {
+        sum_p <- P$sumset
+        P <- P$num
+        P$sumset <- union(sum_p, P$sumset) %ts% topo
+        if (P$product) {
+          if (length(P$children) == 1) {
+            sum_p <- P$sumset
+            P <- P$children[[1]]
+            P$sumset <- union(sum_p, P$sumset) %ts% topo
+          }
+        }
+        return(P)
+      }
+      if (length(P$sumset) > 0 && length(P$den) > 0) {
+        nodep <- setdiff(P$sumset, dependencies(P$den))
+        if (length(nodep) > 0) {
+          P$num$sumset <- union(P$num$sumset, nodep) %ts% topo
+          P$sumset <- setdiff(P$sumset, nodep) %ts% topo
         }
       }
-      return(P)
+      P$num <- parse.expression(P$num, topo, G.adj, G, G.obs)
+      P <- cancel.out(P)
     }
-    if (length(P$sumset) > 0 && length(P$den) > 0) {
-      nodep <- setdiff(P$sumset, dependencies(P$den))
-      if (length(nodep) > 0) {
-        P$num$sumset <- union(P$num$sumset, nodep) %ts% topo
-        P$sumset <- setdiff(P$sumset, nodep) %ts% topo
-      }
-    }
-    P$num <- parse.expression(P$num, topo, G.adj, G, G.obs)
-    P <- cancel.out(P)
     return(P)
   }
   simplify_terms <- TRUE

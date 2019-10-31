@@ -10,8 +10,9 @@ aux.effect <- function(y, x, z, G, expr = TRUE, simp = TRUE, steps = FALSE, prim
     if (steps) return(list(P = res.prob, steps = res$steps, id = TRUE))
     return(res.prob)
   } else {
-    if (expr) return("")
+    res.prob <- probability()
+    if (expr) res.prob <- ""
     if (steps) return(list(P = res.prob, steps = res$steps, id = FALSE))
-    return(NULL)
+    return(res.prob)
   }
 }

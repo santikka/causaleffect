@@ -48,7 +48,6 @@ simplify <- function(P, topo, G.adj, G, G.obs) {
       P <- factorize(J, D, P, topo, i)
       S <- P$sumset[j]
       P$sumset <- P$sumset[-j]
-      if (irl.len > 0) P$children <- c(terms, P$children)
       if (length(R.var) > 0) {
         P.cancel <- cancel(P, R.var, R.cond, S)
         if (identical(P.cancel, P)) P <- P.orig
@@ -57,6 +56,7 @@ simplify <- function(P, topo, G.adj, G, G.obs) {
           j <- 0
         } 
       } else j <- 0
+      if (irl.len > 0) P$children <- c(terms, P$children)
     } else P <- P.orig
   }
   return(P)

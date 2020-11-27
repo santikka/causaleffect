@@ -22,7 +22,6 @@ devtools::install_github("santikka/causaleffect")
 ```
 
 ## Recent changes (for all changes, see NEWS file).
-====================================================================
 
 Changes from version 1.3.10 to 1.3.11
 =====================================

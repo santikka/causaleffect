@@ -1,5 +1,4 @@
 # causaleffect: an R package for causal effect effect identification
-====================================================================
 
 Functions for identification and transportation of causal effects. 
 Provides a conditional causal effect identification algorithm (IDC) by Shpitser, I. and Pearl, J. (2006) <http://ftp.cs.ucla.edu/pub/stat_ser/r329-uai.pdf>, 
@@ -10,6 +9,7 @@ All of the previously mentioned algorithms are based on a causal effect identifi
 For details, see the [package vignettes at CRAN](https://cran.r-project.org/package=causaleffect) and the paper [Identifying Causal Effects with the R Package
 causaleffect](https://www.jstatsoft.org/article/view/v076i12)
 
+## Installation
 You can install the latest release version from CRAN:
 ```R
 install.packages("causaleffect")
@@ -21,7 +21,7 @@ install.packages("devtools")
 devtools::install_github("santikka/causaleffect")
 ```
 
-Recent changes (for all changes, see NEWS file).
+## Recent changes (for all changes, see NEWS file).
 ====================================================================
 
 Changes from version 1.3.10 to 1.3.11

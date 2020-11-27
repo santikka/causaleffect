@@ -23,36 +23,29 @@ devtools::install_github("santikka/causaleffect")
 
 ## Recent changes (for all changes, see NEWS file).
 
-Changes from version 1.3.10 to 1.3.11
-=====================================
+### Changes from version 1.3.10 to 1.3.11
  * Fixed inconsistency with function arguments when computing causal effects with surrogate experiments using 'aux.effect'.
  * Fixed a rare issue with simplification.
 
-Changes from version 1.3.9 to 1.3.10
-=====================================
+### Changes from version 1.3.9 to 1.3.10
  * Fixed a bug with simplification.
 
-Changes from version 1.3.8 to 1.3.9
-=====================================
+### Changes from version 1.3.8 to 1.3.9
  * Added a new parameter 'stop_on_nonid' to all identifiability algorithms. Value 'TRUE' mimics old functionality, where an error is produced when a non-identifiable effect is discovered. Value 'FALSE' continues the recursion.
  * Fixed a bug in the recoverability algorithm.
  * Fixed a bug in the transportability algorithm.
  * Fixed a bug related to identification using surrogate outcomes.
 
-Changes from version 1.3.7 to 1.3.8
-=====================================
+### Changes from version 1.3.7 to 1.3.8
  * Added a new function 'surrogate.outcome' to compute causal effects using surrogate outcomes.
 
-Changes from version 1.3.6 to 1.3.7
-=====================================
+### Changes from version 1.3.6 to 1.3.7
  * Fixed an issue with simplification introduced in version 1.3.6.
 
-Changes from version 1.3.5 to 1.3.6
-=====================================
+### Changes from version 1.3.5 to 1.3.6
  * Fixed a bug regarding graphs where zero edges had the 'description' attribute.
  * Fixed a bug when attempting to simplify conditional causal effects.
 
-Changes from version 1.3.4 to 1.3.5
-=====================================
+### Changes from version 1.3.4 to 1.3.5
  * Added a new identification algorithm. This can be enabled via the new 'prune' argument in the 'causal.effect' function. Examples on usage can be found in the documentation for the 'causal.effect' function.
 

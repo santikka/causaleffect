@@ -23,6 +23,10 @@ devtools::install_github("santikka/causaleffect")
 
 ## Recent changes (for all changes, see NEWS file).
 
+### Changes from version 1.3.11 to 1.3.12
+ * The package no longer depends on the 'ggm' package.
+ * The package no longer requires the 'XML' package, now suggests instead.
+
 ### Changes from version 1.3.10 to 1.3.11
  * Fixed inconsistency with function arguments when computing causal effects with surrogate experiments using 'aux.effect'.
  * Fixed a rare issue with simplification.
@@ -45,7 +49,3 @@ devtools::install_github("santikka/causaleffect")
 ### Changes from version 1.3.5 to 1.3.6
  * Fixed a bug regarding graphs where zero edges had the 'description' attribute.
  * Fixed a bug when attempting to simplify conditional causal effects.
-
-### Changes from version 1.3.4 to 1.3.5
- * Added a new identification algorithm. This can be enabled via the new 'prune' argument in the 'causal.effect' function. Examples on usage can be found in the documentation for the 'causal.effect' function.
-

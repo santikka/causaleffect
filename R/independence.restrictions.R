@@ -1,7 +1,7 @@
 independence.restrictions <- function(G) {
   G.obs <- observed.graph(G)
-  topo <- topological.sort(G.obs)
-  v <- get.vertex.attribute(G, "name")[topo]
+  topo <- igraph::topological.sort(G.obs)
+  v <- igraph::get.vertex.attribute(G, "name")[topo]
   cc <- c.components(G, v)
   cc.len <- length(cc)
   if (cc.len > 1) {

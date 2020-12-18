@@ -3,11 +3,11 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
   from <- NULL
   description <- NULL
   d <- length(D)
-  v.s <- lapply(D, function(x) get.vertex.attribute(x, "name"))
-  s <- lapply(1:d, function(x) v.s[[x]][which(vertex.attributes(D[[x]])$description == "S")])
+  v.s <- lapply(D, function(x) igraph::get.vertex.attribute(x, "name"))
+  s <- lapply(1:d, function(x) v.s[[x]][which(igraph::vertex.attributes(D[[x]])$description == "S")])
   s <- lapply(1:d, function(x) topo[[x]][which(topo[[x]] %in% s[[x]])])
   D.causal <- D[[1]]
-  v <- get.vertex.attribute(D.causal, "name")
+  v <- igraph::get.vertex.attribute(D.causal, "name")
   v <- topo[[1]][which(topo[[1]] %in% v)]
   D.obs <- observed.graph(D.causal)
   D.s.obs <- lapply(D, function(x) observed.graph(x))
@@ -34,7 +34,7 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
 
   # line 2
   if (length(setdiff(v, anc)) != 0) {
-    anc.graph <- lapply(1:d, function(x) induced.subgraph(D[[x]], anc.s[[x]]))
+    anc.graph <- lapply(1:d, function(x) igraph::induced.subgraph(D[[x]], anc.s[[x]]))
     if (P$product | P$fraction | P$sum) {
       P$sumset <- union(setdiff(v, anc), P$sumset)
       P <- simplify.expression(P, NULL)
@@ -50,7 +50,7 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
   }
 
   # line 3
-  D.x.overbar <- subgraph.edges(D.causal ,E(D.causal)[!(to(x) | (from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
+  D.x.overbar <- igraph::subgraph.edges(D.causal, igraph::E(D.causal)[!(to(x) | (from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
   anc.xbar <- ancestors(y, observed.graph(D.x.overbar), topo[[1]])
   w <- setdiff(setdiff(v, x), anc.xbar)
   if (length(w) != 0) {
@@ -64,7 +64,7 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
   }
 
   # line 4
-  D.remove.x <- induced.subgraph(D.causal, v[!(v %in% x)])
+  D.remove.x <- igraph::induced.subgraph(D.causal, v[!(v %in% x)])
   cc <- c.components(D.remove.x, topo[[1]])
   cc.len <- length(cc)
   if (cc.len > 1) {
@@ -92,10 +92,9 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
       tree$call$line <- 6
       ind <- 0
       for (i in 2:length(D)) {
-        A <- unobserved.graph(D[[i]])
-        A <- subgraph.edges(A, E(A)[!to(x)], delete.vertices = FALSE)
-        A <- as.matrix(get.adjacency(A))
-        if (wrap.dSep(A, s[[i]], y, x) & (length(intersect(Z[[i]], x)) > 0)) {
+        D.unobs <- unobserved.graph(D[[i]])
+        D.unobs <- igraph::subgraph.edges(D.unobs, igraph::E(D.unobs)[!to(x)], delete.vertices = FALSE)
+        if (wrap.dSep(D.unobs, s[[i]], y, x) & (length(intersect(Z[[i]], x)) > 0)) {
           P.new <- P
           P.new$domain <- i
           xcapz <- intersect(Z[[i]], x)

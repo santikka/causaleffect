@@ -1,9 +1,9 @@
 sc.components <- function(D, topo) {
   from <- NULL
-  A <- as.matrix(get.adjacency(D))
-  v <- get.vertex.attribute(D, "name")
-  s <- v[which(vertex.attributes(D)$description == "S")]
-  e <- E(D)
+  A <- as.matrix(igraph::get.adjacency(D))
+  v <- igraph::get.vertex.attribute(D, "name")
+  s <- v[which(igraph::vertex.attributes(D)$description == "S")]
+  e <- igraph::E(D)
   bidirected <- NULL
   selection <- e[from(s)]
   indices <- which(A >= 1 & t(A) >= 1, arr.ind = TRUE)
@@ -12,10 +12,10 @@ sc.components <- function(D, topo) {
       e[v[x[1]] %->% v[x[2]]]
     }))
   }
-  D.bidirected <- subgraph.edges(D, union(bidirected, selection), delete.vertices = FALSE)
-  subgraphs <- decompose.graph(D.bidirected)
+  D.bidirected <- igraph::subgraph.edges(D, union(bidirected, selection), delete.vertices = FALSE)
+  subgraphs <- igraph::decompose.graph(D.bidirected)
   cc.s <- lapply(subgraphs, function(x) {
-    v.sub <- get.vertex.attribute(x, "name")
+    v.sub <- igraph::get.vertex.attribute(x, "name")
     return(topo[which(topo %in% v.sub)])
   })
   cc.s.rank <- order(sapply(cc.s, function(x) {

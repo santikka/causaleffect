@@ -1,12 +1,12 @@
 exclusion.restrictions <- function(G) {
   G.obs <- observed.graph(G)
-  topo <- topological.sort(G.obs)
-  v <- get.vertex.attribute(G, "name")[topo]
+  topo <- igraph::topological.sort(G.obs)
+  v <- igraph::get.vertex.attribute(G, "name")[topo]
   ex <- lapply(v, function(y) {
     pa <- setdiff(parents(y, G.obs, topo), y)
     Z <- setdiff(v, union(y, pa))
     if (length(Z) > 0) {
-      Z.pow <- powerset(setdiff(v, union(y, pa)), nonempty = TRUE)
+      Z.pow <- powerset(setdiff(v, union(y, pa)))[-1]
       return(list(pa = pa, Z = Z.pow))
     } else return(NULL)
   })

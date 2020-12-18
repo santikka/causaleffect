@@ -1,11 +1,11 @@
 causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE, prune = FALSE, stop_on_nonid = TRUE) {
-  if (length(edge.attributes(G)) == 0) {
-    G <- set.edge.attribute(G, "description", 1:length(E(G)), NA)
+  if (length(igraph::edge.attributes(G)) == 0) {
+    G <- igraph::set.edge.attribute(G, "description", 1:length(igraph::E(G)), NA)
   }
   G.obs <- observed.graph(G)
-  if (!is.dag(G.obs)) stop("Graph 'G' is not a DAG")
-  topo <- topological.sort(G.obs)
-  topo <- get.vertex.attribute(G, "name")[topo]
+  if (!igraph::is.dag(G.obs)) stop("Graph 'G' is not a DAG")
+  topo <- igraph::topological.sort(G.obs)
+  topo <- igraph::get.vertex.attribute(G, "name")[topo]
   if (length(setdiff(y, topo)) > 0) stop("Set 'y' contains variables not present in the graph.")
   if (length(setdiff(x, topo)) > 0) stop("Set 'x' contains variables not present in the graph.")
   if (length(z) > 0 && !identical(z, "")) {
@@ -40,11 +40,8 @@ causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = 
   if (res$tree$call$id) {
     if (simp) {
       G.unobs <- unobserved.graph(G)
-      G.adj <- as.matrix(get.adjacency(G.unobs))
-      topo.u <- topological.sort(G.unobs)
-      topo.u <- get.vertex.attribute(G.unobs, "name")[topo.u]
       res.prob <- deconstruct(res.prob, probability(), topo)
-      res.prob <- parse.expression(res.prob, topo, G.adj, G, G.obs)
+      res.prob <- parse.expression(res.prob, topo, G.unobs, G, G.obs)
     }
     attr(res.prob, "algorithm") <- algo
     attr(res.prob, "query") <- list(y = y, x = x, z = z)

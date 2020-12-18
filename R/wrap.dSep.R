@@ -1,7 +1,7 @@
-wrap.dSep <- function(amat, first, second, cond) {
-  if (identical(first, second)) return(FALSE)
-  if (length(first) == 0 | length(second) == 0) {
+wrap.dSep <- function(G, x, y, z) {
+  if (identical(x, y)) return(FALSE)
+  if (length(x) == 0 || length(y) == 0) {
     return(TRUE)
   }
-  else return(dSep(amat, first, second, cond))
+  else return(dSep(G, x, y, z))
 }

@@ -23,7 +23,7 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
 
   # line 2
   if (length(setdiff(v, an)) != 0) {
-    G.an <- induced.subgraph(G, an)
+    G.an <- igraph::induced.subgraph(G, an)
     G.an.obs <- observed.graph(G.an)
     if (P$product | P$fraction) {
       P$sumset <- union(setdiff(v, an), P$sumset) %ts% topo
@@ -40,7 +40,7 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
   }
 
   # line 3
-  G.xbar <- subgraph.edges(G, E(G)[!(to(x) | (from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
+  G.xbar <- igraph::subgraph.edges(G, igraph::E(G)[!(to(x) | (from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
   an.xbar <- ancestors(y, observed.graph(G.xbar), topo)
   w <- setdiff(setdiff(v, x), an.xbar)
   w.len <- length(w)
@@ -55,7 +55,7 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
   }
 
   # line 4
-  G.remove.x <- induced.subgraph(G, v[!(v %in% x)])
+  G.remove.x <- igraph::induced.subgraph(G, v[!(v %in% x)])
   s <- c.components(G.remove.x, topo)
   if (length(s) > 1) {
     tree$call$line <- 4
@@ -129,7 +129,7 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
     tree$call$s.prime <- s
     s.len <- length(s)
     ind <- which(v %in% s)
-    G.s <- induced.subgraph(G, s)
+    G.s <- igraph::induced.subgraph(G, s)
     G.s.obs <- observed.graph(G.s)
     product.list <- vector(mode = "list", length = s.len)
     P.prod <- probability()

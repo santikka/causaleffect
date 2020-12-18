@@ -1,6 +1,6 @@
 q.constraints <- function(s, node, G, G.obs, G.unobs, topo, topo.u, constraints) {
-  G.s <- induced.subgraph(G, s)
-  v <- get.vertex.attribute(G, "name")
+  G.s <- igraph::induced.subgraph(G, s)
+  v <- igraph::get.vertex.attribute(G, "name")
   v <- v %ts% topo
   G.s.obs <- observed.graph(G.s)
   desc.sets <- descendent.sets(node, s, G.s.obs, topo)
@@ -65,8 +65,8 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, topo, topo.u, constraints)
         )))
       }
       d.prime <- s_d
-      G.d <- induced.subgraph(G.s, d.prime)
-      v <- get.vertex.attribute(G.d, "name")
+      G.d <- igraph::induced.subgraph(G.s, d.prime)
+      v <- igraph::get.vertex.attribute(G.d, "name")
       v <- v %ts% topo
       cc.d <- c.components(G.d, topo)
       if (length(cc.d) > 1) e <- Find(function(x) node %in% x, cc.d)

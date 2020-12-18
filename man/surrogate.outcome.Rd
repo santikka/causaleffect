@@ -44,4 +44,3 @@ s <- list(
 
 surrogate.outcome(y = "Y", x = "X", S = s, G = g)
 }
-

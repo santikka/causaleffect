@@ -49,6 +49,5 @@ g <- set.edge.attribute(g, "description", 5:8, "U")
 g <- set.vertex.attribute(g, "description", 5, "S")
 
 recover(y = "Y", x = "X", G = g)
-
 }
 

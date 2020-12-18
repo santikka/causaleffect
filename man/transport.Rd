@@ -48,7 +48,5 @@ d <- set.edge.attribute(d, "description", 6:11, "U")
 d <- set.vertex.attribute(d, "description", 6, "S")
 
 transport(y = "Y", x = "X", D = d)
-
-
 }
 

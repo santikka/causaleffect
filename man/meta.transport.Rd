@@ -64,4 +64,3 @@ d2 <- set.vertex.attribute(d2, "description", 7:11, "S")
 d.comb <- list(d1, d2)
 meta.transport(y = "Y", x = "X", D = d.comb)
 }
-

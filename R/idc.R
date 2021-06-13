@@ -5,13 +5,13 @@ idc <- function(y, x, z, P, G, G.obs, v, topo, tree, prune) {
   tree$branch <- list()
   offset <- (prune) * 2
   from <- NULL
-  G.xz <- unobserved.graph(G)
-  edges.to.x <- igraph::E(G.xz)[to(x)]
-  edges.from.z <- igraph::E(G.xz)[from(z)]
-  G.xz <- igraph::subgraph.edges(G.xz, igraph::E(G.xz)[setdiff(igraph::E(G.xz), union(edges.to.x, edges.from.z))], delete.vertices = FALSE)
+  G.u <- unobserved.graph(G)
+  edges.to.x <- igraph::E(G.u)[to(x)]
   nxt <- list()
   for (node in z) {
     cond <- setdiff(z, node)
+    edges.from.node <- igraph::E(G.u)[from(node)]
+    G.xz <- igraph::subgraph.edges(G.u, igraph::E(G.u)[setdiff(igraph::E(G.u), union(edges.to.x, edges.from.node))], delete.vertices = FALSE)
     if (wrap.dSep(G.xz, y, node, union(x, cond))) {
       tree$call$line <- 9 + offset
       tree$call$z.prime <- node

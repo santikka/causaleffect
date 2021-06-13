@@ -23,6 +23,9 @@ devtools::install_github("santikka/causaleffect")
 
 ## Recent changes (for all changes, see NEWS file).
 
+### Changes from version 1.3.12 to 1.3.13
+ * Fixed an incorrect graph definition in the IDC algorithm.
+
 ### Changes from version 1.3.11 to 1.3.12
  * The package no longer depends on the 'ggm' package.
  * The package no longer requires the 'XML' package, now suggests instead.
@@ -45,7 +48,3 @@ devtools::install_github("santikka/causaleffect")
 
 ### Changes from version 1.3.6 to 1.3.7
  * Fixed an issue with simplification introduced in version 1.3.6.
-
-### Changes from version 1.3.5 to 1.3.6
- * Fixed a bug regarding graphs where zero edges had the 'description' attribute.
- * Fixed a bug when attempting to simplify conditional causal effects.

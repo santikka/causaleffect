@@ -9,7 +9,6 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
   if (length(x) == 0) {
     if (P$product | P$fraction) {
       P$sumset <- union(setdiff(v, y), P$sumset) %ts% topo
-      # P <- simplify.expression(P, NULL)
     } else {
       P$var <- y
     }

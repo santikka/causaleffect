@@ -72,6 +72,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
     co.vi <-  connected(setdiff(v, r), G.vbar, topo)
     t <- union(t, setdiff(r, co.vi))
   }
+  t <- setdiff(t, union(x, y))
   if (length(t) > 0) {
     v.new <- setdiff(v, t) %ts% topo
     G.t <- igraph::induced.subgraph(G, v.new)

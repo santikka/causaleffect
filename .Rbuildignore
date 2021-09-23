@@ -2,3 +2,7 @@
 ^README.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^graphs$
+^graphs/.*$
+^doc$
+^Meta$

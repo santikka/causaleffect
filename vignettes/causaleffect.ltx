@@ -417,7 +417,7 @@ Identifiability of conditional interventional distributions is characterized by 
     \OUTPUT{Expression for $P_{\+ x}(\+ y| \+ z)$ in terms of $P(\+ v)$ or \textbf{FAIL}$(F,F^\prime)$.}
     \Statex
     \Statex \textbf{function}{ \textbf{IDC}$(\+ y, \+ x,\+ z, P, G)$}
-      \If{$\exists Z \in \+ Z \text{ such that } (\+ Y \indep Z|\+ X, \+ Z \setminus \{Z\})_{G_{\thickbar {\+ X},\thickubar {\+ Z}}}$}
+      \If{$\exists Z \in \+ Z \text{ such that } (\+ Y \indep Z|\+ X, \+ Z \setminus \{Z\})_{G_{\thickbar {\+ X},\thickubar {Z}}}$}
         \Statex \textbf{\quad return} { \textbf{IDC}$(\+ y, \+ x \cup \{z\}, \+ z \setminus \{z\}, P, G)$.}
       \EndIf
       \State \textbf{else let} { $P^\prime =\;$\textbf{ID}$(\+ y \cup \+ z, \+ x, P, G)$.}

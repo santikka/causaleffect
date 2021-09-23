@@ -23,6 +23,9 @@ devtools::install_github("santikka/causaleffect")
 
 ## Recent changes (for all changes, see NEWS file).
 
+### Changes from version 1.3.13  to 1.3.14
+ * Fixed a rare issue when using pruning.
+
 ### Changes from version 1.3.12 to 1.3.13
  * Fixed an incorrect graph definition in the IDC algorithm.
 
@@ -42,9 +45,3 @@ devtools::install_github("santikka/causaleffect")
  * Fixed a bug in the recoverability algorithm.
  * Fixed a bug in the transportability algorithm.
  * Fixed a bug related to identification using surrogate outcomes.
-
-### Changes from version 1.3.7 to 1.3.8
- * Added a new function 'surrogate.outcome' to compute causal effects using surrogate outcomes.
-
-### Changes from version 1.3.6 to 1.3.7
- * Fixed an issue with simplification introduced in version 1.3.6.

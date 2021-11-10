@@ -24,6 +24,7 @@ dSep <- function(G, x, y, z) {
   names(visited_down) <- v
   traverse_up[x] <- TRUE
   visit <- FALSE
+  el_name <- NULL
   while (any(traverse_up) || any(traverse_down)) {
     visit <- FALSE
     for (j in 1:n) {
@@ -42,15 +43,16 @@ dSep <- function(G, x, y, z) {
           visit <- TRUE
           direction <- FALSE
           el_name <- v[j]
+          break
         }
       }
     }
     if (visit) {
       if (el_name %in% y) return(FALSE)
       if (direction) {
-        visited_up[j] <- TRUE
+        visited_up[el_name] <- TRUE
       } else {
-        visited_down[j] <- TRUE
+        visited_down[el_name] <- TRUE
       }
       if (direction && !(el_name %in% z)) {
         visitable_parents <- intersect(setdiff(parents_unsrt(el_name, G), el_name), an_xyz)

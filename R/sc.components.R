@@ -1,11 +1,11 @@
 sc.components <- function(D, topo) {
-  from <- NULL
+  .from <- NULL
   A <- as.matrix(igraph::get.adjacency(D))
   v <- igraph::get.vertex.attribute(D, "name")
   s <- v[which(igraph::vertex.attributes(D)$description == "S")]
   e <- igraph::E(D)
   bidirected <- NULL
-  selection <- e[from(s)]
+  selection <- e[.from(s)]
   indices <- which(A >= 1 & t(A) >= 1, arr.ind = TRUE)
   if (nrow(indices) > 0) {
     bidirected <- unlist(apply(indices, 1, function(x) {

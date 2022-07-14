@@ -1,6 +1,6 @@
 trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
-  to <- NULL
-  from <- NULL
+  .to <- NULL
+  .from <- NULL
   description <- NULL
   d <- length(D)
   v.s <- lapply(D, function(x) igraph::get.vertex.attribute(x, "name"))
@@ -50,7 +50,7 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
   }
 
   # line 3
-  D.x.overbar <- igraph::subgraph.edges(D.causal, igraph::E(D.causal)[!(to(x) | (from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
+  D.x.overbar <- igraph::subgraph.edges(D.causal, igraph::E(D.causal)[!(.to(x) | (.from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
   anc.xbar <- ancestors(y, observed.graph(D.x.overbar), topo[[1]])
   w <- setdiff(setdiff(v, x), anc.xbar)
   if (length(w) != 0) {
@@ -100,7 +100,7 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
         W.new <- w.index + 1
         for (i in 1:length(D)) {
           D.unobs <- unobserved.graph(D[[i]])
-          D.unobs <- igraph::subgraph.edges(D.unobs, igraph::E(D.unobs)[!to(x)], delete.vertices = FALSE)
+          D.unobs <- igraph::subgraph.edges(D.unobs, igraph::E(D.unobs)[!.to(x)], delete.vertices = FALSE)
           if (wrap.dSep(D.unobs, s[[i]], y, x) & (length(intersect(Z[[i]], x)) != 0)) {
             P.new <- P
             P.new$domain <- i
@@ -245,7 +245,7 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
           W.new <- w.index + 1
           for (i in 1:length(D)) {
             D.unobs <- unobserved.graph(D[[i]])
-            D.unobs <- igraph::subgraph.edges(D.unobs, igraph::E(D.unobs)[!to(x)], delete.vertices = FALSE)
+            D.unobs <- igraph::subgraph.edges(D.unobs, igraph::E(D.unobs)[!.to(x)], delete.vertices = FALSE)
             if (wrap.dSep(D.unobs, s[[i]], y, x) & (length(intersect(Z[[i]], x)) != 0)) {
               P.new <- P
               P.new$domain <- i

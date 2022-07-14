@@ -1,13 +1,13 @@
 latent.projection <- function(G, l) {
-  to <- NULL
-  from <- NULL
+  .to <- NULL
+  .from <- NULL
   description <- NULL
   for (i in 1:length(l)) {
     e <- igraph::E(G)
     v <- igraph::get.vertex.attribute(G, "name")
-    inc.edges <- e[to(l[i]) & (is.na(description) | description != "U")]
-    out.edges <- e[from(l[i]) & (is.na(description) | description != "U")]
-    unobs.edges <- e[to(l[i]) & description == "U" & !is.na(description)]
+    inc.edges <- e[.to(l[i]) & (is.na(description) | description != "U")]
+    out.edges <- e[.from(l[i]) & (is.na(description) | description != "U")]
+    unobs.edges <- e[.to(l[i]) & description == "U" & !is.na(description)]
     inc.ind <- igraph::get.edges(G, inc.edges)[ ,1]
     out.ind <- igraph::get.edges(G, out.edges)[ ,2]
     unobs.ind <- setdiff(igraph::get.edges(G, unobs.edges)[ ,1], out.ind)

@@ -23,7 +23,10 @@ devtools::install_github("santikka/causaleffect")
 
 ## Recent changes (for all changes, see NEWS file).
 
-### Changes from version 1.3.13  to 1.3.14
+### Changes from version 1.3.14 to 1.3.15
+ * Replaced deprecated igraph edge indexing to avoid future warnings.
+
+### Changes from version 1.3.13 to 1.3.14
  * Fixed a rare issue when using pruning.
 
 ### Changes from version 1.3.12 to 1.3.13
@@ -36,12 +39,3 @@ devtools::install_github("santikka/causaleffect")
 ### Changes from version 1.3.10 to 1.3.11
  * Fixed inconsistency with function arguments when computing causal effects with surrogate experiments using 'aux.effect'.
  * Fixed a rare issue with simplification.
-
-### Changes from version 1.3.9 to 1.3.10
- * Fixed a bug with simplification.
-
-### Changes from version 1.3.8 to 1.3.9
- * Added a new parameter 'stop_on_nonid' to all identifiability algorithms. Value 'TRUE' mimics old functionality, where an error is produced when a non-identifiable effect is discovered. Value 'FALSE' continues the recursion.
- * Fixed a bug in the recoverability algorithm.
- * Fixed a bug in the transportability algorithm.
- * Fixed a bug related to identification using surrogate outcomes.

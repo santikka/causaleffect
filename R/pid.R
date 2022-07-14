@@ -1,6 +1,6 @@
 pid <- function(y, x, P, G, G.obs, v, topo, tree) {
-  to <- NULL
-  from <- NULL
+  .to <- NULL
+  .from <- NULL
   description <- NULL
   if (length(P$var) == 0 & !(P$product | P$fraction)) tree$call <- list(y = y, x = x, P = probability(var = v), G = G, line = "", v = v, id = FALSE)
   else tree$call <- list(y = y, x = x, P = P, G = G, line = "", v = v, id = FALSE)
@@ -38,7 +38,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
   }
 
   # line 3
-  G.xbar <- igraph::subgraph.edges(G, igraph::E(G)[!(to(x) | (from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
+  G.xbar <- igraph::subgraph.edges(G, igraph::E(G)[!(.to(x) | (.from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
   co <- connected(y, G.xbar, topo)
   z <- setdiff(an, co)
   if (length(z) > 0) {
@@ -68,7 +68,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
   t <- c()
   for (i in 1:length(v.x)) {
     r <- setdiff(ancestors(v.x[i], G.xbar.obs, topo), de)
-    G.vbar <- igraph::subgraph.edges(G, igraph::E(G)[!(to(v.x[i]) | (from(v.x[i]) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
+    G.vbar <- igraph::subgraph.edges(G, igraph::E(G)[!(.to(v.x[i]) | (.from(v.x[i]) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
     co.vi <-  connected(setdiff(v, r), G.vbar, topo)
     t <- union(t, setdiff(r, co.vi))
   }

@@ -1,6 +1,6 @@
 trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
-  to <- NULL
-  from <- NULL
+  .to <- NULL
+  .from <- NULL
   description <- NULL
   d <- length(D)
   v.s <- lapply(D, function(x) igraph::get.vertex.attribute(x, "name"))
@@ -50,7 +50,7 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
   }
 
   # line 3
-  D.x.overbar <- igraph::subgraph.edges(D.causal, igraph::E(D.causal)[!(to(x) | (from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
+  D.x.overbar <- igraph::subgraph.edges(D.causal, igraph::E(D.causal)[!(.to(x) | (.from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
   anc.xbar <- ancestors(y, observed.graph(D.x.overbar), topo[[1]])
   w <- setdiff(setdiff(v, x), anc.xbar)
   if (length(w) != 0) {
@@ -93,7 +93,7 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
       ind <- 0
       for (i in 2:length(D)) {
         D.unobs <- unobserved.graph(D[[i]])
-        D.unobs <- igraph::subgraph.edges(D.unobs, igraph::E(D.unobs)[!to(x)], delete.vertices = FALSE)
+        D.unobs <- igraph::subgraph.edges(D.unobs, igraph::E(D.unobs)[!.to(x)], delete.vertices = FALSE)
         if (wrap.dSep(D.unobs, s[[i]], y, x) & (length(intersect(Z[[i]], x)) > 0)) {
           P.new <- P
           P.new$domain <- i

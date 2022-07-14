@@ -1,6 +1,6 @@
 soid <- function(y, x, P, G, G.obs, I, J, v, topo, tree) {
-  to <- NULL
-  from <- NULL
+  .to <- NULL
+  .from <- NULL
   description <- NULL
   if (length(P$var) == 0 & !(P$product | P$fraction)) tree$call <- list(y = y, x = x, P = probability(var = v), G = G, line = "", v = v)
   else tree$call <- list(y = y, x = x, P = P, G = G, line = "", v = v)
@@ -72,7 +72,7 @@ soid <- function(y, x, P, G, G.obs, I, J, v, topo, tree) {
   }
 
   # line 3
-  G.xbar <- igraph::subgraph.edges(G, igraph::E(G)[!(to(x) | (from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
+  G.xbar <- igraph::subgraph.edges(G, igraph::E(G)[!(.to(x) | (.from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
   an.xbar <- ancestors(y, observed.graph(G.xbar), topo)
   w <- setdiff(setdiff(v, x), an.xbar)
   w.len <- length(w)

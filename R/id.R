@@ -74,7 +74,7 @@ id <- function(y, x, P, G, G.obs, v, topo, tree) {
     # line 5 
     cc <- c.components(G, topo)
     if (identical(cc[[1]], v)) {
-      tree$call$s <- cc[[1]]
+      tree$call$s <- s
       tree$call$line <- 5
       tree$call$id <- FALSE
       tree$root <- P

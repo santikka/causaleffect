@@ -25,18 +25,23 @@ plot(unobserved.graph(G_1.unobs))
 # ^^ unobserved.graph plots observed graph, plus unobserved node(s)
 
 
-#define P_1 for simplify(). P needs to be a list.
-  # the initial probabilistic expression should be: ∑x,y,z P(x∣z)P(y∣x,z)P(z)
-  # the simplified expression should look like: P(y∣x,z)P(z)
-P_1 <- list(
+#define P_1 for simplify(). P needs to be a probability object.
+  # the initial probabilistic expression should be: ∑z P(y|z,x)P(z)
+  # the simplified expression should look like: ∑z P(y|z,x)P(z)
+P_1 <- probability(
   sumset = c("z"),
+  product = TRUE,
+  fraction = FALSE,
+  sum = FALSE,
   children = list(
-    list(var = "y", cond = c("x", "z")),
-    list(var = "z", cond = character(0))
-  )
+    probability(var = "y", cond = c("z", "x")),
+    probability(var = "z", cond = character(0))
+  ),
+  den = list(),
+  num = list(),
+  domain = 0,
+  weight = 0
 )
-
-"\\sum_{z}P(y|z,x)P(z)"
 
 simplify(P_1, topo_1, G_1.unobs, G_1, G_1.obs)
 
@@ -49,28 +54,6 @@ test_that("topo works on graph with unobserved confounders G_1", {
   expect_equal(topo_1, c("z", "x", "y"))
 })
 
-#-------------------------------------------------------------------
-# testing that simplify works with test case #1
-
-expected_output_1 <- list(
-  sumset = character(0),
-  cond = character(0),
-  product = TRUE,
-  fraction = FALSE,
-  sum = FALSE,
-  children = list(),
-  den = list(),
-  num = list(),
-  domain = 0,
-  weight = 0
-)
-class(expected_output_1) <- "probability"
-
-
-test_that("simplify works on graph with unobserved confounders G_1", {
-  expect_equal(simplify(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
-               expected_output_1)
-})
 
 #-------------------------------------------------------------------
 # testing that causal.effect works with test case #1 when simp = TRUE
@@ -93,6 +76,40 @@ test_that("causal.effect works on graph with unobserved confounders G_1", {
 
 })
 
+#-------------------------------------------------------------------
+# testing that simplify works with test case #1
+  # currently PASSES
+
+expected_output_1 <- probability(
+  sumset = "z",
+  product = TRUE,
+  fraction = FALSE,
+  sum = FALSE,
+  children = list(
+    probability(var = "y", cond = c("z", "x")),
+    probability(var = "z", cond = character(0))
+  ),
+  den = list(),
+  num = list(),
+  domain = 0,
+  weight = 0
+)
+
+
+test_that("simplify works on graph with unobserved confounders G_1", {
+  expect_equal(simplify(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
+               expected_output_1)
+})
+
+#-------------------------------------------------------------------
+# testing that parse.expression works with test case #1
+  # currently PASSES
+
+test_that("parse.expression works on graph with unobserved confounders G_1", {
+  expect_equal(parse.expression(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
+               expected_output_1)
+
+})
 
 #-------------------------------------------------------------------
 # test case #2 from pp. 6-7 of causaleffect - pruning.
@@ -104,7 +121,7 @@ G_2 <- graph.formula(x -+ z_4, z_4 -+ y, z_1 -+ x, z_2 -+ z_1,
 G_2 <- set.edge.attribute(graph = G_2, "description", 9:18, "U")
 G_2.obs <- observed.graph(G_2)
 G_2.unobs <- unobserved.graph(G_2)
-topo_2 <- igraph::topological.sort(G_2.obs)
+topo_2 <- igraph::topo_sort(G_2.obs)
 topo_2 <- igraph::get.vertex.attribute(G_2, "name")[topo_2]
 
 print(topo_2)
@@ -116,27 +133,6 @@ plot(unobserved.graph(G_2.unobs))
 # ^^ unobserved.graph plots observed graph, plus unobserved node(s)
 
 
-#define P_2 for simplify(). P needs to be a list.
-  # the initial probabilistic expression should be: ∑ x,z4,y,z1,z2,z3,z5 P(x∣z1,z3)⋅P(z4∣x)⋅P(y∣z4,z2)⋅P(z1∣z2,z5)⋅P(z2∣z1,z3)⋅P(z3∣x,z2)⋅P(z5∣z4)
-  # the simplified expression should look like: ∑ z1,z2,z3,z4,z5 P(x∣z1,z3)⋅P(y∣z2,z4)⋅P(z4∣x)⋅P(z1∣z2,z5)
-
-P_2 <- list(
-  sumset = c("x", "z_4", "y", "z_1", "z_2", "z_3", "z_5"),
-  children = list(
-    list(var = "x", cond = c("z_1", "z_3")),
-    list(var = "z_4", cond = c("x")),
-    list(var = "y", cond = c("z_4", "z_2")),
-    list(var = "z_1", cond = c("z_2", "z_5")),
-    list(var = "z_2", cond = c("z_1", "z_3")),
-    list(var = "z_3", cond = c("x", "z_2")),
-    list(var = "z_5", cond = c("z_4"))
-  )
-)
-
-print(P_2)
-simplify(P_2, topo_2, G_2.unobs, G_2, G_2.obs)
-
-
 #-------------------------------------------------------------------
 # testing that topo works with test case #2
   # currently PASSES
@@ -145,24 +141,6 @@ test_that("topo works on graph with unobserved confounders G_2", {
   expect_equal(topo_2, c("z_3", "z_5", "z_2", "z_1", "x", "z_4", "y"))
 })
 
-#-------------------------------------------------------------------
-# testing that simplify works with test case #2
-
-expected_output_2 <- list(
-  sumset = c("z_1", "z_2", "z_3", "z_4", "z_5"),
-  children = list(
-    list(var = "x", cond = c("z_1", "z_3")),
-    list(var = "y", cond = c("z_2", "z_4")),
-    list(var = "z_4", cond = c("x")),
-    list(var = "z_1", cond = c("z_2", "z_5"))
-  )
-)
-
-
-test_that("simplify works on graph with unobserved confounders G_2", {
-  expect_equal(simplify(P_2, topo_2, G_2.unobs, G_2, G_2.obs),
-               expected_output_2)
-})
 
 #-------------------------------------------------------------------
 # testing that causal.effect works with test case #2 when simp = TRUE
@@ -185,6 +163,100 @@ test_that("causal.effect works on graph with unobserved confounders G_2", {
 
 })
 
+#-------------------------------------------------------------------
+# testing that parse.expression works with test case #2
+
+#define P_2 for parse.expression(). P needs to be a probability object.
+  # the initial probabilistic expression should be:
+  # \\frac{\\sum_{z_3,z_5,z_2,z_4}P(y|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}
+  # {\\sum_{z_3,z_5,z_2,z_4,y^{\\prime}}P(y^{\\prime}|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}
+P_2_pe <- probability(
+  fraction = TRUE,
+  num = probability(
+    sumset = c("z_3", "z_5", "z_2", "z_4"),
+    product = TRUE,
+    children = list(
+      probability(var = "y", cond = c("z_3", "z_5", "z_2", "z_1", "x", "z_4")),
+      probability(var = "z_4", cond = c("z_3", "z_5", "z_2", "z_1", "x")),
+      probability(var = "x", cond = c("z_3", "z_5", "z_2", "z_1")),
+      probability(var = "z_2", cond = c("z_3", "z_5")),
+      probability(var = "z_5", cond = c("z_3")),
+      probability(var = "z_3")
+    )
+  ),
+  den = probability(
+    sumset = c("z_3", "z_5", "z_2", "z_4", "y'"),
+    product = TRUE,
+    children = list(
+      probability(var = "y'", cond = c("z_3", "z_5", "z_2", "z_1", "x", "z_4")),
+      probability(var = "z_4", cond = c("z_3", "z_5", "z_2", "z_1", "x")),
+      probability(var = "x", cond = c("z_3", "z_5", "z_2", "z_1")),
+      probability(var = "z_2", cond = c("z_3", "z_5")),
+      probability(var = "z_5", cond = c("z_3")),
+      probability(var = "z_3")
+    )
+  )
+)
+
+vars <- c("y")
+counter <- c(y = 1)
+set.primes(vars, new = TRUE, counter = counter)
+
+
+print(P_2_pe)
+get.expression(P_2_pe)
+parse.expression(P_2_pe, topo_2, G_2.unobs, G_2, G_2.obs)
+
+
+#must define expected output object to match output from parse.expression:
+expected_output_pe2 <- probability(
+  fraction = TRUE,
+  num = probability(
+    sumset = c("z_2", "z_5"),
+    product = TRUE,
+    children = list(
+      probability(var = "y", cond = c("x", "z_1", "z_2", "z_5")),
+      probability(var = "x", cond = c("z_1", "z_2", "z_5")),
+      probability(var = "z_2", cond = c("z_5")),
+      probability(var = "z_5")
+    )
+  ),
+  den = probability(
+    sumset = c("z_2"),
+    product = TRUE,
+    children = list(
+      probability(var = "x", cond = c("z_1", "z_2")),
+      probability(var = "z_2")
+    )
+  )
+)
+
+
+# now running testthat
+test_that("parse.expression works on graph with unobserved confounders G_2", {
+  expect_equal(parse.expression(P_2_pe, topo_2, G_2.unobs, G_2, G_2.obs),
+               expected_output_pe2)
+
+})
+
+
+#-------------------------------------------------------------------
+# testing that simplify works with test case #2
+
+# the simplified expression should look like:
+#\\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}
+
+#expected_output_s2 <-
+
+test_that("simplify works on graph with unobserved confounders G_2", {
+  expect_equal(simplify(P_2, topo_2, G_2.unobs, G_2, G_2.obs),
+               expected_output_2)
+})
+
+simplified_P_2 <- simplify(P_2, topo_2, G_2.unobs, G_2, G_2.obs)
+get.expression(simplified_P_2, primes = TRUE)
+get.expression(expected_output_2, primes = TRUE)
+
 
 
 #-------------------------------------------------------------------
@@ -200,61 +272,13 @@ plot(G_3)
 plot(G_3.obs)
 plot(G_3.unobs)
 
-#define P_3 for simplify(). P needs to be a list.
-# the initial probabilistic expression should be: ∑w,z P(y∣w,x,z)P(z∣w)P(w).
-# the simplified expression should look like: ∑w P(y∣w,x)P(w)
-P_3 <- list(
-  sumset = c("w", "z"),
-  children = list(
-    list(var = "y", cond = c("w", "x", "z")),
-    list(var = "z", cond = c("w")),
-    list(var = "w", cond = character(0))
-  )
-)
-
-simplify(P_3, topo_3, G_3.unobs, G_3, G_3.obs)
 
 #-------------------------------------------------------------------
 # testing that topo works with test case #3.
-# currently passes
+  # currently PASSES
 
 test_that("topo works on simple observed graph G_3", {
   expect_equal(topo_3, c("w", "x", "z", "y"))
-})
-
-#-------------------------------------------------------------------
-# testing that simplify works with test case #3
-
-#must define expected output object to match output from simplify: ∑w P(y|w,x)P(w)
-expected_output_3 <- list(
-  var = character(0),
-  cond = character(0),
-  sumset = c("w"),
-  do = character(0),
-  product = TRUE,
-  fraction = FALSE,
-  sum = FALSE,
-  children = list(
-    list(
-      var = "y",
-      cond = c("w", "x")
-    ),
-    list(
-      var = "w",
-      cond = character(0)
-    )
-  ),
-  den = list(),
-  num = list(),
-  domain = 0,
-  weight = 0
-)
-class(expected_output_3) <- "probability"
-
-#now running testthat
-test_that("simplify works on simple observed graph G_3", {
-  expect_equal(simplify(P_3, topo_3, G_3.unobs, G_3, G_3.obs),
-               expected_output_3)
 })
 
 #-------------------------------------------------------------------
@@ -278,3 +302,136 @@ test_that("causal.effect works on simple observed graph G_3", {
 
 })
 
+#-------------------------------------------------------------------
+# testing that parse.expression works with test case #3
+  # currently PASSES
+
+#define P_3 for parse.expression(). P needs to be a probability object.
+# the initial probabilistic expression should be: ∑w,z P(y∣w,x,z)P(z∣w)P(w).
+# the simplified expression should look like: ∑w P(y∣w,x)P(w)
+P_3_pe <- probability(
+  sumset = c("w", "z"),
+  product = TRUE,
+  fraction = FALSE,
+  sum = FALSE,
+  children = list(
+    probability(var = "y", cond = c("w", "x", "z")),
+    probability(var = "z", cond = c("w")),
+    probability(var = "w", cond = character(0))
+  ),
+  den = list(),
+  num = list(),
+  domain = 0,
+  weight = 0
+)
+
+#must define expected output object to match output from parse.expression: ∑w P(y|w,x)P(w)
+expected_output_pe3 <- probability(
+  sumset = "w",
+  product = TRUE,
+  fraction = FALSE,
+  sum = FALSE,
+  children = list(
+    probability(var = "y", cond = c("w", "x")),
+    probability(var = "w", cond = character(0))
+  ),
+  den = list(),
+  num = list(),
+  domain = 0,
+  weight = 0
+)
+
+# now running testthat
+test_that("parse.expression works on simple observed graph G_3", {
+  expect_equal(parse.expression(P_3_pe, topo_3, G_3.unobs, G_3, G_3.obs),
+               expected_output_pe3)
+
+})
+
+#-------------------------------------------------------------------
+# testing that simplify works with test case #3
+  # currently PASSES
+
+#define P_3 for simplify(). P needs to be a list object.
+# the simplified expression should look like: ∑w P(y∣w,x)P(w)
+child1 <- list(
+  var = "y",
+  cond = c("w", "x"),
+  sumset = character(0),
+  do = character(0),
+  product = FALSE,
+  fraction = FALSE,
+  sum = FALSE,
+  children = list(),
+  den = list(),
+  num = list(),
+  domain = 0,
+  weight = 0
+)
+attr(child1, "class") <- "probability"
+
+child2 <- list(
+  var = "w",
+  cond = character(0),
+  sumset = character(0),
+  do = character(0),
+  product = FALSE,
+  fraction = FALSE,
+  sum = FALSE,
+  children = list(),
+  den = list(),
+  num = list(),
+  domain = 0,
+  weight = 0
+)
+attr(child2, "class") <- "probability"
+
+# Create the main probability object
+P_3_s <- list(
+  var = character(0),
+  cond = character(0),
+  sumset = "w",
+  do = character(0),
+  product = TRUE,
+  fraction = FALSE,
+  sum = FALSE,
+  children = list(child1, child2),
+  den = list(),
+  num = list(),
+  domain = 0,
+  weight = 0
+)
+attr(P_3_s, "class") <- "probability"
+
+
+#must define expected output object to match output from simplify: ∑w P(y|w,x)P(w)
+expected_output_s3 <- probability(
+  sumset = "w",
+  product = TRUE,
+  fraction = FALSE,
+  sum = FALSE,
+  children = list(
+    probability(var = "y", cond = c("w", "x")),
+    probability(var = "w", cond = character(0))
+  ),
+  den = list(),
+  num = list(),
+  domain = 0,
+  weight = 0
+)
+
+#now running testthat
+test_that("simplify works on simple observed graph G_3", {
+  expect_equal(simplify(P_3_s, topo_3, G_3.unobs, G_3, G_3.obs),
+               expected_output_s3)
+})
+
+
+#-------------------------------------------------------------------
+
+?causal.effect
+
+#get.expression must have an object of class probability!
+
+simplified_P_3 <- simplify(P_3_s, topo_3, G_3.unobs, G_3, G_3.obs)
+get.expression(simplified_P_3, primes = FALSE)

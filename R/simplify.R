@@ -22,9 +22,9 @@
 
 
 simplify <- function(P, topo, G.unobs, G, G.obs) {
-  j <- 0 # initialize j to 0
-  while (j < length(P$sumset)) { # WHILE loop runs until all elements in P[‘sumset’] are processed
-    P.orig <- P # copy original expression P to go back to original expression if simplification does not work
+  j <- 0
+  while (j < length(P$sumset)) {
+    P.orig <- P
     irl.len <- 0
     irrel <- NULL
     terms <- list()
@@ -35,7 +35,7 @@ simplify <- function(P, topo, G.unobs, G, G.obs) {
     R.var <- character()
     R.cond <- list()
     J <- character()
-    D <- character() # initialize all other variables
+    D <- character()
     if (i > 1) {
       irrel <- irrelevant(P$children[1:(i-1)], P$sumset[j], P$sumset, G.unobs)
       irl.len <- length(irrel)
@@ -43,11 +43,11 @@ simplify <- function(P, topo, G.unobs, G, G.obs) {
         i <- i - irl.len
         terms <- P$children[irrel]
         P$children[irrel] <- NULL
-        vars <- vars[-irrel] # remove irrelevant terms from expression to reduce complexity
+        vars <- vars[-irrel]
       }
     }
     M <- topo[!(topo %in% vars)]
-    O <- topo[(topo %in% vars)] # separate variables into Missing (M) and Observed (O)
+    O <- topo[(topo %in% vars)]
     while (k <= i) {
       joint <- join(J, D, P$children[[k]]$var, P$children[[k]]$cond, P$sumset[j], M, O, G.unobs, G, G.obs, topo)
       if (length(joint[[1]]) <= length(J)) {
@@ -66,7 +66,7 @@ simplify <- function(P, topo, G.unobs, G, G.obs) {
           k <- k + 1
         }
       }
-    } # perform join operation (join components of expression to simplify). If successful, update the components accordingly. If fails, break loop and reset expression.
+    }
     if (k == i + 1) {
       P <- factorize(J, D, P, topo, i)
       S <- P$sumset[j]
@@ -81,6 +81,6 @@ simplify <- function(P, topo, G.unobs, G, G.obs) {
       } else j <- 0
       if (irl.len > 0) P$children <- c(terms, P$children)
     } else P <- P.orig
-  } # if simplification possible, factorize expression using intermediate sets and update sumset. Check for further elimination of redundant terms using cancel()
+  }
   return(P)
-} # return simplified expression
+}

@@ -166,6 +166,17 @@ test_that("causal.effect works on graph with unobserved confounders G_2", {
 #-------------------------------------------------------------------
 # testing that parse.expression works with test case #2
 
+
+# Trying to do set.primes before parse.expression
+vars <- "y'"
+
+set.primes(vars, new = FALSE, counter = TRUE)
+
+print(P_2_pe)
+get.expression(P_2_pe, primes = TRUE)
+parse.expression(P_2_pe, topo_2, G_2.unobs, G_2, G_2.obs)
+
+
 #define P_2 for parse.expression(). P needs to be a probability object.
   # the initial probabilistic expression should be:
   # \\frac{\\sum_{z_3,z_5,z_2,z_4}P(y|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}
@@ -197,15 +208,6 @@ P_2_pe <- probability(
     )
   )
 )
-
-vars <- c("y")
-counter <- c(y = 1)
-set.primes(vars, new = TRUE, counter = counter)
-
-
-print(P_2_pe)
-get.expression(P_2_pe)
-parse.expression(P_2_pe, topo_2, G_2.unobs, G_2, G_2.obs)
 
 
 #must define expected output object to match output from parse.expression:
@@ -425,7 +427,6 @@ test_that("simplify works on simple observed graph G_3", {
   expect_equal(simplify(P_3_s, topo_3, G_3.unobs, G_3, G_3.obs),
                expected_output_s3)
 })
-
 
 #-------------------------------------------------------------------
 

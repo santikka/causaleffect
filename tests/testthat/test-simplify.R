@@ -77,6 +77,18 @@ test_that("causal.effect works on graph with unobserved confounders G_1", {
 })
 
 #-------------------------------------------------------------------
+# testing that parse.expression works with test case #1
+# I used the output from causal.effect("y", "x", G = G_1, expr = FALSE, simp = TRUE).
+# The expr = FALSE is key!
+# currently PASSES
+
+test_that("parse.expression works on graph with unobserved confounders G_1", {
+  expect_equal(parse.expression(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
+               expected_output_1)
+
+})
+
+#-------------------------------------------------------------------
 # testing that simplify works with test case #1
   # currently PASSES
 
@@ -101,15 +113,6 @@ test_that("simplify works on graph with unobserved confounders G_1", {
                expected_output_1)
 })
 
-#-------------------------------------------------------------------
-# testing that parse.expression works with test case #1
-  # currently PASSES
-
-test_that("parse.expression works on graph with unobserved confounders G_1", {
-  expect_equal(parse.expression(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
-               expected_output_1)
-
-})
 
 #-------------------------------------------------------------------
 # test case #2 from pp. 6-7 of causaleffect - pruning.
@@ -168,19 +171,25 @@ test_that("causal.effect works on graph with unobserved confounders G_2", {
 
 
 # Trying to do set.primes before parse.expression
-vars <- "y'"
+vars <- c("z_3", "z_5", "z_2", "z_1", "x", "z_4", "y")
+counter <- setNames(rep(0, length(vars)), vars)
+counter["y"] <- 2
+set.primes(vars, FALSE, counter)
 
-set.primes(vars, new = FALSE, counter = TRUE)
 
 print(P_2_pe)
 get.expression(P_2_pe, primes = TRUE)
 parse.expression(P_2_pe, topo_2, G_2.unobs, G_2, G_2.obs)
 
 
-#define P_2 for parse.expression(). P needs to be a probability object.
+# define P_2 for parse.expression(). I used the output from
+# causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = FALSE).
+# The expr = FALSE is key!
   # the initial probabilistic expression should be:
   # \\frac{\\sum_{z_3,z_5,z_2,z_4}P(y|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}
   # {\\sum_{z_3,z_5,z_2,z_4,y^{\\prime}}P(y^{\\prime}|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}
+
+# potential expression #1
 P_2_pe <- probability(
   fraction = TRUE,
   num = probability(
@@ -210,28 +219,374 @@ P_2_pe <- probability(
 )
 
 
-#must define expected output object to match output from parse.expression:
-expected_output_pe2 <- probability(
+# potential expression #2
+P_2_pe <- list(
+  var = character(0),
+  cond = character(0),
+  sumset = character(0),
+  do = character(0),
+  product = FALSE,
   fraction = TRUE,
-  num = probability(
-    sumset = c("z_2", "z_5"),
+  sum = FALSE,
+  children = list(),
+  den = list(
+    var = character(0),
+    cond = character(0),
+    sumset = c("z_3", "z_5", "z_2", "z_4", "y"),
+    do = character(0),
     product = TRUE,
+    fraction = FALSE,
+    sum = FALSE,
     children = list(
-      probability(var = "y", cond = c("x", "z_1", "z_2", "z_5")),
-      probability(var = "x", cond = c("z_1", "z_2", "z_5")),
-      probability(var = "z_2", cond = c("z_5")),
-      probability(var = "z_5")
-    )
+      list(
+        var = "y",
+        cond = c("z_3", "z_5", "z_2", "z_1", "x", "z_4"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_4",
+        cond = c("z_3", "z_5", "z_2", "z_1", "x"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "x",
+        cond = c("z_3", "z_5", "z_2", "z_1"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_2",
+        cond = c("z_3", "z_5"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_5",
+        cond = "z_3",
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_3",
+        cond = character(0),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      )
+    ),
+    den = list(),
+    num = list(),
+    domain = 0,
+    weight = 0,
+    class = "probability"
   ),
-  den = probability(
-    sumset = c("z_2"),
+  num = list(
+    var = character(0),
+    cond = character(0),
+    sumset = c("z_3", "z_5", "z_2", "z_4"),
+    do = character(0),
     product = TRUE,
+    fraction = FALSE,
+    sum = FALSE,
     children = list(
-      probability(var = "x", cond = c("z_1", "z_2")),
-      probability(var = "z_2")
-    )
-  )
+      list(
+        var = "y",
+        cond = c("z_3", "z_5", "z_2", "z_1", "x", "z_4"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_4",
+        cond = c("z_3", "z_5", "z_2", "z_1", "x"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "x",
+        cond = c("z_3", "z_5", "z_2", "z_1"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_2",
+        cond = c("z_3", "z_5"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_5",
+        cond = "z_3",
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_3",
+        cond = character(0),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      )
+    ),
+    den = list(),
+    num = list(),
+    domain = 0,
+    weight = 0,
+    class = "probability"
+  ),
+  domain = 0,
+  weight = 0,
+  class = "probability",
+  algorithm = "pid",
+  query = list(y = "y", x = "x", z = NULL)
 )
+
+#must define expected output object to match output from parse.expression:
+expected_output_pe2 <- list(
+  var = character(0),
+  cond = character(0),
+  sumset = character(0),
+  do = character(0),
+  product = FALSE,
+  fraction = TRUE,
+  sum = FALSE,
+  children = list(),
+  den = list(
+    var = character(0),
+    cond = character(0),
+    sumset = c("z_2"),
+    do = character(0),
+    product = TRUE,
+    fraction = FALSE,
+    sum = FALSE,
+    children = list(
+      list(
+        var = "x",
+        cond = c("z_1", "z_2"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_2",
+        cond = character(0),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      )
+    ),
+    den = list(),
+    num = list(),
+    domain = 0,
+    weight = 0,
+    class = "probability"
+  ),
+  num = list(
+    var = character(0),
+    cond = character(0),
+    sumset = c("z_2", "z_5"),
+    do = character(0),
+    product = TRUE,
+    fraction = FALSE,
+    sum = FALSE,
+    children = list(
+      list(
+        var = "y",
+        cond = c("x", "z_1", "z_2", "z_5"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "x",
+        cond = c("z_1", "z_2", "z_5"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_2",
+        cond = "z_5",
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_5",
+        cond = character(0),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      )
+    ),
+    den = list(),
+    num = list(),
+    domain = 0,
+    weight = 0,
+    class = "probability"
+  ),
+  domain = 0,
+  weight = 0,
+  class = "probability",
+  algorithm = "pid",
+  query = list(y = "y", x = "x", z = NULL)
+)
+
 
 
 # now running testthat

@@ -25,27 +25,6 @@ plot(unobserved.graph(G_1.unobs))
 # ^^ unobserved.graph plots observed graph, plus unobserved node(s)
 
 
-#define P_1 for simplify(). P needs to be a probability object.
-  # the initial probabilistic expression should be: ∑z P(y|z,x)P(z)
-  # the simplified expression should look like: ∑z P(y|z,x)P(z)
-P_1 <- probability(
-  sumset = c("z"),
-  product = TRUE,
-  fraction = FALSE,
-  sum = FALSE,
-  children = list(
-    probability(var = "y", cond = c("z", "x")),
-    probability(var = "z", cond = character(0))
-  ),
-  den = list(),
-  num = list(),
-  domain = 0,
-  weight = 0
-)
-
-simplify(P_1, topo_1, G_1.unobs, G_1, G_1.obs)
-
-
 #-------------------------------------------------------------------
 # testing that topo works with test case #1
   # currently PASSES
@@ -65,6 +44,8 @@ test_that("causal.effect works on graph with unobserved confounders G_1", {
                "\\sum_{z}P(y|z,x)P(z)")
 })
 
+causal.effect("y", "x", G = G_1, expr = FALSE, simp = TRUE)
+
 #-------------------------------------------------------------------
 # testing that causal.effect works with test case #1 when simp = FALSE
   # expression should NOT be simplified.
@@ -78,20 +59,32 @@ test_that("causal.effect works on graph with unobserved confounders G_1", {
 
 #-------------------------------------------------------------------
 # testing that parse.expression works with test case #1
-# I used the output from causal.effect("y", "x", G = G_1, expr = FALSE, simp = TRUE).
-# The expr = FALSE is key!
-# currently PASSES
-
-test_that("parse.expression works on graph with unobserved confounders G_1", {
-  expect_equal(parse.expression(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
-               expected_output_1)
-
-})
-
-#-------------------------------------------------------------------
-# testing that simplify works with test case #1
+  # causal.effect with simp = TRUE and simp = FALSE (they are the same)
   # currently PASSES
 
+# define P_1 for parse.expression(). P needs to be a probability object.
+# the initial probabilistic expression should be: ∑z P(y|z,x)P(z)
+# the simplified expression should look like: ∑z P(y|z,x)P(z)
+
+# I used the output from causal.effect("y", "x", G = G_1, expr = FALSE, simp = TRUE).
+# The expr = FALSE is key!
+P_1 <- probability(
+  sumset = c("z"),
+  product = TRUE,
+  fraction = FALSE,
+  sum = FALSE,
+  children = list(
+    probability(var = "y", cond = c("z", "x")),
+    probability(var = "z", cond = character(0))
+  ),
+  den = list(),
+  num = list(),
+  domain = 0,
+  weight = 0
+)
+
+
+#now must define expected output from parse.expression
 expected_output_1 <- probability(
   sumset = "z",
   product = TRUE,
@@ -107,6 +100,21 @@ expected_output_1 <- probability(
   weight = 0
 )
 
+
+# now running testthat
+test_that("parse.expression works on graph with unobserved confounders G_1", {
+  expect_equal(parse.expression(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
+               expected_output_1)
+
+})
+
+#-------------------------------------------------------------------
+# testing that simplify works with test case #1
+  # currently PASSES
+
+
+# we can use the same P_1 and expected_output_1 as we used for parse.expression, as the expression
+# passes through parse.expression unchanged.
 
 test_that("simplify works on graph with unobserved confounders G_1", {
   expect_equal(simplify(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
@@ -155,6 +163,8 @@ test_that("causal.effect works on graph with unobserved confounders G_2", {
                "\\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}")
 })
 
+causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = FALSE)
+
 #-------------------------------------------------------------------
 # testing that causal.effect works with test case #2 when simp = FALSE
   # expression should NOT be simplified.
@@ -168,6 +178,7 @@ test_that("causal.effect works on graph with unobserved confounders G_2", {
 
 #-------------------------------------------------------------------
 # testing that parse.expression works with test case #2
+  # causal.effect with simp = TRUE
   # currently PASSES
 
 
@@ -178,14 +189,14 @@ counter["y"] <- 2
 set.primes(vars, FALSE, counter)
 
 
-# define P_2 for parse.expression(). I used the output from
-# causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = FALSE).
-# The expr = FALSE is key!
+# define P_2 for parse.expression() using the output from
+  # causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = TRUE).
+  # expr = FALSE and simp = TRUE
   # the initial probabilistic expression should be:
   # \\frac{\\sum_{z_3,z_5,z_2,z_4}P(y|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}
   # {\\sum_{z_3,z_5,z_2,z_4,y^{\\prime}}P(y^{\\prime}|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}
 
-P_2_pe <- list(
+P_2_pe1 <- list(
   var = character(0),
   cond = character(0),
   sumset = character(0),
@@ -325,7 +336,7 @@ P_2_pe <- list(
 
 
 #must define expected output object to match output from parse.expression:
-expected_output_pe2 <- list(
+expected_output_2_pe1 <- list(
   var = character(0),
   cond = character(0),
   sumset = character(0),
@@ -466,29 +477,355 @@ expected_output_pe2 <- list(
 
 # now running testthat
 test_that("parse.expression works on graph with unobserved confounders G_2", {
-  expect_equal(parse.expression(P_2_pe, topo_2, G_2.unobs, G_2, G_2.obs),
-               expected_output_pe2)
+  expect_equal(parse.expression(P_2_pe1, topo_2, G_2.unobs, G_2, G_2.obs),
+               expected_output_2_pe1)
 
 })
 
 
 #-------------------------------------------------------------------
 # testing that simplify works with test case #2
+  # causal.effect with simp = TRUE
+  # currently PASSES
 
 # the simplified expression should look like:
 #\\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}
+P_2_s1 <- list(
+  var = character(0),
+  cond = character(0),
+  sumset = character(0),
+  do = character(0),
+  product = FALSE,
+  fraction = TRUE,
+  sum = FALSE,
+  children = list(),
+  den = list(
+    var = character(0),
+    cond = character(0),
+    sumset = c("z_2"),
+    do = character(0),
+    product = TRUE,
+    fraction = FALSE,
+    sum = FALSE,
+    children = list(
+      list(
+        var = "x",
+        cond = c("z_1", "z_2"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_2",
+        cond = character(0),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      )
+    ),
+    den = list(),
+    num = list(),
+    domain = 0,
+    weight = 0,
+    class = "probability"
+  ),
+  num = list(
+    var = character(0),
+    cond = character(0),
+    sumset = c("z_2", "z_5"),
+    do = character(0),
+    product = TRUE,
+    fraction = FALSE,
+    sum = FALSE,
+    children = list(
+      list(
+        var = "y",
+        cond = c("x", "z_1", "z_2", "z_5"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "x",
+        cond = c("z_1", "z_2", "z_5"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_2",
+        cond = c("z_5"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_5",
+        cond = character(0),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      )
+    ),
+    den = list(),
+    num = list(),
+    domain = 0,
+    weight = 0,
+    class = "probability"
+  ),
+  domain = 0,
+  weight = 0,
+  class = "probability",
+  algorithm = "pid",
+  query = list(y = "y", x = "x", z = NULL)
+)
 
-#expected_output_s2 <-
 
+# now must define the expected output object for simplify()
+expected_output_2_s1 <- list(
+  var = character(0),
+  cond = character(0),
+  sumset = character(0),
+  do = character(0),
+  product = FALSE,
+  fraction = TRUE,
+  sum = FALSE,
+  children = list(),
+  den = list(
+    var = character(0),
+    cond = character(0),
+    sumset = c("z_2"),
+    do = character(0),
+    product = TRUE,
+    fraction = FALSE,
+    sum = FALSE,
+    children = list(
+      list(
+        var = "x",
+        cond = c("z_1", "z_2"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_2",
+        cond = character(0),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      )
+    ),
+    den = list(),
+    num = list(),
+    domain = 0,
+    weight = 0,
+    class = "probability"
+  ),
+  num = list(
+    var = character(0),
+    cond = character(0),
+    sumset = c("z_2", "z_5"),
+    do = character(0),
+    product = TRUE,
+    fraction = FALSE,
+    sum = FALSE,
+    children = list(
+      list(
+        var = "y",
+        cond = c("x", "z_1", "z_2", "z_5"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "x",
+        cond = c("z_1", "z_2", "z_5"),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_2",
+        cond = "z_5",
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      ),
+      list(
+        var = "z_5",
+        cond = character(0),
+        sumset = character(0),
+        do = character(0),
+        product = FALSE,
+        fraction = FALSE,
+        sum = FALSE,
+        children = list(),
+        den = list(),
+        num = list(),
+        domain = 0,
+        weight = 0,
+        class = "probability"
+      )
+    ),
+    den = list(),
+    num = list(),
+    domain = 0,
+    weight = 0,
+    class = "probability"
+  ),
+  domain = 0,
+  weight = 0,
+  class = "probability",
+  algorithm = "pid",
+  query = list(y = "y", x = "x", z = NULL)
+)
+
+
+# now running testthat
 test_that("simplify works on graph with unobserved confounders G_2", {
-  expect_equal(simplify(P_2, topo_2, G_2.unobs, G_2, G_2.obs),
-               expected_output_2)
+  expect_equal(simplify(P_2_s1, topo_2, G_2.unobs, G_2, G_2.obs),
+               expected_output_2_s1)
 })
 
-simplified_P_2 <- simplify(P_2, topo_2, G_2.unobs, G_2, G_2.obs)
-get.expression(simplified_P_2, primes = TRUE)
-get.expression(expected_output_2, primes = TRUE)
 
+#-------------------------------------------------------------------
+# testing that parse.expression works with test case #2
+  # causal.effect with simp = FALSE
+
+
+# Trying to do set.primes before parse.expression
+vars <- c("z_3", "z_5", "z_2", "z_1", "x", "z_4", "y")
+counter <- setNames(rep(0, length(vars)), vars)
+counter["y"] <- 2
+set.primes(vars, FALSE, counter)
+
+
+# define P_2 for parse.expression() using the output from
+  # causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = FALSE).
+  # expr = FALSE and simp = FALSE
+  # the initial probabilistic expression should be:
+  # ________
+
+# P_2_pe2 <- ____
+
+#must define expected output object to match output from parse.expression:
+# expected_output_2_pe2 <- ____
+
+
+# now running testthat
+test_that("parse.expression works on graph with unobserved confounders G_2", {
+  expect_equal(parse.expression(P_2_pe2, topo_2, G_2.unobs, G_2, G_2.obs),
+               expected_output_2_pe2)
+
+})
+
+
+#-------------------------------------------------------------------
+# testing that simplify works with test case #2
+# currently PASSES
+
+# the simplified expression should look like:
+#\\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}
+# P_2_s2 <- ____
+
+
+# now must define the expected output object for simplify()
+# expected_output_2_s2 <- ____
+
+
+# now running testthat
+test_that("simplify works on graph with unobserved confounders G_2", {
+  expect_equal(simplify(P_2_s2, topo_2, G_2.unobs, G_2, G_2.obs),
+               expected_output_2_s2)
+})
 
 
 #-------------------------------------------------------------------
@@ -536,11 +873,14 @@ test_that("causal.effect works on simple observed graph G_3", {
 
 #-------------------------------------------------------------------
 # testing that parse.expression works with test case #3
+  # causal.effect simp = FALSE
   # currently PASSES
 
-#define P_3 for parse.expression(). P needs to be a probability object.
-# the initial probabilistic expression should be: ∑w,z P(y∣w,x,z)P(z∣w)P(w).
-# the simplified expression should look like: ∑w P(y∣w,x)P(w)
+# define P_3 for parse.expression() using the output from causal.effect with
+  # expr = FALSE and simp = FALSE
+  # P needs to be a probability object.
+  # the initial probabilistic expression should be: ∑w,z P(y∣w,x,z)P(z∣w)P(w).
+  # the simplified expression should look like: ∑w P(y∣w,x)P(w)
 P_3_pe <- probability(
   sumset = c("w", "z"),
   product = TRUE,
@@ -584,7 +924,8 @@ test_that("parse.expression works on simple observed graph G_3", {
 # testing that simplify works with test case #3
   # currently PASSES
 
-#define P_3 for simplify(). P needs to be a list object.
+#define P_3 for simplify() using the output of parse.expression.
+# P needs to be a list object.
 # the simplified expression should look like: ∑w P(y∣w,x)P(w)
 child1 <- list(
   var = "y",
@@ -659,10 +1000,3 @@ test_that("simplify works on simple observed graph G_3", {
 })
 
 #-------------------------------------------------------------------
-
-?causal.effect
-
-#get.expression must have an object of class probability!
-
-simplified_P_3 <- simplify(P_3_s, topo_3, G_3.unobs, G_3, G_3.obs)
-get.expression(simplified_P_3, primes = FALSE)

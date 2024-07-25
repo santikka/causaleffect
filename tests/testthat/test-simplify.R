@@ -154,18 +154,6 @@ test_that("topo works on graph with unobserved confounders G_2", {
 
 
 #-------------------------------------------------------------------
-# testing that causal.effect works with test case #2 when simp = TRUE
-  # expression should be simplified.
-  # currently PASSES
-
-test_that("causal.effect works on graph with unobserved confounders G_2", {
-  expect_equal(causal.effect("y", "x", G = G_2, primes = TRUE, prune = TRUE, simp = TRUE),
-               "\\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}")
-})
-
-causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = FALSE)
-
-#-------------------------------------------------------------------
 # testing that causal.effect works with test case #2 when simp = FALSE
   # expression should NOT be simplified.
   # currently PASSES
@@ -178,7 +166,7 @@ test_that("causal.effect works on graph with unobserved confounders G_2", {
 
 #-------------------------------------------------------------------
 # testing that parse.expression works with test case #2
-  # causal.effect with simp = TRUE
+  # causal.effect with simp = FALSE
   # currently PASSES
 
 
@@ -485,7 +473,7 @@ test_that("parse.expression works on graph with unobserved confounders G_2", {
 
 #-------------------------------------------------------------------
 # testing that simplify works with test case #2
-  # causal.effect with simp = TRUE
+  # causal.effect with simp = FALSE
   # currently PASSES
 
 # the simplified expression should look like:
@@ -777,8 +765,18 @@ test_that("simplify works on graph with unobserved confounders G_2", {
 
 
 #-------------------------------------------------------------------
+# testing that causal.effect works with test case #2 when simp = TRUE
+  # expression should be simplified.
+  # currently PASSES
+
+test_that("causal.effect works on graph with unobserved confounders G_2", {
+  expect_equal(causal.effect("y", "x", G = G_2, primes = TRUE, prune = TRUE, simp = TRUE),
+               "\\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}")
+})
+
+#-------------------------------------------------------------------
 # testing that parse.expression works with test case #2
-  # causal.effect with simp = FALSE
+  # causal.effect with simp = TRUE
 
 
 # Trying to do set.primes before parse.expression
@@ -789,8 +787,8 @@ set.primes(vars, FALSE, counter)
 
 
 # define P_2 for parse.expression() using the output from
-  # causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = FALSE).
-  # expr = FALSE and simp = FALSE
+  # causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = TRUE).
+  # expr = FALSE and simp = TRUE
   # the initial probabilistic expression should be:
   # ________
 
@@ -810,10 +808,10 @@ test_that("parse.expression works on graph with unobserved confounders G_2", {
 
 #-------------------------------------------------------------------
 # testing that simplify works with test case #2
-# currently PASSES
+  # causal.effect with simp = TRUE
 
 # the simplified expression should look like:
-#\\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}
+#________
 # P_2_s2 <- ____
 
 

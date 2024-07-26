@@ -45,7 +45,6 @@ test_that("topo works on graph with unobserved confounders G_1", {
   expect_equal(topo_1, c("z", "x", "y"))
 })
 
-
 #-------------------------------------------------------------------
 # testing that causal.effect works with test case #1 when simp = FALSE
   # expression should NOT be simplified.
@@ -121,7 +120,6 @@ test_that("parse.expression works on graph with unobserved confounders G_1", {
 #-------------------------------------------------------------------
 # testing that simplify works with test case #1
   # currently PASSES
-
 
 # we can use the same P_1 and expected_output_1 as we used for parse.expression, as the expression
 # passes through parse.expression unchanged.

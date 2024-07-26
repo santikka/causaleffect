@@ -5,20 +5,19 @@ library(causaleffect)
 causal_effect_files <- list.files("~/Projects/causaleffect/R", pattern = "\\.R$", full.names = TRUE)
 lapply(causal_effect_files, source)
 
-
 #-------------------------------------------------------------------
 # test case #3 from pp. 6-7 of causaleffect - only observed variables
 #-------------------------------------------------------------------
 # unit tests for functions: 
-# (1) topo, causal.effect with simp = TRUE, 
-# (2) parse.expression with causal.effect simp = TRUE, 
-# (3) simplify with causal.effect simp = TRUE, 
-# (4) causal.effect with simp = FALSE, 
-# (5) parse.expression with causal.effect simp = FALSE, 
-# (6) simplify with causal.effect simp = FALSE
+# (1) topo, 
+# (2) causal.effect with simp = TRUE, 
+# (3) parse.expression from causal.effect simp = TRUE, 
+# (4) simplify from causal.effect simp = TRUE, 
+# (5) causal.effect with simp = FALSE, 
+# (6) parse.expression from causal.effect simp = FALSE, 
+# (7) simplify from causal.effect simp = FALSE
 
 #-------------------------------------------------------------------
-
 # defining graphs, nodes, and topological ordering using igraph package 
 
 G_3 <- graph.formula(x -+ y, w -+ x, w -+ z, z -+ y)
@@ -31,10 +30,9 @@ plot(G_3)
 plot(G_3.obs)
 plot(G_3.unobs)
 
-
 #-------------------------------------------------------------------
 # testing that topo works with test case #3.
-# currently PASSES
+  # currently PASSES
 
 test_that("topo works on simple observed graph G_3", {
   expect_equal(topo_3, c("w", "x", "z", "y"))
@@ -42,8 +40,8 @@ test_that("topo works on simple observed graph G_3", {
 
 #-------------------------------------------------------------------
 # testing that causal.effect works with test case #3 when simp = TRUE
-# expression should be simplified.
-# currently PASSES
+  # expression should be simplified.
+  # currently PASSES
 
 test_that("causal.effect works on simple observed graph G_3", {
   expect_equal(causal.effect("y", "x", G = G_3, simp = TRUE),
@@ -52,8 +50,8 @@ test_that("causal.effect works on simple observed graph G_3", {
 
 #-------------------------------------------------------------------
 # testing that causal.effect works with test case #3 when simp = FALSE
-# expression should NOT be simplified.
-# currently PASSES
+  # expression should NOT be simplified.
+  # currently PASSES
 
 test_that("causal.effect works on simple observed graph G_3", {
   expect_equal(causal.effect("y", "x", G = G_3, simp = FALSE),
@@ -63,14 +61,14 @@ test_that("causal.effect works on simple observed graph G_3", {
 
 #-------------------------------------------------------------------
 # testing that parse.expression works with test case #3
-# causal.effect simp = FALSE
-# currently PASSES
+  # causal.effect simp = FALSE
+  # currently PASSES
 
 # define P_3 for parse.expression() using the output from causal.effect with
-# expr = FALSE and simp = FALSE
-# P needs to be a probability object.
-# the initial probabilistic expression should be: ∑w,z P(y∣w,x,z)P(z∣w)P(w).
-# the simplified expression should look like: ∑w P(y∣w,x)P(w)
+  # expr = FALSE and simp = FALSE
+  # P needs to be a probability object.
+  # the initial probabilistic expression should be: ∑w,z P(y∣w,x,z)P(z∣w)P(w).
+  # the simplified expression should look like: ∑w P(y∣w,x)P(w)
 P_3_pe <- probability(
   sumset = c("w", "z"),
   product = TRUE,
@@ -112,11 +110,11 @@ test_that("parse.expression works on simple observed graph G_3", {
 
 #-------------------------------------------------------------------
 # testing that simplify works with test case #3
-# currently PASSES
+  # currently PASSES
 
 #define P_3 for simplify() using the output of parse.expression.
-# P needs to be a list object.
-# the simplified expression should look like: ∑w P(y∣w,x)P(w)
+  # P needs to be a list object.
+  # the simplified expression should look like: ∑w P(y∣w,x)P(w)
 child1 <- list(
   var = "y",
   cond = c("w", "x"),

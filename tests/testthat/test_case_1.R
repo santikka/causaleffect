@@ -5,14 +5,13 @@ library(causaleffect)
 causal_effect_files <- list.files("~/Projects/causaleffect/R", pattern = "\\.R$", full.names = TRUE)
 lapply(causal_effect_files, source)
 
-
 #-------------------------------------------------------------------
-# test case #1 from pp. 6-7 of causaleffect - includes unobserved confounders.
+# test case #1 from pp. 6-7 of causaleffect on CRAN - includes unobserved confounders.
 #-------------------------------------------------------------------
 # unit tests for functions:
 # (1) topo,
-# (2) causal.effect with simp = TRUE,
-# (3) causal.effect with simp = FALSE,
+# (2) causal.effect with simp = FALSE,
+# (3) causal.effect with simp = TRUE,
 # (4) parse.expression from causal.effect,
 # (5) simplify from causal.effect
 
@@ -38,7 +37,7 @@ plot(unobserved.graph(G_1.unobs))
 
 
 #-------------------------------------------------------------------
-# testing that topo works with test case #1
+# (1) testing that topo works with test case #1
   # currently PASSES
 
 test_that("topo works on graph with unobserved confounders G_1", {
@@ -46,7 +45,7 @@ test_that("topo works on graph with unobserved confounders G_1", {
 })
 
 #-------------------------------------------------------------------
-# testing that causal.effect works with test case #1 when simp = FALSE
+# (2) testing that causal.effect works with test case #1 when simp = FALSE
   # expression should NOT be simplified.
   # currently PASSES
 
@@ -57,9 +56,9 @@ test_that("causal.effect works on graph with unobserved confounders G_1", {
 })
 
 #-------------------------------------------------------------------
-# testing that causal.effect works with test case #1 when simp = TRUE
-# expression should be the same, since it cannot be simplified.
-# currently PASSES
+# (3) testing that causal.effect works with test case #1 when simp = TRUE
+  # expression should be the same, since it cannot be simplified.
+  # currently PASSES
 
 test_that("causal.effect works on graph with unobserved confounders G_1", {
   expect_equal(causal.effect("y", "x", G = G_1, simp = TRUE),
@@ -67,7 +66,7 @@ test_that("causal.effect works on graph with unobserved confounders G_1", {
 })
 
 #-------------------------------------------------------------------
-# testing that parse.expression works with test case #1
+# (4) testing that parse.expression works with test case #1
   # causal.effect with simp = TRUE and simp = FALSE (they are the same)
   # currently PASSES
 
@@ -93,7 +92,7 @@ P_1 <- probability(
 )
 
 
-#now must define expected output from parse.expression
+# now must define expected output from parse.expression
 expected_output_1 <- probability(
   sumset = "z",
   product = TRUE,
@@ -118,7 +117,7 @@ test_that("parse.expression works on graph with unobserved confounders G_1", {
 })
 
 #-------------------------------------------------------------------
-# testing that simplify works with test case #1
+# (5) testing that simplify works with test case #1
   # currently PASSES
 
 # we can use the same P_1 and expected_output_1 as we used for parse.expression, as the expression

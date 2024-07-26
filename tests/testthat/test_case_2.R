@@ -8,17 +8,17 @@ lapply(causal_effect_files, source)
 #-------------------------------------------------------------------
 # test case #2 from pp. 6-7 of causaleffect - pruning.
 #-------------------------------------------------------------------
-# unit tests for functions: 
-# (1) topo, 
-# (2) causal.effect with simp = TRUE, 
-# (3) parse.expression from causal.effect simp = TRUE, 
-# (4) simplify from causal.effect simp = TRUE, 
-# (5) causal.effect with simp = FALSE, 
-# (6) parse.expression from causal.effect simp = FALSE, 
+# unit tests for functions:
+# (1) topo,
+# (2) causal.effect with simp = TRUE,
+# (3) parse.expression from causal.effect simp = TRUE,
+# (4) simplify from causal.effect simp = TRUE,
+# (5) causal.effect with simp = FALSE,
+# (6) parse.expression from causal.effect simp = FALSE,
 # (7) simplify from causal.effect simp = FALSE
 
 #-------------------------------------------------------------------
-# defining graphs, nodes, and topological ordering using igraph package 
+# defining graphs, nodes, and topological ordering using igraph package
 
 G_2 <- graph.formula(x -+ z_4, z_4 -+ y, z_1 -+ x, z_2 -+ z_1,
                      z_3 -+ z_2, z_3 -+ x, z_5 -+ z_1, z_5 -+ z_4, x -+ z_2, z_2 -+ x,
@@ -56,7 +56,7 @@ test_that("topo works on graph with unobserved confounders G_2", {
 test_that("causal.effect works on graph with unobserved confounders G_2", {
   expect_equal(causal.effect("y", "x", G = G_2, primes = TRUE, prune = TRUE, simp = FALSE),
                "\\frac{\\sum_{z_3,z_5,z_2,z_4}P(y|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}{\\sum_{z_3,z_5,z_2,z_4,y^{\\prime}}P(y^{\\prime}|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}")
-  
+
 })
 
 #-------------------------------------------------------------------
@@ -361,7 +361,7 @@ expected_output_2_pe1 <- list(
 test_that("parse.expression works on graph with unobserved confounders G_2", {
   expect_equal(parse.expression(P_2_pe1, topo_2, G_2.unobs, G_2, G_2.obs),
                expected_output_2_pe1)
-  
+
 })
 
 
@@ -925,7 +925,7 @@ expected_output_2_pe2 <- list(
       list(
         var = "z_2",
         cond = c("z_5"),
-        sumset = character(0),
+        sumset = character(0)
         do = character(0),
         product = FALSE,
         fraction = FALSE,
@@ -971,7 +971,7 @@ expected_output_2_pe2 <- list(
 test_that("parse.expression works on graph with unobserved confounders G_2", {
   expect_equal(parse.expression(P_2_pe2, topo_2, G_2.unobs, G_2, G_2.obs),
                expected_output_2_pe2)
-  
+
 })
 
 

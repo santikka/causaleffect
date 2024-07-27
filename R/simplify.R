@@ -1,25 +1,3 @@
-# Simplify
-#
-# This function algebraically simplifies probabilistic expressions given by the ID algorithm.
-# Always attempts to perform maximal simplification, meaning that as many
-# variables of the set are removed as possible. If the simplification in terms
-# of the entire set cannot be completed, the intermediate result with as many
-# variables simplified as possible should be returned.
-#
-#
-# P: Probabilistic expression that will be simplified
-# topo: Topological ordering of the vertices in graph G
-# G.unobs: Unobserved nodes in graph G
-# G: Graph G
-# G.obs: Observed nodes in graph G
-#
-# Returns: Simplified atomic expression
-#
-#
-# Causaleffect dependencies: irrelevant, wrap.dSep, dSep, join, ancestors, factorize,
-# parents, children, powerset
-
-
 simplify <- function(P, topo, G.unobs, G, G.obs) {
 # initialize j to 0
   j <- 0

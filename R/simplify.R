@@ -1,3 +1,92 @@
+#' Simplify
+#'
+#' This function algebraically simplifies probabilistic expressions given by the ID algorithm from \code{causal.effect}. It always attempts to perform maximal simplification, meaning that as many variables of the set are removed as possible. If the simplification in terms of the entire set cannot be completed, the intermediate result with as many variables simplified as possible should be returned.
+#'
+#' Run \code{causal.effect} with the graph information first, then use the output of \code{causal.effect} as the \code{P} in \code{parse.expression}. Use the output from \code{parse.expression} as the \code{P} in \code{simplify}.
+#'
+#' For further information, see Tikka & Karvanen (2017) "Simplifying Probabilistic Expressions in Causal Inference" Algorithm 1.
+#'
+#' @usage simplify(P, topo, G.unobs, G, G.obs)
+#'
+#' @param P Probabilistic expression that will be simplified.
+#' @param topo Topological ordering of the vertices in graph G.
+#' @param G.unobs Unobserved nodes in graph G.
+#' @param G Graph G.
+#' @param G.obs Observed nodes in graph G.
+#'
+#' @details This function depends on several functions from the \code{causal.effect} package, including: \code{irrelevant}, \code{wrap.dSep}, \code{dSep}, \code{join}, \code{ancestors}, \code{factorize}, \code{parents}, \code{children}, and \code{powerset}.
+#'
+#' @return \code{simplify()} will return the simplified atomic expression in a list structure. For example (from example below):
+#' \itemize{
+#'   \item $var: character(0)
+#'   \item $cond: character(0)
+#'   \item $sumset: [1] "z"
+#'   \item $do: character(0)
+#'   \item $product: [1] TRUE
+#'   \item $fraction: [1] FALSE
+#'   \item $sum: [1] FALSE
+#'   \item $children: list()
+#'   \item $den: list()
+#'   \item $num: list()
+#'   \item $domain: [1] 0
+#'   \item $weight: [1] 0
+#'   \item attr(,"class"): [1] "probability"
+#' }
+#'
+#' This long list structure can be converted into a string by the \code{get.expression} function. For example:
+#'
+#' \preformatted{string_expression <- simplify(P, topo, G.unobs, G, G.obs)
+#' get.expression(string_expression)}
+#'
+#' The resulting string should look like (from example below): "\\sum_{w}P(y|w,x)P(w)"
+#'
+#' @references Tikka, S., & Karvanen, J. (2017). Simplifying probabilistic expressions in causal inference. Journal of Machine Learning Research, 18(36), 1-30.
+#'
+#' @author Haley Hummel
+#' Psychology PhD student at Oregon State University
+#'
+#' @note
+#'
+#' @seealso \code{\link{causal.effect}}, \code{\link{parse.expression}}, \code{\link{get.expression}}
+#'
+#' @examples
+#' \dontrun{
+#' # defining graph information for G_1 using igraph
+#' G_1 <- graph.formula(x -+ y, z -+ x, z -+ y , x -+ z, z -+ x, simplify = FALSE)
+#' G_1 <- set.edge.attribute(graph = G_1, name = "description", index = c(4,5), value = "U")
+#'
+#' # defining observed nodes of graph G_1 using igraph
+#' G_1.obs <- observed.graph(G_1)
+#'
+#' # defining unobserved nodes of graph G_1 using igraph
+#' G_1.unobs <- unobserved.graph(G_1)
+#'
+#' # defining topological sort of graph G_1 using igraph
+#' topo_1 <- igraph::topological.sort(G_1.obs)
+#' topo_1 <- igraph::get.vertex.attribute(G_1, "name")[topo_1]
+#'
+#' # run causal.effect. simp = TRUE vs. simp = FALSE matters — as a simplification
+#' # procedure is applied to the resulting probability object if simp = TRUE.
+#' # d-separation and the rules of do-calculus are applied repeatedly to simplify
+#' # the expression. The procedure is NOT applied if simp = FALSE.
+#' causal.effect("y", "x", G = G_1, expr = FALSE, simp = TRUE)
+#'
+#' # causal.effect generates a probability structure, which can then be applied to be the
+#' # input of the function parse.expression.
+#' parse.expression(causal_effect_output, topo_1, G_1.unobs, G_1, G_1.obs)
+#'
+#' # parse.expression generates a list structure, which can then be applied to be the
+#' # input of the simplify function.
+#' # call simplify function, which will print out the simplified list structure
+#' simplify(parse_expression_output, topo_1, G_1.unobs, G_1, G_1.obs)
+#' }
+#'
+#' @keywords models manip math utilities
+#' @concept probabilistic expressions
+#' @concept graph theory
+"simplify"
+
+
 simplify <- function(P, topo, G.unobs, G, G.obs) {
 # initialize j to 0
   j <- 0

@@ -1,33 +1,49 @@
-# Join
-#
-# Attempts to combine 2 terms: the joint term P(J|D) obtained from simplify() and the
-# term P (V|C) := P (Vk|Ck) of the current iteration step. The goal is to
-# determine if these terms can be combined based on the d-separation criteria in the graph G.
-#
-#
-# J: joint set P(J|D); already processed and included in joint distribution
-# from previous simplify iteration. Initially, may be empty for starting point of
-# joint distribution. vari is added to expand it if d-separation conditions are met.
-# D: term P (V|C) := P (Vk|Ck); set of variables that condition the joint distribution
-# Join checks and updates D as necessary to maintain validity of joint dist.
-# when combined with vari.
-# vari: current variable being considered for inclusion in the joint distribution
-# cond: set of variables that condition the current variable vari. Join uses cond
-# to evaluate conditional independence & determine if vari can be added to J.
-# S: current summation variable
-# M: missing variables (variables not contained within the expression)
-# O: observed variables (variables contained within the expression)
-# G.unobs: Unobserved nodes in graph G
-# G: Graph G
-# G.obs: Observed nodes in graph G
-# topo: Topological ordering of the vertices in graph G
-#
-# Returns: joint result, or the original result if none of conditions for joining were met
-#
-#
-# Causaleffect dependencies: powerset, wrap.dSep, insert
-
-
+#' Join
+#'
+#' Attempts to combine two terms: the joint term \code{P(J|D)} obtained from \code{simplify()} and the
+#' term \code{P(V|C) := P(Vk|Ck)} of the current iteration step. The goal is to
+#' determine if these terms can be combined based on the d-separation criteria in the graph \code{G}.
+#'
+#' @param J character vector. Joint set \code{P(J|D)}; already processed and included in joint distribution
+#' from previous \code{\link{simplify}} iteration. Initially, may be empty for the starting point of
+#' the joint distribution. \code{vari} is added to expand it if d-separation conditions are met.
+#' @param D character vector. Term \code{P(V|C) := P(Vk|Ck)}; set of variables that condition the joint distribution.
+#' \code{Join} checks and updates \code{D} as necessary to maintain the validity of the joint distribution
+#' when combined with \code{vari}.
+#' @param vari character scalar. Current variable being considered for inclusion in the joint distribution.
+#' @param cond character vector. Set of variables that condition the current variable \code{vari}. \code{Join} uses \code{cond}
+#' to evaluate conditional independence and determine if \code{vari} can be added to \code{J}.
+#' @param S likely a character vector. Not used directly in \code{join}. Current summation variable.
+#' @param M character vector. Missing variables (variables not contained within the expression).
+#' @param O character vector. Observed variables (variables contained within the expression).
+#' @param G.unobs igraph object created with \code{igraph::unobserved.graph(G)}. Separate graph that turns bidirected edges into explicit nodes for unobserved confounders.
+#' @param G igraph object created with \code{igraph::graph.formula()}. Main graph G. Includes bidirected edges.
+#' @param G.obs igraph object created with \code{igraph::observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).
+#' @param topo igraph list object created with \code{igraph::topological.sort} and \code{igraph::get.vertex.attribute}. The topological ordering of the vertices in graph G.
+#'
+#' @details This function depends on several functions from the causaleffect package, including: \link{powerset}, \link{wrap.dSep}, and \link{insert}.
+#'
+#' @return Joint result, or the original result if none of the conditions for joining were met.
+#'
+#' @references Tikka, S., & Karvanen, J. (2017). Simplifying probabilistic expressions in causal inference. Journal of Machine Learning Research, 18(36), 1-30.
+#'
+#' @author Haley Hummel,
+#' Psychology PhD student at Oregon State University
+#'
+#' @seealso \code{\link{causal.effect}}, \code{\link{parse.expression}}, \code{\link{get.expression}}, \code{\link{probability}}
+#'
+#'
+#' @examples
+#' \dontrun{
+#' # Example usage here
+#' }
+#'
+#' @seealso \code{\link{simplify}}, \code{\link{wrap.dSep}}, \code{\link{insert}}
+#'
+#' @keywords models manip math utilities
+#' @concept probabilistic expressions
+#' @concept graph theory
+#' @concept causal inference
 
 
 join <- function(J, D, vari, cond, S, M, O, G.unobs, G, G.obs, topo) {

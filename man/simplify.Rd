@@ -9,7 +9,7 @@ simplify(P, topo, G.unobs, G, G.obs)
 \arguments{
 \item{P}{probability object created with \link{probability()}. The probabilistic expression that will be simplified.}
 
-\item{topo}{list object. The topological ordering of the vertices in graph G.}
+\item{topo}{igraph list object created with \code{igraph::topological.sort} and \code{igraph::get.vertex.attribute}. The topological ordering of the vertices in graph G.}
 
 \item{G.unobs}{igraph object created with \code{igraph::unobserved.graph(G)}. Separate graph that turns bidirected edges into explicit nodes for unobserved confounders.}
 
@@ -46,7 +46,7 @@ simplify(P, topo, G.unobs, G, G.obs)
 
  $attr(,"class"): [1] "probability"}
 
-This long list structure can be converted into a string by the \code{get.expression} function. For example:
+This long list structure can be converted into a string formatted in LaTeX syntax by the \code{get.expression} function. For example:
 
 \preformatted{string_expression <- simplify(P, topo, G.unobs, G, G.obs)
 get.expression(string_expression)
@@ -61,7 +61,7 @@ Run \link{causal.effect} with the graph information first, then use the output o
 
 For further information, see Tikka & Karvanen (2017) "Simplifying Probabilistic Expressions in Causal Inference" Algorithm 1.
 
-This function depends on several functions from the \link{causal.effect} package, including: \link{irrelevant}, \link{wrap.dSep}, \link{dSep}, \link{join}, \link{ancestors}, \link{factorize}, \link{parents}, \link{children}, and \link{powerset}.
+This function depends on several functions from the causaleffect package, including: \link{irrelevant}, \link{wrap.dSep}, \link{dSep}, \link{join}, \link{ancestors}, \link{factorize}, \link{parents}, \link{children}, and \link{powerset}.
 }
 \examples{
 \dontrun{

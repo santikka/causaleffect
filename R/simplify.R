@@ -7,12 +7,12 @@
 #' For further information, see Tikka & Karvanen (2017) "Simplifying Probabilistic Expressions in Causal Inference" Algorithm 1.
 #'
 #' @param P probability object created with \link{probability()}. The probabilistic expression that will be simplified.
-#' @param topo list object. The topological ordering of the vertices in graph G.
+#' @param topo igraph list object created with \code{igraph::topological.sort} and \code{igraph::get.vertex.attribute}. The topological ordering of the vertices in graph G.
 #' @param G.unobs igraph object created with \code{igraph::unobserved.graph(G)}. Separate graph that turns bidirected edges into explicit nodes for unobserved confounders.
 #' @param G igraph object created with \code{igraph::graph.formula()}. Main graph G. Includes bidirected edges.
 #' @param G.obs igraph object created with \code{igraph::observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).
 #'
-#' @details This function depends on several functions from the \link{causal.effect} package, including: \link{irrelevant}, \link{wrap.dSep}, \link{dSep}, \link{join}, \link{ancestors}, \link{factorize}, \link{parents}, \link{children}, and \link{powerset}.
+#' @details This function depends on several functions from the causaleffect package, including: \link{irrelevant}, \link{wrap.dSep}, \link{dSep}, \link{join}, \link{ancestors}, \link{factorize}, \link{parents}, \link{children}, and \link{powerset}.
 #'
 #' @return \code{simplify()} will return the simplified atomic expression in a list structure. For example (from example below):
 #'  \preformatted{
@@ -43,7 +43,7 @@
 #'  $attr(,"class"): [1] "probability"}
 #'
 #'
-#' This long list structure can be converted into a string by the \code{get.expression} function. For example:
+#' This long list structure can be converted into a string formatted in LaTeX syntax by the \code{get.expression} function. For example:
 #'
 #'
 #' \preformatted{string_expression <- simplify(P, topo, G.unobs, G, G.obs)
@@ -94,6 +94,7 @@
 #' @keywords models manip math utilities
 #' @concept probabilistic expressions
 #' @concept graph theory
+#' @concept causal inference
 
 
 simplify <- function(P, topo, G.unobs, G, G.obs) {

@@ -1,53 +1,63 @@
 #' Simplify
 #'
-#' This function algebraically simplifies probabilistic expressions given by the ID algorithm from \code{causal.effect}. It always attempts to perform maximal simplification, meaning that as many variables of the set are removed as possible. If the simplification in terms of the entire set cannot be completed, the intermediate result with as many variables simplified as possible should be returned.
+#' This function algebraically simplifies probabilistic expressions given by the ID algorithm from \link{causal.effect}. It always attempts to perform maximal simplification, meaning that as many variables of the set are removed as possible. If the simplification in terms of the entire set cannot be completed, the intermediate result with as many variables simplified as possible should be returned.
 #'
-#' Run \code{causal.effect} with the graph information first, then use the output of \code{causal.effect} as the \code{P} in \code{parse.expression}. Use the output from \code{parse.expression} as the \code{P} in \code{simplify}.
+#' Run \link{causal.effect} with the graph information first, then use the output of \link{causal.effect} as the \code{P} in \link{parse.expression}. Use the output from \link{parse.expression} as the \code{P} in \code{simplify}.
 #'
 #' For further information, see Tikka & Karvanen (2017) "Simplifying Probabilistic Expressions in Causal Inference" Algorithm 1.
 #'
-#' @usage simplify(P, topo, G.unobs, G, G.obs)
+#' @param P probability object created with \link{probability()}. The probabilistic expression that will be simplified.
+#' @param topo list object. The topological ordering of the vertices in graph G.
+#' @param G.unobs igraph object created with \code{igraph::unobserved.graph(G)}. Separate graph that turns bidirected edges into explicit nodes for unobserved confounders.
+#' @param G igraph object created with \code{igraph::graph.formula()}. Main graph G. Includes bidirected edges.
+#' @param G.obs igraph object created with \code{igraph::observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).
 #'
-#' @param P Probabilistic expression that will be simplified.
-#' @param topo Topological ordering of the vertices in graph G.
-#' @param G.unobs Unobserved nodes in graph G.
-#' @param G Graph G.
-#' @param G.obs Observed nodes in graph G.
-#'
-#' @details This function depends on several functions from the \code{causal.effect} package, including: \code{irrelevant}, \code{wrap.dSep}, \code{dSep}, \code{join}, \code{ancestors}, \code{factorize}, \code{parents}, \code{children}, and \code{powerset}.
+#' @details This function depends on several functions from the \link{causal.effect} package, including: \link{irrelevant}, \link{wrap.dSep}, \link{dSep}, \link{join}, \link{ancestors}, \link{factorize}, \link{parents}, \link{children}, and \link{powerset}.
 #'
 #' @return \code{simplify()} will return the simplified atomic expression in a list structure. For example (from example below):
-#' \itemize{
-#'   \item $var: character(0)
-#'   \item $cond: character(0)
-#'   \item $sumset: [1] "z"
-#'   \item $do: character(0)
-#'   \item $product: [1] TRUE
-#'   \item $fraction: [1] FALSE
-#'   \item $sum: [1] FALSE
-#'   \item $children: list()
-#'   \item $den: list()
-#'   \item $num: list()
-#'   \item $domain: [1] 0
-#'   \item $weight: [1] 0
-#'   \item attr(,"class"): [1] "probability"
-#' }
+#'  \preformatted{
+#'  $var: character(0)
+#'
+#'  $cond: character(0)
+#'
+#'  $sumset: [1] "z"
+#'
+#'  $do: character(0)
+#'
+#'  $product: [1] TRUE
+#'
+#'  $fraction: [1] FALSE
+#'
+#'  $sum: [1] FALSE
+#'
+#'  $children: list()
+#'
+#'  $den: list()
+#'
+#'  $num: list()
+#'
+#'  $domain: [1] 0
+#'
+#'  $weight: [1] 0
+#'
+#'  $attr(,"class"): [1] "probability"}
+#'
 #'
 #' This long list structure can be converted into a string by the \code{get.expression} function. For example:
 #'
-#' \preformatted{string_expression <- simplify(P, topo, G.unobs, G, G.obs)
-#' get.expression(string_expression)}
 #'
-#' The resulting string should look like (from example below): "\\sum_{w}P(y|w,x)P(w)"
+#' \preformatted{string_expression <- simplify(P, topo, G.unobs, G, G.obs)
+#' get.expression(string_expression)
+#'
+#' The resulting string should look like (from example below): "\\sum_{w}P(y|w,x)P(w)"}
 #'
 #' @references Tikka, S., & Karvanen, J. (2017). Simplifying probabilistic expressions in causal inference. Journal of Machine Learning Research, 18(36), 1-30.
 #'
-#' @author Haley Hummel
+#' @author Haley Hummel,
 #' Psychology PhD student at Oregon State University
 #'
-#' @note
+#' @seealso \code{\link{causal.effect}}, \code{\link{parse.expression}}, \code{\link{get.expression}}, \code{\link{probability}}
 #'
-#' @seealso \code{\link{causal.effect}}, \code{\link{parse.expression}}, \code{\link{get.expression}}
 #'
 #' @examples
 #' \dontrun{
@@ -84,7 +94,6 @@
 #' @keywords models manip math utilities
 #' @concept probabilistic expressions
 #' @concept graph theory
-"simplify"
 
 
 simplify <- function(P, topo, G.unobs, G, G.obs) {
@@ -103,6 +112,7 @@ simplify <- function(P, topo, G.unobs, G, G.obs) {
     j <- j + 1
     i <- which(vars == P$sumset[j])
     k <- 1
+    R.var <- character()
     R.var <- character()
     R.cond <- list()
     J <- character()

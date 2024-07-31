@@ -1,8 +1,11 @@
 #' Join
 #'
+#' \code{Join} and \code{insert} are essentially two variations of the underlying procedure of determining whether the terms of the atomic expression actually represent a joint distribution. \code{Join} is called when we are processing terms that already exist in the expression.
 #' Attempts to combine two terms: the joint term \code{P(J|D)} obtained from \code{simplify()} and the
 #' term \code{P(V|C) := P(Vk|Ck)} of the current iteration step. The goal is to
 #' determine if these terms can be combined based on the d-separation criteria in the graph \code{G}.
+#'
+#'
 #'
 #' @param J character vector. Joint set \code{P(J|D)}; already processed and included in joint distribution
 #' from previous \code{\link{simplify}} iteration. Initially, may be empty for the starting point of

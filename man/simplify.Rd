@@ -106,6 +106,7 @@ Tikka, S., & Karvanen, J. (2017). Simplifying probabilistic expressions in causa
 Haley Hummel,
 Psychology PhD student at Oregon State University
 }
+\concept{causal inference}
 \concept{graph theory}
 \concept{probabilistic expressions}
 \keyword{manip}

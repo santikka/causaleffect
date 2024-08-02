@@ -48,7 +48,48 @@ This function depends on several functions from the causaleffect package, includ
 }
 \examples{
 \dontrun{
-# Example usage here
+
+# defining graph information for G_1 using igraph
+G_1 <- graph.formula(x -+ y, z -+ x, z -+ y , x -+ z, z -+ x, simplify = FALSE)
+G_1 <- set.edge.attribute(graph = G_1, name = "description", index = c(4,5), value = "U")
+
+# defining observed nodes of graph G_1 using igraph
+G_1.obs <- observed.graph(G_1)
+
+# defining unobserved nodes of graph G_1 using igraph
+G_1.unobs <- unobserved.graph(G_1)
+
+# defining topological sort of graph G_1 using igraph
+topo_1 <- igraph::topological.sort(G_1.obs)
+topo_1 <- igraph::get.vertex.attribute(G_1, "name")[topo_1]
+
+# we can obtain the following from running simplify(P_1, topo_1, G_1.unobs, G_1,
+# G_1.obs) with break points (the browser() function). I added print statements
+# after step #5 in simplify():
+  # Step 6 - Inside nested while loop before join operation
+  # P$children[[k]]$var: y (this represents vari in simplify())
+  # P$children[[k]]$cond: z x (this represents cond in simplify())
+  # P$sumset[j]: z (this reprensents S in simplify())
+
+J_1 <- character()
+D_1 <- character()
+vari_1 <- "y"
+cond_1 <- c("z", "x")
+S_1 <- "z"
+M_1 <- "x"
+O_1 <- c("z", "y")
+
+# we can obtain the following from the graph information:
+# G.unobs = G_1.unobs
+# G = G_1
+# G.obs = G_1.obs
+# topo = topo_1
+
+# we expect the output from this to be:
+# [1] "y"
+# [2] "z" "x"
+
+join(J_1, D_1, vari_1, cond_1, S_1, M_1, O_1, G_1.unobs, G_1, G_1.obs, topo_1)
 }
 
 }

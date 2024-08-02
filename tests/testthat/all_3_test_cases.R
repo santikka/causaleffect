@@ -13,10 +13,11 @@ lapply(causal_effect_files, source)
 # (2) causal.effect with simp = FALSE,
 # (3) causal.effect with simp = TRUE,
 # (4) parse.expression from causal.effect,
-# (5) simplify from causal.effect
+# (5) simplify from causal.effect,
+# (6) join from causal.effect
 
 # causal.effect with simp = TRUE and simp = FALSE yield the same expression, so
-# there are only 5 unit tests compared to 7 unit tests for test cases #2 and #3
+# there are only 6 unit tests compared to 7 unit tests for test cases #2 and #3
 
 #-------------------------------------------------------------------
 # defining graphs, nodes, and topological ordering using igraph package
@@ -30,7 +31,8 @@ topo_1 <- igraph::get.vertex.attribute(G_1, "name")[topo_1]
 print(topo_1)
 
 plot(G_1)
-# ^^ plotting this gives us a bidirected edge, which represents a latent confounder we can see in unobserved.graph
+# ^^ plotting this gives us a bidirected edge, which represents a latent
+# confounder we can see in unobserved.graph
 plot(observed.graph(G_1.obs))
 plot(unobserved.graph(G_1.unobs))
 # ^^ unobserved.graph plots observed graph, plus unobserved node(s)
@@ -120,12 +122,51 @@ test_that("parse.expression works on graph with unobserved confounders G_1", {
 # (5) testing that simplify works with test case #1
 # currently PASSES
 
-# we can use the same P_1 and expected_output_1 as we used for parse.expression, as the expression
-# passes through parse.expression unchanged.
+# we can use the same P_1 and expected_output_1 as we used for parse.expression,
+# as the expression passes through parse.expression unchanged.
 
 test_that("simplify works on graph with unobserved confounders G_1", {
   expect_equal(simplify(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
                expected_output_1)
+})
+
+#-------------------------------------------------------------------
+# (6) testing that join works with test case #1
+
+# we can obtain the following from running simplify(P_1, topo_1, G_1.unobs, G_1,
+# G_1.obs) with break points (the browser() function). I added print statements
+# after step #5 in simplify():
+# Step 6 - Inside nested while loop before join operation
+# P$children[[k]]$var: y (this represents vari in simplify())
+# P$children[[k]]$cond: z x (this represents cond in simplify())
+# P$sumset[j]: z (this reprensents S in simplify())
+
+J_1 <- character()
+D_1 <- character()
+vari_1 <- "y"
+cond_1 <- c("z", "x")
+S_1 <- "z"
+M_1 <- "x"
+O_1 <- c("z", "y")
+
+# we can obtain the following from the graph information:
+# G.unobs = G_1.unobs
+# G = G_1
+# G.obs = G_1.obs
+# topo = topo_1
+
+# we expect the output from this to be:
+# [1] "y"
+# [2] "z" "x"
+
+join_output_1 <- list(
+  c("y"),
+  c("z", "x")
+)
+
+test_that("join works on graph with unobserved confounders G_1", {
+  expect_equal(join(J_1, D_1, vari_1, cond_1, S_1, M_1, O_1, G_1.unobs, G_1, G_1.obs, topo_1),
+               join_output_1)
 })
 
 

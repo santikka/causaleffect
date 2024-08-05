@@ -8,9 +8,9 @@
 #'
 #' @param P probability object created with \link{probability()}. The probabilistic expression that will be simplified.
 #' @param topo igraph list object created with \code{igraph::topological.sort} and \code{igraph::get.vertex.attribute}. The topological ordering of the vertices in graph G.
-#' @param G.unobs igraph object created with \code{igraph::unobserved.graph(G)}. Separate graph that turns bidirected edges into explicit nodes for unobserved confounders.
+#' @param G.unobs igraph object created with \link{unobserved.graph(G)}. Separate graph that turns bidirected edges into explicit nodes for unobserved confounders.
 #' @param G igraph object created with \code{igraph::graph.formula()}. Main graph G. Includes bidirected edges.
-#' @param G.obs igraph object created with \code{igraph::observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).
+#' @param G.obs igraph object created with \link{observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).
 #'
 #' @details This function depends on several functions from the causaleffect package, including: \link{irrelevant}, \link{wrap.dSep}, \link{dSep}, \link{join}, \link{ancestors}, \link{factorize}, \link{parents}, \link{children}, and \link{powerset}.
 #'

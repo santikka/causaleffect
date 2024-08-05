@@ -11,11 +11,11 @@ simplify(P, topo, G.unobs, G, G.obs)
 
 \item{topo}{igraph list object created with \code{igraph::topological.sort} and \code{igraph::get.vertex.attribute}. The topological ordering of the vertices in graph G.}
 
-\item{G.unobs}{igraph object created with \code{igraph::unobserved.graph(G)}. Separate graph that turns bidirected edges into explicit nodes for unobserved confounders.}
+\item{G.unobs}{igraph object created with \link{unobserved.graph(G)}. Separate graph that turns bidirected edges into explicit nodes for unobserved confounders.}
 
 \item{G}{igraph object created with \code{igraph::graph.formula()}. Main graph G. Includes bidirected edges.}
 
-\item{G.obs}{igraph object created with \code{igraph::observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).}
+\item{G.obs}{igraph object created with \link{observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).}
 }
 \value{
 \code{simplify()} will return the simplified atomic expression in a list structure. For example (from example below):

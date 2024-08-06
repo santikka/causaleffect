@@ -198,7 +198,7 @@ O_1 <- c("z", "y")
 
 insert_output_1 <- list(character(0), character(0))
 
-test_that("join works on graph with unobserved confounders G_1", {
+test_that("insert works on graph with unobserved confounders G_1", {
   expect_equal(insert(J_1, D_1, M_1, cond_1, S_1, O_1, G_1.unobs, G_1, G_1.obs, topo_1),
                insert_output_1)
 })

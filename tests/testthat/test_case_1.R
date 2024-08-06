@@ -15,9 +15,10 @@ lapply(causal_effect_files, source)
 # (4) parse.expression from causal.effect,
 # (5) simplify from causal.effect,
 # (6) join from causal.effect
+# (7) insert from causal.effect
 
 # causal.effect with simp = TRUE and simp = FALSE yield the same expression, so
-# there are only 6 unit tests compared to 7 unit tests for test cases #2 and #3
+# there are only 7 unit tests compared to 9 unit tests for test cases #2 and #3
 
 #-------------------------------------------------------------------
 # defining graphs, nodes, and topological ordering using igraph package
@@ -168,3 +169,36 @@ test_that("join works on graph with unobserved confounders G_1", {
                join_output_1)
 })
 
+#-------------------------------------------------------------------
+# (7) testing that insert works with test case #1
+
+# we can obtain the following from running simplify(P_1, topo_1, G_1.unobs, G_1,
+# G_1.obs) with break points (the browser() function). I added print statements
+# after step #5 in simplify():
+  # Step 6 - Inside nested while loop before join operation
+  # P$children[[k]]$cond: z x (this represents cond in simplify())
+  # P$sumset[j]: z (this represents S in simplify())
+
+J_1 <- character()
+D_1 <- character()
+M_1 <- "x"
+cond_1 <- c("z", "x")
+S_1 <- "z"
+O_1 <- c("z", "y")
+
+# we can obtain the following from the graph information:
+# G.unobs = G_1.unobs
+# G = G_1
+# G.obs = G_1.obs
+# topo = topo_1
+
+# we expect the output from this (representing J, D) to be:
+# [1] character(0)
+# [2] character(0)
+
+insert_output_1 <- list(character(0), character(0))
+
+test_that("join works on graph with unobserved confounders G_1", {
+  expect_equal(insert(J_1, D_1, M_1, cond_1, S_1, O_1, G_1.unobs, G_1, G_1.obs, topo_1),
+               insert_output_1)
+})

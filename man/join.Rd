@@ -35,7 +35,7 @@ to evaluate conditional independence and determine if \code{vari} can be added t
 \item{topo}{igraph list object created with \code{igraph::topological.sort} and \code{igraph::get.vertex.attribute}. The topological ordering of the vertices in graph G.}
 }
 \value{
-Joint result, or the original result if none of the conditions for joining were met.
+\code{Join} returns the joint result, or the original result if none of the conditions for joining were met.
 }
 \description{
 \code{Join} and \code{insert} are essentially two variations of the underlying procedure of determining whether the terms of the atomic expression actually represent a joint distribution. \code{Join} is called when we are processing terms that already exist in the expression.

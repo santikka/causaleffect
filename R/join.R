@@ -26,7 +26,7 @@
 #'
 #' @details This function depends on several functions from the causaleffect package, including: \link{powerset}, \link{wrap.dSep}, and \link{insert}.
 #'
-#' @return Joint result, or the original result if none of the conditions for joining were met.
+#' @return \code{Join} returns the joint result, or the original result if none of the conditions for joining were met.
 #'
 #' @references Tikka, S., & Karvanen, J. (2017). Simplifying probabilistic expressions in causal inference. Journal of Machine Learning Research, 18(36), 1-30.
 #'

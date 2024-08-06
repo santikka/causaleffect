@@ -13,9 +13,10 @@ lapply(causal_effect_files, source)
 # (2) causal.effect with simp = FALSE,
 # (3) parse.expression from causal.effect simp = FALSE,
 # (4) simplify from causal.effect simp = FALSE,
-# (5) causal.effect with simp = TRUE,
-# (6) parse.expression from causal.effect simp = TRUE,
-# (7) simplify from causal.effect simp = TRUE
+# (5) join from causal.effect simp = FALSE,
+# (6) causal.effect with simp = TRUE,
+# (7) parse.expression from causal.effect simp = TRUE,
+# (8) simplify from causal.effect simp = TRUE
 
 #-------------------------------------------------------------------
 # defining graphs, nodes, and topological ordering using igraph package
@@ -181,7 +182,47 @@ test_that("simplify works on simple observed graph G_3", {
 })
 
 #-------------------------------------------------------------------
-# (5) testing that causal.effect works with test case #3 when simp = TRUE
+# (5) testing that join works with test case #3 with simp = FALSE
+  # currently PASSES
+
+# we can obtain the following from running simplify(P_3_s1, topo_3, G_3.unobs, G_3, G_3.obs) with break points
+# (the browser() function). I added print statements
+# after step #5 in simplify():
+  # Step 6 - Inside nested while loop before join operation
+  # P$children[[k]]$var: y (this represents vari in simplify())
+  # P$children[[k]]$cond: w x (this represents cond in simplify())
+  # P$sumset[j]: w (this reprensents S in simplify())
+
+J_3_s1 <- character(0)
+D_3_s1 <- character(0)
+vari_3_s1 <- "y"
+cond_3_s1 <- c("w", "x")
+S_3_s1 <- "w"
+M_3_s1 <- c("x", "z")
+O_3_s1 <- c("w", "y")
+
+# we can obtain the following from the graph information:
+# G.unobs = G_3.unobs
+# G = G_3
+# G.obs = G_3.obs
+# topo = topo_3
+
+# we expect the output from this to be:
+# [1] "y"
+# [2] "w" "x"
+
+join_output_3_s1 <- list(
+c("y"),
+c("w", "x")
+)
+
+test_that("join works on graph with unobserved confounders G_3 with simp = FALSE", {
+  expect_equal(join(J_3_s1, D_3_s1, vari_3_s1, cond_3_s1, S_3_s1, M_3_s1, O_3_s1, G_3.unobs, G_3, G_3.obs, topo_3),
+               join_output_3_s1)
+})
+
+#-------------------------------------------------------------------
+# (6) testing that causal.effect works with test case #3 when simp = TRUE
   # expression should be simplified.
   # currently PASSES
 
@@ -191,7 +232,7 @@ test_that("causal.effect works on simple observed graph G_3", {
 })
 
 #-------------------------------------------------------------------
-# (6) testing that parse.expression works with test case #3
+# (7) testing that parse.expression works with test case #3
   # causal.effect simp = TRUE
   # currently PASSES
 
@@ -309,7 +350,7 @@ test_that("parse.expression works on simple observed graph G_3", {
 })
 
 #-------------------------------------------------------------------
-# (7) testing that simplify works with test case #3
+# (8) testing that simplify works with test case #3
   # causal.effect with simp = TRUE
   # currently PASSES
 

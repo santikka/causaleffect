@@ -132,6 +132,7 @@ test_that("simplify works on graph with unobserved confounders G_1", {
 
 #-------------------------------------------------------------------
 # (6) testing that join works with test case #1
+  # currently PASSES
 
 # we can obtain the following from running simplify(P_1, topo_1, G_1.unobs, G_1,
 # G_1.obs) with break points (the browser() function). I added print statements

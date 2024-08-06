@@ -29,10 +29,10 @@ insert(J, D, M, cond, S, O, G.unobs, G, G.obs, topo)
 }
 \value{
 \code{Insert} returns a list with:
-\item{J.new}{character vector. An updated set of joint distribution variables.}
-\item{D.new}{character vector. An updated set of conditioning variables.}
-\item{M}{character vector. The inserted variable.}
-\item{ds[\link{i}]}{character vector. The subset from the power set used in the insertion.}
+\code{J.new}{character vector. An updated set of joint distribution variables.}
+\code{D.new}{character vector. An updated set of conditioning variables.}
+\code{M}{character vector. The inserted variable.}
+\code{ds[[i]]}{character vector. The subset from the power set used in the insertion.}
 However, if no conditions were met, \code{insert} will return the original \code{J} and \code{D}.
 }
 \description{

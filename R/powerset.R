@@ -1,11 +1,14 @@
-# Powerset
-#
-# Generates the power set of a given set. The power set is the set of all
-# possible subsets of the original set, including the empty set and the set itself.
-#
-# set: vector representing original set for which the power set will be generated
-#
-# Returns: a list containing all subsets of the original input set
+#' Powerset
+#'
+#' Generates the power set of a given set. The power set is the set of all possible subsets of the original set, including the empty set and the set itself.
+#' (Set: vector representing original set for which the power set will be generated)
+#'
+#' @param set
+#'
+#' @return a list containing all subsets of the original input set
+#' @export
+#'
+#' @examples
 
 
 powerset <- function(set) {

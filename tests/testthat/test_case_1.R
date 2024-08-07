@@ -12,10 +12,10 @@ lapply(causal_effect_files, source)
 # (1) topo,
 # (2) causal.effect with simp = FALSE,
 # (3) causal.effect with simp = TRUE,
-# (4) parse.expression from causal.effect,
-# (5) simplify from causal.effect,
-# (6) join from causal.effect
-# (7) insert from causal.effect
+# (4) parse.expression (same for causal.effect simp = TRUE vs. FALSE; no need for duplicate unit tests),
+# (5) simplify (same for causal.effect simp = TRUE vs. FALSE),
+# (6) join (same for causal.effect simp = TRUE vs. FALSE)
+# (7) insert (same for causal.effect simp = TRUE vs. FALSE)
 
 # causal.effect with simp = TRUE and simp = FALSE yield the same expression, so
 # there are only 7 unit tests compared to 9 unit tests for test cases #2 and #3

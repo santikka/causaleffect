@@ -16,6 +16,8 @@ lapply(causal_effect_files, source)
 # (5) causal.effect with simp = TRUE,
 # (6) parse.expression from causal.effect simp = TRUE,
 # (7) simplify from causal.effect simp = TRUE
+# (8) join (same for causal.effect simp = TRUE vs. FALSE; no need for duplicate unit tests)
+# (9) insert (same for causal.effect simp = TRUE vs. FALSE; no need for duplicate unit tests)
 
 #-------------------------------------------------------------------
 # defining graphs, nodes, and topological ordering using igraph package
@@ -43,7 +45,7 @@ plot(unobserved.graph(G_2.unobs))
 # (1) testing that topo works with test case #2
   # currently PASSES
 
-test_that("topo works on graph with unobserved confounders G_2", {
+test_that("topo works on graph with pruning G_2", {
   expect_equal(topo_2, c("z_3", "z_5", "z_2", "z_1", "x", "z_4", "y"))
 })
 
@@ -53,11 +55,13 @@ test_that("topo works on graph with unobserved confounders G_2", {
   # expression should NOT be simplified.
   # currently PASSES
 
-test_that("causal.effect works on graph with unobserved confounders G_2", {
+test_that("causal.effect works on graph with pruning G_2", {
   expect_equal(causal.effect("y", "x", G = G_2, primes = TRUE, prune = TRUE, simp = FALSE),
                "\\frac{\\sum_{z_3,z_5,z_2,z_4}P(y|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}{\\sum_{z_3,z_5,z_2,z_4,y^{\\prime}}P(y^{\\prime}|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}")
 
 })
+
+causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = FALSE)
 
 #-------------------------------------------------------------------
 # (3) testing that parse.expression works with test case #2
@@ -356,14 +360,12 @@ expected_output_2_pe1 <- list(
   query = list(y = "y", x = "x", z = NULL)
 )
 
-
 # now running testthat
-test_that("parse.expression works on graph with unobserved confounders G_2", {
+test_that("parse.expression works on graph with pruning G_2", {
   expect_equal(parse.expression(P_2_pe1, topo_2, G_2.unobs, G_2, G_2.obs),
                expected_output_2_pe1)
 
 })
-
 
 #-------------------------------------------------------------------
 # (4) testing that simplify works with test case #2
@@ -652,18 +654,17 @@ expected_output_2_s1 <- list(
 
 
 # now running testthat
-test_that("simplify works on graph with unobserved confounders G_2", {
+test_that("simplify works on graph with pruning G_2", {
   expect_equal(simplify(P_2_s1, topo_2, G_2.unobs, G_2, G_2.obs),
                expected_output_2_s1)
 })
-
 
 #-------------------------------------------------------------------
 # (5) testing that causal.effect works with test case #2 when simp = TRUE
   # expression should be simplified.
   # currently PASSES
 
-test_that("causal.effect works on graph with unobserved confounders G_2", {
+test_that("causal.effect works on graph with pruning G_2", {
   expect_equal(causal.effect("y", "x", G = G_2, primes = TRUE, prune = TRUE, simp = TRUE),
                "\\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}")
 })
@@ -967,7 +968,7 @@ expected_output_2_pe2 <- list(
 
 
 # now running testthat
-test_that("parse.expression works on graph with unobserved confounders G_2", {
+test_that("parse.expression works on graph with pruning G_2", {
   expect_equal(parse.expression(P_2_pe2, topo_2, G_2.unobs, G_2, G_2.obs),
                expected_output_2_pe2)
 
@@ -1261,9 +1262,81 @@ expected_output_2_s2 <- list(
 
 
 # now running testthat
-test_that("simplify works on graph with unobserved confounders G_2", {
+test_that("simplify works on graph with pruning G_2", {
   expect_equal(simplify(P_2_s2, topo_2, G_2.unobs, G_2, G_2.obs),
                expected_output_2_s2)
 })
 
+#-------------------------------------------------------------------
+# (8) testing that join works with test case #2
+  # produces identical results with simp = TRUE vs. simp = FALSE
+  # (no need for duplicate unit tests)
 
+# we can obtain the following from running simplify(P_2_s1 (or s2), topo_2, G_2.unobs, G_2, G_2.obs) with break points
+# (the browser() function). I added print statements
+# after step #5 in simplify():
+  # Step 6 - Inside nested while loop before join operation
+  # P$children[[k]]$var: y (this represents vari in simplify())
+  # P$children[[k]]$cond: w x (this represents cond in simplify())
+  # P$sumset[j]: w (this reprensents S in simplify())
+
+simplify(P_2_s2, topo_2, G_2.unobs, G_2, G_2.obs)
+
+J_2 <- character(0)
+D_2 <- character(0)
+vari_2 <- "y"
+cond_2 <- c("w", "x")
+S_2 <- "w"
+M_2 <- c("x", "z")
+O_2 <- c("w", "y")
+
+# we can obtain the following from the graph information:
+  # G.unobs = G_2.unobs
+  # G = G_2
+  # G.obs = G_2.obs
+  # topo = topo_2
+
+# we expect the output from this to be:
+
+
+join_output_2_s2 <-
+
+test_that("join works on graph with pruning G_2 with simp = TRUE", {
+  expect_equal(join(J_2_s2, D_2_s2, vari_2_s2, cond_2_s2, S_2_s2, M_2_s2, O_2_s2, G_2.unobs, G_2, G_2.obs, topo_2),
+               join_output_2_s2)
+})
+
+#-------------------------------------------------------------------
+# (9) testing that insert works with test case #2
+  # produces identical results with simp = TRUE vs. simp = FALSE
+  # (no need for duplicate unit tests)
+
+# we can obtain the following from running simplify(P_2_s1 (or s2), topo_3, G_3.unobs, G_3, G_3.obs) with break points
+# (the browser() function). I added print statements
+# after step #5 in simplify():
+  # Step 6 - Inside nested while loop before join operation
+  # P$children[[k]]$var: y (this represents vari in simplify())
+  # P$children[[k]]$cond: w x (this represents cond in simplify())
+  # P$sumset[j]: w (this reprensents S in simplify())
+
+J_2 <- character(0)
+D_2 <- character(0)
+M_2 <- c("x", "z")
+cond_2 <- c("w", "x")
+S_2 <- "w"
+O_2 <- c("w", "y")
+
+# we can obtain the following from the graph information:
+  # G.unobs = G_2.unobs
+  # G = G_2
+  # G.obs = G_2.obs
+  # topo = topo_2
+
+# we expect the output from this (representing J, D) to be:
+
+insert_output_3 <- list(character(0), character(0))
+
+test_that("insert works on simple observed graph G_3 with simp = FALSE", {
+  expect_equal(insert(J_3, D_3, M_3, cond_3, S_3, O_3, G_3.unobs, G_3, G_3.obs, topo_3),
+               insert_output_3)
+})

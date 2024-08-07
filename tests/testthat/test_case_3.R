@@ -16,7 +16,8 @@ lapply(causal_effect_files, source)
 # (5) join from causal.effect simp = FALSE,
 # (6) causal.effect with simp = TRUE,
 # (7) parse.expression from causal.effect simp = TRUE,
-# (8) simplify from causal.effect simp = TRUE
+# (8) simplify from causal.effect simp = TRUE,
+# (9) join from causal.effect simp = TRUE (same as simp = FALSE)
 
 #-------------------------------------------------------------------
 # defining graphs, nodes, and topological ordering using igraph package
@@ -202,21 +203,21 @@ M_3_s1 <- c("x", "z")
 O_3_s1 <- c("w", "y")
 
 # we can obtain the following from the graph information:
-# G.unobs = G_3.unobs
-# G = G_3
-# G.obs = G_3.obs
-# topo = topo_3
+  # G.unobs = G_3.unobs
+  # G = G_3
+  # G.obs = G_3.obs
+  # topo = topo_3
 
 # we expect the output from this to be:
-# [1] "y"
-# [2] "w" "x"
+  # [1] "y"
+  # [2] "w" "x"
 
 join_output_3_s1 <- list(
 c("y"),
 c("w", "x")
 )
 
-test_that("join works on graph with unobserved confounders G_3 with simp = FALSE", {
+test_that("join works on simple observed graph G_3 with simp = FALSE", {
   expect_equal(join(J_3_s1, D_3_s1, vari_3_s1, cond_3_s1, S_3_s1, M_3_s1, O_3_s1, G_3.unobs, G_3, G_3.obs, topo_3),
                join_output_3_s1)
 })
@@ -466,4 +467,42 @@ test_that("simplify works on simple observed graph G_3", {
                expected_output_3_s2)
 })
 
+#-------------------------------------------------------------------
+# (9) testing that join works with test case #3 with simp = TRUE
+  # currently PASSES
 
+# we can obtain the following from running simplify(P_3_s2, topo_3, G_3.unobs, G_3, G_3.obs) with break points
+# (the browser() function). I added print statements
+# after step #5 in simplify():
+  # Step 6 - Inside nested while loop before join operation
+  # P$children[[k]]$var: y (this represents vari in simplify())
+  # P$children[[k]]$cond: w x (this represents cond in simplify())
+  # P$sumset[j]: w (this reprensents S in simplify())
+
+J_3_s2 <- character(0)
+D_3_s2 <- character(0)
+vari_3_s2 <- "y"
+cond_3_s2 <- c("w", "x")
+S_3_s2 <- "w"
+M_3_s2 <- c("x", "z")
+O_3_s2 <- c("w", "y")
+
+# we can obtain the following from the graph information:
+  # G.unobs = G_3.unobs
+  # G = G_3
+  # G.obs = G_3.obs
+  # topo = topo_3
+
+# we expect the output from this to be:
+  # [1] "y"
+  # [2] "w" "x"
+
+join_output_3_s2 <- list(
+  c("y"),
+  c("w", "x")
+)
+
+test_that("join works on simple observed graph G_3 with simp = TRUE", {
+  expect_equal(join(J_3_s2, D_3_s2, vari_3_s2, cond_3_s2, S_3_s2, M_3_s2, O_3_s2, G_3.unobs, G_3, G_3.obs, topo_3),
+               join_output_3_s2)
+})

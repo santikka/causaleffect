@@ -1,21 +1,28 @@
 #' Powerset
 #'
 #' Generates the power set of a given set. The power set is the set of all possible subsets of the original set, including the empty set and the set itself.
-#' (Set: vector representing original set for which the power set will be generated)
 #'
-#' @param set
+#' @param set A vector representing the original set for which the power set will be generated. The set can contain any type of elements (e.g., numeric, character, or logical).
 #'
-#' @return a list containing all subsets of the original input set
-#' @export
+#' @details The function computes all possible combinations of the elements of the input set. This includes the empty subset, individual elements, and all larger subsets up to and including the full set. The number of subsets in the power set of a set of size \code{n} is \code{2^n}.
+#'
+#' @return A list of vectors, where each vector is a subset of the original input set. The list contains \code{2^n} subsets, where \code{n} is the length of the input set. If the input set is empty, the function returns a list containing only the empty set.
 #'
 #' @examples
+#'
+#'
+#' @seealso \code{\link{join}} for using powerset with conditional independence in probabilistic graphical models.
+#'
+#' @keywords set theory combinatorics
+#' @concept power set
+#' @concept subsets
 
 
 powerset <- function(set) {
   n <- length(set)
 # If the input set n is empty, return a list containing only the empty set
   if (n == 0) return(list(c()))
-# Generate a representatioin of all possible combinations of elements being
+# Generate a representation of all possible combinations of elements being
 # included or excluded from the subsets: all binary numbers from 0 to 2^n - 1.
 # Then, convert them to logical vectors of length n. Each logical vector
 # indicates which elements of the input set are included in a particular subset.

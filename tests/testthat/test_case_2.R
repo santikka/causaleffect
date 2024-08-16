@@ -16,8 +16,8 @@ lapply(causal_effect_files, source)
 # (5) causal.effect with simp = TRUE,
 # (6) parse.expression from causal.effect simp = TRUE,
 # (7) simplify from causal.effect simp = TRUE
-# (8) join (same for causal.effect simp = TRUE vs. FALSE; no need for duplicate unit tests)
-# (9) insert (same for causal.effect simp = TRUE vs. FALSE; no need for duplicate unit tests)
+# (8) DOES NOT PASS YET - join (same for causal.effect simp = TRUE vs. FALSE; no need for duplicate unit tests)
+# (9) DOES NOT PASS YET - insert (same for causal.effect simp = TRUE vs. FALSE; no need for duplicate unit tests)
 
 #-------------------------------------------------------------------
 # defining graphs, nodes, and topological ordering using igraph package
@@ -60,8 +60,6 @@ test_that("causal.effect works on graph with pruning G_2", {
                "\\frac{\\sum_{z_3,z_5,z_2,z_4}P(y|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}{\\sum_{z_3,z_5,z_2,z_4,y^{\\prime}}P(y^{\\prime}|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}")
 
 })
-
-causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = FALSE)
 
 #-------------------------------------------------------------------
 # (3) testing that parse.expression works with test case #2
@@ -222,6 +220,7 @@ P_2_pe1 <- list(
 
 
 # must define expected output object to match output from parse.expression:
+# Provided R structure (simplified)
 expected_output_2_pe1 <- list(
   var = character(0),
   cond = character(0),
@@ -359,6 +358,7 @@ expected_output_2_pe1 <- list(
   algorithm = "pid",
   query = list(y = "y", x = "x", z = NULL)
 )
+
 
 # now running testthat
 test_that("parse.expression works on graph with pruning G_2", {

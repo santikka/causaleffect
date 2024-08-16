@@ -12,7 +12,7 @@
 #' @param G  object created with \code{igraph::graph.formula()}. Main graph G. Includes bidirected edges.
 #' @param G.obs object created with \link{observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).
 #'
-#' @details This function depends on several functions from the causaleffect package, including: \link{irrelevant}, \link{wrap.dSep}, \link{dSep}, \link{join}, \link{ancestors}, \link{factorize}, \link{parents}, \link{children}, and \link{powerset}.
+#' @dependencies This function depends on several functions from the causaleffect package, including: \link{irrelevant}, \link{wrap.dSep}, \link{dSep}, \link{join}, \link{ancestors}, \link{factorize}, \link{parents}, \link{children}, and \link{powerset}.
 #'
 #' @return \code{simplify()} will return the simplified atomic expression in a list structure. For example (from example below):
 #'  \preformatted{

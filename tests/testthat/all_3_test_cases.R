@@ -5,7 +5,6 @@ library(causaleffect)
 causal_effect_files <- list.files("~/Projects/causaleffect/R", pattern = "\\.R$", full.names = TRUE)
 lapply(causal_effect_files, source)
 
-
 #-------------------------------------------------------------------
 # test case #1 from pp. 6-7 of causaleffect on CRAN - includes unobserved confounders.
 #-------------------------------------------------------------------
@@ -41,7 +40,7 @@ plot(unobserved.graph(G_1.unobs))
 
 #-------------------------------------------------------------------
 # (1) testing that topo works with test case #1
-  # currently PASSES
+# currently PASSES
 
 test_that("topo works on graph with unobserved confounders G_1", {
   expect_equal(topo_1, c("z", "x", "y"))
@@ -49,8 +48,8 @@ test_that("topo works on graph with unobserved confounders G_1", {
 
 #-------------------------------------------------------------------
 # (2) testing that causal.effect works with test case #1 when simp = FALSE
-  # expression should NOT be simplified.
-  # currently PASSES
+# expression should NOT be simplified.
+# currently PASSES
 
 test_that("causal.effect works on graph with unobserved confounders G_1", {
   expect_equal(causal.effect("y", "x", G = G_1, simp = FALSE),
@@ -60,8 +59,8 @@ test_that("causal.effect works on graph with unobserved confounders G_1", {
 
 #-------------------------------------------------------------------
 # (3) testing that causal.effect works with test case #1 when simp = TRUE
-  # expression should be the same, since it cannot be simplified.
-  # currently PASSES
+# expression should be the same, since it cannot be simplified.
+# currently PASSES
 
 test_that("causal.effect works on graph with unobserved confounders G_1", {
   expect_equal(causal.effect("y", "x", G = G_1, simp = TRUE),
@@ -70,15 +69,15 @@ test_that("causal.effect works on graph with unobserved confounders G_1", {
 
 #-------------------------------------------------------------------
 # (4) testing that parse.expression works with test case #1
-  # causal.effect with simp = TRUE and simp = FALSE (they are the same)
-  # currently PASSES
+# causal.effect with simp = TRUE and simp = FALSE (they are the same)
+# currently PASSES
 
 # define P_1 for parse.expression(). P needs to be a probability object.
-  # the initial probabilistic expression should be: ∑z P(y|z,x)P(z)
-  # the simplified expression should look like: ∑z P(y|z,x)P(z)
+# the initial probabilistic expression should be: ∑z P(y|z,x)P(z)
+# the simplified expression should look like: ∑z P(y|z,x)P(z)
 
 # I used the output from causal.effect("y", "x", G = G_1, expr = FALSE, simp = TRUE).
-  # The expr = FALSE is key to NOT printing a string!
+# The expr = FALSE is key to NOT printing a string!
 P_1 <- probability(
   sumset = c("z"),
   product = TRUE,
@@ -121,10 +120,10 @@ test_that("parse.expression works on graph with unobserved confounders G_1", {
 
 #-------------------------------------------------------------------
 # (5) testing that simplify works with test case #1
-  # currently PASSES
+# currently PASSES
 
 # we can use the same P_1 and expected_output_1 as we used for parse.expression, as the expression
-  # passes through parse.expression unchanged.
+# passes through parse.expression unchanged.
 
 test_that("simplify works on graph with unobserved confounders G_1", {
   expect_equal(simplify(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
@@ -133,15 +132,15 @@ test_that("simplify works on graph with unobserved confounders G_1", {
 
 #-------------------------------------------------------------------
 # (6) testing that join works with test case #1
-  # currently PASSES
+# currently PASSES
 
 # we can obtain the following from running simplify(P_1, topo_1, G_1.unobs, G_1,
 # G_1.obs) with break points (the browser() function). I added print statements
 # after step #5 in simplify():
-  # Step 6 - Inside nested while loop before join operation
-  # P$children[[k]]$var: y (this represents vari in simplify())
-  # P$children[[k]]$cond: z x (this represents cond in simplify())
-  # P$sumset[j]: z (this reprensents S in simplify())
+# Step 6 - Inside nested while loop before join operation
+# P$children[[k]]$var: y (this represents vari in simplify())
+# P$children[[k]]$cond: z x (this represents cond in simplify())
+# P$sumset[j]: z (this reprensents S in simplify())
 
 J_1 <- character()
 D_1 <- character()
@@ -152,14 +151,14 @@ M_1 <- "x"
 O_1 <- c("z", "y")
 
 # we can obtain the following from the graph information:
-  # G.unobs = G_1.unobs
-  # G = G_1
-  # G.obs = G_1.obs
-  # topo = topo_1
+# G.unobs = G_1.unobs
+# G = G_1
+# G.obs = G_1.obs
+# topo = topo_1
 
 # we expect the output from this to be:
-  # [1] "y"
-  # [2] "z" "x"
+# [1] "y"
+# [2] "z" "x"
 
 join_output_1 <- list(
   c("y"),
@@ -173,13 +172,14 @@ test_that("join works on graph with unobserved confounders G_1", {
 
 #-------------------------------------------------------------------
 # (7) testing that insert works with test case #1
+# currently PASSES
 
 # we can obtain the following from running simplify(P_1, topo_1, G_1.unobs, G_1,
 # G_1.obs) with break points (the browser() function). I added print statements
 # after step #5 in simplify():
-  # Step 6 - Inside nested while loop before join operation
-  # P$children[[k]]$cond: z x (this represents cond in simplify())
-  # P$sumset[j]: z (this represents S in simplify())
+# Step 6 - Inside nested while loop before join operation
+# P$children[[k]]$cond: z x (this represents cond in simplify())
+# P$sumset[j]: z (this represents S in simplify())
 
 J_1 <- character()
 D_1 <- character()
@@ -189,14 +189,14 @@ S_1 <- "z"
 O_1 <- c("z", "y")
 
 # we can obtain the following from the graph information:
-  # G.unobs = G_1.unobs
-  # G = G_1
-  # G.obs = G_1.obs
-  # topo = topo_1
+# G.unobs = G_1.unobs
+# G = G_1
+# G.obs = G_1.obs
+# topo = topo_1
 
 # we expect the output from this (representing J, D) to be:
-  # [1] character(0)
-  # [2] character(0)
+# [1] character(0)
+# [2] character(0)
 
 insert_output_1 <- list(character(0), character(0))
 
@@ -204,6 +204,7 @@ test_that("insert works on graph with unobserved confounders G_1", {
   expect_equal(insert(J_1, D_1, M_1, cond_1, S_1, O_1, G_1.unobs, G_1, G_1.obs, topo_1),
                insert_output_1)
 })
+
 
 #-------------------------------------------------------------------
 # test case #2 from pp. 6-7 of causaleffect on CRAN - pruning.
@@ -216,8 +217,8 @@ test_that("insert works on graph with unobserved confounders G_1", {
 # (5) causal.effect with simp = TRUE,
 # (6) parse.expression from causal.effect simp = TRUE,
 # (7) simplify from causal.effect simp = TRUE
-# (8) join (same for causal.effect simp = TRUE vs. FALSE; no need for duplicate unit tests)
-# (9) insert (same for causal.effect simp = TRUE vs. FALSE; no need for duplicate unit tests)
+# (8) DOES NOT PASS YET - join (same for causal.effect simp = TRUE vs. FALSE; no need for duplicate unit tests)
+# (9) DOES NOT PASS YET - insert (same for causal.effect simp = TRUE vs. FALSE; no need for duplicate unit tests)
 
 #-------------------------------------------------------------------
 # defining graphs, nodes, and topological ordering using igraph package
@@ -252,8 +253,8 @@ test_that("topo works on graph with pruning G_2", {
 
 #-------------------------------------------------------------------
 # (2) testing that causal.effect works with test case #2 when simp = FALSE
-  # expression should NOT be simplified.
-  # currently PASSES
+# expression should NOT be simplified.
+# currently PASSES
 
 test_that("causal.effect works on graph with pruning G_2", {
   expect_equal(causal.effect("y", "x", G = G_2, primes = TRUE, prune = TRUE, simp = FALSE),
@@ -261,12 +262,10 @@ test_that("causal.effect works on graph with pruning G_2", {
 
 })
 
-causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = FALSE)
-
 #-------------------------------------------------------------------
 # (3) testing that parse.expression works with test case #2
-  # causal.effect with simp = FALSE
-  # currently PASSES
+# causal.effect with simp = FALSE
+# currently PASSES
 
 # Trying to do set.primes before parse.expression
 vars <- c("z_3", "z_5", "z_2", "z_1", "x", "z_4", "y")
@@ -276,11 +275,11 @@ set.primes(vars, FALSE, counter)
 
 
 # define P_2 for parse.expression() using the output from
-  # causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = TRUE).
-  # expr = FALSE and simp = TRUE
-  # the initial probabilistic expression should be:
-  # \\frac{\\sum_{z_3,z_5,z_2,z_4}P(y|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}
-  # {\\sum_{z_3,z_5,z_2,z_4,y^{\\prime}}P(y^{\\prime}|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}
+# causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = TRUE).
+# expr = FALSE and simp = TRUE
+# the initial probabilistic expression should be:
+# \\frac{\\sum_{z_3,z_5,z_2,z_4}P(y|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}
+# {\\sum_{z_3,z_5,z_2,z_4,y^{\\prime}}P(y^{\\prime}|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}
 
 P_2_pe1 <- list(
   var = character(0),
@@ -422,6 +421,7 @@ P_2_pe1 <- list(
 
 
 # must define expected output object to match output from parse.expression:
+# Provided R structure (simplified)
 expected_output_2_pe1 <- list(
   var = character(0),
   cond = character(0),
@@ -560,6 +560,7 @@ expected_output_2_pe1 <- list(
   query = list(y = "y", x = "x", z = NULL)
 )
 
+
 # now running testthat
 test_that("parse.expression works on graph with pruning G_2", {
   expect_equal(parse.expression(P_2_pe1, topo_2, G_2.unobs, G_2, G_2.obs),
@@ -569,11 +570,11 @@ test_that("parse.expression works on graph with pruning G_2", {
 
 #-------------------------------------------------------------------
 # (4) testing that simplify works with test case #2
-  # causal.effect with simp = FALSE
-  # currently PASSES
+# causal.effect with simp = FALSE
+# currently PASSES
 
 # the simplified expression should look like:
-  # \\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}
+# \\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}
 P_2_s1 <- list(
   var = character(0),
   cond = character(0),
@@ -861,8 +862,8 @@ test_that("simplify works on graph with pruning G_2", {
 
 #-------------------------------------------------------------------
 # (5) testing that causal.effect works with test case #2 when simp = TRUE
-  # expression should be simplified.
-  # currently PASSES
+# expression should be simplified.
+# currently PASSES
 
 test_that("causal.effect works on graph with pruning G_2", {
   expect_equal(causal.effect("y", "x", G = G_2, primes = TRUE, prune = TRUE, simp = TRUE),
@@ -871,8 +872,8 @@ test_that("causal.effect works on graph with pruning G_2", {
 
 #-------------------------------------------------------------------
 # (6) testing that parse.expression works with test case #2
-  # causal.effect with simp = TRUE
-  # currently PASSES
+# causal.effect with simp = TRUE
+# currently PASSES
 
 
 # Trying to do set.primes before parse.expression
@@ -883,10 +884,10 @@ set.primes(vars, FALSE, counter)
 
 
 # define P_2 for parse.expression() using the output from
-  # causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = TRUE).
-  # expr = FALSE and simp = TRUE
-  # the initial probabilistic expression should be:
-  # \\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}
+# causal.effect("y", "x", G = G_2, expr = FALSE, primes = TRUE, prune = TRUE, simp = TRUE).
+# expr = FALSE and simp = TRUE
+# the initial probabilistic expression should be:
+# \\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}
 
 P_2_pe2 <- list(
   var = character(0),
@@ -1469,16 +1470,16 @@ test_that("simplify works on graph with pruning G_2", {
 
 #-------------------------------------------------------------------
 # (8) testing that join works with test case #2
-  # produces identical results with simp = TRUE vs. simp = FALSE
-  # (no need for duplicate unit tests)
+# produces identical results with simp = TRUE vs. simp = FALSE
+# (no need for duplicate unit tests)
 
 # we can obtain the following from running simplify(P_2_s1 (or s2), topo_2, G_2.unobs, G_2, G_2.obs) with break points
 # (the browser() function). I added print statements
 # after step #5 in simplify():
-  # Step 6 - Inside nested while loop before join operation
-  # P$children[[k]]$var: y (this represents vari in simplify())
-  # P$children[[k]]$cond: w x (this represents cond in simplify())
-  # P$sumset[j]: w (this reprensents S in simplify())
+# Step 6 - Inside nested while loop before join operation
+# P$children[[k]]$var: y (this represents vari in simplify())
+# P$children[[k]]$cond: w x (this represents cond in simplify())
+# P$sumset[j]: w (this reprensents S in simplify())
 
 simplify(P_2_s2, topo_2, G_2.unobs, G_2, G_2.obs)
 
@@ -1491,10 +1492,10 @@ M_2 <- c("x", "z")
 O_2 <- c("w", "y")
 
 # we can obtain the following from the graph information:
-  # G.unobs = G_2.unobs
-  # G = G_2
-  # G.obs = G_2.obs
-  # topo = topo_2
+# G.unobs = G_2.unobs
+# G = G_2
+# G.obs = G_2.obs
+# topo = topo_2
 
 # we expect the output from this to be:
 
@@ -1508,16 +1509,16 @@ join_output_2_s2 <-
 
 #-------------------------------------------------------------------
 # (9) testing that insert works with test case #2
-  # produces identical results with simp = TRUE vs. simp = FALSE
-  # (no need for duplicate unit tests)
+# produces identical results with simp = TRUE vs. simp = FALSE
+# (no need for duplicate unit tests)
 
 # we can obtain the following from running simplify(P_2_s1 (or s2), topo_3, G_3.unobs, G_3, G_3.obs) with break points
 # (the browser() function). I added print statements
 # after step #5 in simplify():
-  # Step 6 - Inside nested while loop before join operation
-  # P$children[[k]]$var: y (this represents vari in simplify())
-  # P$children[[k]]$cond: w x (this represents cond in simplify())
-  # P$sumset[j]: w (this reprensents S in simplify())
+# Step 6 - Inside nested while loop before join operation
+# P$children[[k]]$var: y (this represents vari in simplify())
+# P$children[[k]]$cond: w x (this represents cond in simplify())
+# P$sumset[j]: w (this reprensents S in simplify())
 
 J_2 <- character(0)
 D_2 <- character(0)
@@ -1527,10 +1528,10 @@ S_2 <- "w"
 O_2 <- c("w", "y")
 
 # we can obtain the following from the graph information:
-  # G.unobs = G_2.unobs
-  # G = G_2
-  # G.obs = G_2.obs
-  # topo = topo_2
+# G.unobs = G_2.unobs
+# G = G_2
+# G.obs = G_2.obs
+# topo = topo_2
 
 # we expect the output from this (representing J, D) to be:
 
@@ -1579,8 +1580,8 @@ test_that("topo works on simple observed graph G_3", {
 
 #-------------------------------------------------------------------
 # (2) testing that causal.effect works with test case #3 when simp = FALSE
-  # expression should NOT be simplified.
-  # currently PASSES
+# expression should NOT be simplified.
+# currently PASSES
 
 test_that("causal.effect works on simple observed graph G_3", {
   expect_equal(causal.effect("y", "x", G = G_3, simp = FALSE),
@@ -1590,14 +1591,14 @@ test_that("causal.effect works on simple observed graph G_3", {
 
 #-------------------------------------------------------------------
 # (3) testing that parse.expression works with test case #3
-  # causal.effect simp = FALSE
-  # currently PASSES
+# causal.effect simp = FALSE
+# currently PASSES
 
 # define P_3_pe1 for parse.expression() using the output from causal.effect with
-  # expr = FALSE and simp = FALSE
-  # P needs to be a probability object.
-  # the initial probabilistic expression should be: ∑w,z P(y∣w,x,z)P(z∣w)P(w).
-  # the simplified expression should look like: ∑w P(y∣w,x)P(w)
+# expr = FALSE and simp = FALSE
+# P needs to be a probability object.
+# the initial probabilistic expression should be: ∑w,z P(y∣w,x,z)P(z∣w)P(w).
+# the simplified expression should look like: ∑w P(y∣w,x)P(w)
 P_3_pe1 <- probability(
   sumset = c("w", "z"),
   product = TRUE,
@@ -1639,12 +1640,12 @@ test_that("parse.expression works on simple observed graph G_3", {
 
 #-------------------------------------------------------------------
 # (4) testing that simplify works with test case #3
-  # causal.effect with simp = FALSE
-  # currently PASSES
+# causal.effect with simp = FALSE
+# currently PASSES
 
 # define P_3_s1 for simplify() using the output of parse.expression.
-  # P needs to be a list object.
-  # the simplified expression should look like: ∑w P(y∣w,x)P(w)
+# P needs to be a list object.
+# the simplified expression should look like: ∑w P(y∣w,x)P(w)
 P_3_s1 <- list(
   var = character(0),
   cond = character(0),
@@ -1721,8 +1722,8 @@ test_that("simplify works on simple observed graph G_3", {
 
 #-------------------------------------------------------------------
 # (5) testing that causal.effect works with test case #3 when simp = TRUE
-  # expression should be simplified.
-  # currently PASSES
+# expression should be simplified.
+# currently PASSES
 
 test_that("causal.effect works on simple observed graph G_3", {
   expect_equal(causal.effect("y", "x", G = G_3, simp = TRUE),
@@ -1731,14 +1732,14 @@ test_that("causal.effect works on simple observed graph G_3", {
 
 #-------------------------------------------------------------------
 # (6) testing that parse.expression works with test case #3
-  # causal.effect simp = TRUE
-  # currently PASSES
+# causal.effect simp = TRUE
+# currently PASSES
 
 # define P_3_pe2 for parse.expression() using the output from causal.effect with
-  # expr = FALSE and simp = TRUE
-  # P needs to be a probability object.
-  # the initial probabilistic expression should be: ∑w P(y|w,x)P(w)
-  # the simplified expression should look like: P(y∣w,x)P(w)
+# expr = FALSE and simp = TRUE
+# P needs to be a probability object.
+# the initial probabilistic expression should be: ∑w P(y|w,x)P(w)
+# the simplified expression should look like: P(y∣w,x)P(w)
 P_3_pe2 <- list(
   var = character(0),
   cond = character(0),
@@ -1849,12 +1850,12 @@ test_that("parse.expression works on simple observed graph G_3", {
 
 #-------------------------------------------------------------------
 # (7) testing that simplify works with test case #3
-  # causal.effect with simp = TRUE
-  # currently PASSES
+# causal.effect with simp = TRUE
+# currently PASSES
 
 # define P_3_s2 for simplify() using the output of parse.expression.
-  # P needs to be a list object.
-  # the simplified expression should look like: P(y∣w,x)P(w)
+# P needs to be a list object.
+# the simplified expression should look like: P(y∣w,x)P(w)
 P_3_s2 <- list(
   var = character(0),
   cond = character(0),
@@ -1966,17 +1967,17 @@ test_that("simplify works on simple observed graph G_3", {
 
 #-------------------------------------------------------------------
 # (8) testing that join works with test case #3
-  # produces identical results with simp = TRUE vs. simp = FALSE
-  # (no need for duplicate unit tests)
-  # currently PASSES
+# produces identical results with simp = TRUE vs. simp = FALSE
+# (no need for duplicate unit tests)
+# currently PASSES
 
 # we can obtain the following from running simplify(P_3_s1 (or s2), topo_3, G_3.unobs, G_3, G_3.obs) with break points
 # (the browser() function). I added print statements
 # after step #5 in simplify():
-  # Step 6 - Inside nested while loop before join operation
-  # P$children[[k]]$var: y (this represents vari in simplify())
-  # P$children[[k]]$cond: w x (this represents cond in simplify())
-  # P$sumset[j]: w (this reprensents S in simplify())
+# Step 6 - Inside nested while loop before join operation
+# P$children[[k]]$var: y (this represents vari in simplify())
+# P$children[[k]]$cond: w x (this represents cond in simplify())
+# P$sumset[j]: w (this reprensents S in simplify())
 
 J_3 <- character(0)
 D_3 <- character(0)
@@ -1987,14 +1988,14 @@ M_3 <- c("x", "z")
 O_3 <- c("w", "y")
 
 # we can obtain the following from the graph information:
-  # G.unobs = G_3.unobs
-  # G = G_3
-  # G.obs = G_3.obs
-  # topo = topo_3
+# G.unobs = G_3.unobs
+# G = G_3
+# G.obs = G_3.obs
+# topo = topo_3
 
 # we expect the output from this to be:
-  # [1] "y"
-  # [2] "w" "x"
+# [1] "y"
+# [2] "w" "x"
 
 join_output_3 <- list(
   c("y"),
@@ -2008,17 +2009,17 @@ test_that("join works on simple observed graph G_3 with simp = FALSE", {
 
 #-------------------------------------------------------------------
 # (9) testing that insert works with test case #3
-  # produces identical results with simp = TRUE vs. simp = FALSE
-  # (no need for duplicate unit tests)
-  # currently PASSES
+# produces identical results with simp = TRUE vs. simp = FALSE
+# (no need for duplicate unit tests)
+# currently PASSES
 
 # we can obtain the following from running simplify(P_3_s1 (or s2), topo_3, G_3.unobs, G_3, G_3.obs) with break points
 # (the browser() function). I added print statements
 # after step #5 in simplify():
-  # Step 6 - Inside nested while loop before join operation
-  # P$children[[k]]$var: y (this represents vari in simplify())
-  # P$children[[k]]$cond: w x (this represents cond in simplify())
-  # P$sumset[j]: w (this reprensents S in simplify())
+# Step 6 - Inside nested while loop before join operation
+# P$children[[k]]$var: y (this represents vari in simplify())
+# P$children[[k]]$cond: w x (this represents cond in simplify())
+# P$sumset[j]: w (this reprensents S in simplify())
 
 J_3 <- character(0)
 D_3 <- character(0)
@@ -2028,14 +2029,14 @@ S_3 <- "w"
 O_3 <- c("w", "y")
 
 # we can obtain the following from the graph information:
-  # G.unobs = G_3.unobs
-  # G = G_3
-  # G.obs = G_3.obs
-  # topo = topo_3
+# G.unobs = G_3.unobs
+# G = G_3
+# G.obs = G_3.obs
+# topo = topo_3
 
 # we expect the output from this (representing J, D) to be:
-  # [1] character(0)
-  # [2] character(0)
+# [1] character(0)
+# [2] character(0)
 
 insert_output_3 <- list(character(0), character(0))
 

@@ -43,9 +43,6 @@ Attempts to combine two terms: the joint term \code{P(J|D)} obtained from \code{
 term \code{P(V|C) := P(Vk|Ck)} of the current iteration step. The goal is to
 determine if these terms can be combined based on the d-separation criteria in the graph \code{G}.
 }
-\details{
-This function depends on several functions from the causaleffect package, including: \link{powerset}, \link{wrap.dSep}, and \link{insert}.
-}
 \examples{
 \dontrun{
 

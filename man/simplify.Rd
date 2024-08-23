@@ -60,8 +60,6 @@ This function algebraically simplifies probabilistic expressions given by the ID
 Run \link{causal.effect} with the graph information first, then use the output of \link{causal.effect} as the \code{P} in \link{parse.expression}. Use the output from \link{parse.expression} as the \code{P} in \code{simplify}.
 
 For further information, see Tikka & Karvanen (2017) "Simplifying Probabilistic Expressions in Causal Inference" Algorithm 1.
-
-This function depends on several functions from the causaleffect package, including: \link{irrelevant}, \link{wrap.dSep}, \link{dSep}, \link{join}, \link{ancestors}, \link{factorize}, \link{parents}, \link{children}, and \link{powerset}.
 }
 \examples{
 \dontrun{

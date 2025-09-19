@@ -3,9 +3,9 @@
 #' The \code{`parse.expression`} function takes a probabilistic expression and processes it based on the topological order, unobserved and observed graphs, and the underlying graph structure to simplify or modify the expression.
 #'
 #' @param P probability object. The identified probabilistic expression taken from the output of \code{`causal.effect`}. Typically includes components such as numerator (`num`), denominator (`den`), product (`product`), summation set (`sumset`), and a fraction indicator (`fraction`).
-#' @param topo igraph list object created with \code{igraph::topological.sort} and \code{igraph::get.vertex.attribute}. The topological ordering of the vertices in graph G.
+#' @param topo igraph list object created with \code{igraph::topo_sort} and \code{igraph::vertex_attr}. The topological ordering of the vertices in graph G.
 #' @param G.unobs object created with \link{unobserved.graph(G)}. Separate graph that turns bidirected edges into explicit nodes for unobserved confounders.
-#' @param G  object created with \code{igraph::graph.formula()}. Main graph G. Includes bidirected edges.
+#' @param G  object created with \code{igraph::graph_from_literal()}. Main graph G. Includes bidirected edges.
 #' @param G.obs object created with \link{observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).
 #'
 #' @dependencies This function depends on several functions from the causaleffect package, including: \link{simplify} and \link{probability}.
@@ -28,8 +28,8 @@
 #' \dontrun{
 #'
 #'# defining graph information for G_1 using igraph
-#' G_1 <- graph.formula(x -+ y, z -+ x, z -+ y , x -+ z, z -+ x, simplify = FALSE)
-#' G_1 <- set.edge.attribute(graph = G_1, name = "description", index = c(4,5), value = "U")
+#' G_1 <- graph_from_literal(x -+ y, z -+ x, z -+ y , x -+ z, z -+ x, simplify = FALSE)
+#' G_1 <- set_edge_attr(graph = G_1, name = "description", index = c(4,5), value = "U")
 #'
 #' # defining observed nodes of graph G_1 using igraph
 #' G_1.obs <- observed.graph(G_1)
@@ -38,8 +38,8 @@
 #' G_1.unobs <- unobserved.graph(G_1)
 #'
 #' # defining topological sort of graph G_1 using igraph
-#' topo_1 <- igraph::topological.sort(G_1.obs)
-#' topo_1 <- igraph::get.vertex.attribute(G_1, "name")[topo_1]
+#' topo_1 <- igraph::topo_sort(G_1.obs)
+#' topo_1 <- igraph::vertex_attr(G_1, "name")[topo_1]
 #'
 #' # run causal.effect. simp = TRUE vs. simp = FALSE matters — as a simplification
 #' # procedure is applied to the resulting probability object if simp = TRUE.

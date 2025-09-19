@@ -4,7 +4,7 @@ latent.projection <- function(G, l) {
   description <- NULL
   for (i in 1:length(l)) {
     e <- igraph::E(G)
-    v <- igraph::get.vertex.attribute(G, "name")
+    v <- igraph::vertex_attr(G, "name")
     inc.edges <- e[.to(l[i]) & (is.na(description) | description != "U")]
     out.edges <- e[.from(l[i]) & (is.na(description) | description != "U")]
     unobs.edges <- e[.to(l[i]) & description == "U" & !is.na(description)]
@@ -26,10 +26,10 @@ latent.projection <- function(G, l) {
       unobs.old <- t(as.matrix(expand.grid(unobs.ind, out.ind)))
       G <- G + igraph::edges(v[c(unobs.old, unobs.old[2:1, ])], description = rep("U", 2 * ncol(unobs.old))) # replace path v_1 <-> L -> v_2 with v_1 <-> v_2
     }
-    G <- igraph::induced.subgraph(G, setdiff(v, l[i]))
+    G <- igraph::induced_subgraph(G, setdiff(v, l[i]))
     e.dat <- as.data.frame(igraph::get.edges(G, E(G)))
     e.dat[ ,3] <- igraph::edge.attributes(G)
-    G <- igraph::subgraph.edges(G, which(!duplicated(e.dat)), delete.vertices = FALSE)
+    G <- igraph::subgraph_from_edges(G, which(!duplicated(e.dat)), delete.vertices = FALSE)
   }
   return(G)
 }

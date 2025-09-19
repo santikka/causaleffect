@@ -3,7 +3,7 @@ tr.target <- function(Z, W, G.obs, G, topo.obs) {
   .from <- NULL
   description <- NULL
   target <- setdiff(descendants(Z, G.obs, topo.obs), W)
-  G.xbar <- igraph::subgraph.edges(G, igraph::E(G)[!(.to(Z) | (.from(Z) & (description == "U" & !is.na(description))))], delete.vertices = FALSE) # remove id nonid
+  G.xbar <- igraph::subgraph_from_edges(G, igraph::E(G)[!(.to(Z) | (.from(Z) & (description == "U" & !is.na(description))))], delete.vertices = FALSE) # remove id nonid
   G.xbar.obs <- observed.graph(G.xbar)
   nontarget <- setdiff(ancestors(W, G.xbar.obs, topo.obs), target)
   cc <- c.components(G, topo.obs)

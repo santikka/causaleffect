@@ -1,8 +1,8 @@
 meta.transport <- function(y, x, D, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE, stop_on_nonid = TRUE) {
-  v <- igraph::get.vertex.attribute(D[[1]], "name")
+  v <- igraph::vertex_attr(D[[1]], "name")
   s <- v[which(igraph::vertex.attributes(D[[1]])$description == "S")]
   interventions <- setdiff(v, union(y, s))
-  D.causal <- igraph::induced.subgraph(D[[1]], v[!(v %in% s)])
+  D.causal <- igraph::induced_subgraph(D[[1]], v[!(v %in% s)])
   D.all <- list()
   D.all[[1]] <- D.causal
   D.all[2:(length(D)+1)] <- D

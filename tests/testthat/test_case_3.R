@@ -1,10 +1,3 @@
-library(testthat)
-library(igraph)
-library(causaleffect)
-
-causal_effect_files <- list.files("~/Projects/causaleffect/R", pattern = "\\.R$", full.names = TRUE)
-lapply(causal_effect_files, source)
-
 #-------------------------------------------------------------------
 # test case #3 from pp. 6-7 of causaleffect on CRAN - only observed variables
 #-------------------------------------------------------------------
@@ -22,22 +15,25 @@ lapply(causal_effect_files, source)
 #-------------------------------------------------------------------
 # defining graphs, nodes, and topological ordering using igraph package
 
-G_3 <- graph.formula(x -+ y, w -+ x, w -+ z, z -+ y)
+G_3 <- graph_from_literal(x -+ y, w -+ x, w -+ z, z -+ y)
 G_3.obs <- observed.graph(G_3)
 G_3.unobs <- unobserved.graph(G_3)
-topo_3 <- igraph::topological.sort(G_3.obs)
-topo_3 <- igraph::get.vertex.attribute(G_3, "name")[topo_3]
+topo_3 <- igraph::topo_sort(G_3.obs)
+topo_3 <- igraph::vertex_attr(G_3, "name")[topo_3]
 
-plot(G_3)
-plot(G_3.obs)
-plot(G_3.unobs)
+# plot(G_3)
+# plot(G_3.obs)
+# plot(G_3.unobs)
 
 #-------------------------------------------------------------------
 # (1) testing that topo works with test case #3.
   # currently PASSES
 
 test_that("topo works on simple observed graph G_3", {
-  expect_equal(topo_3, c("w", "x", "z", "y"))
+  expect_equal(
+    topo_3,
+    c("w", "x", "z", "y")
+  )
 })
 
 #-------------------------------------------------------------------
@@ -46,9 +42,10 @@ test_that("topo works on simple observed graph G_3", {
   # currently PASSES
 
 test_that("causal.effect works on simple observed graph G_3", {
-  expect_equal(causal.effect("y", "x", G = G_3, simp = FALSE),
-               "\\sum_{w,z}P(y|w,x,z)P(z|w)P(w)")
-
+  expect_equal(
+    causal.effect("y", "x", G = G_3, simp = FALSE),
+    "\\sum_{w,z}P(y|w,x,z)P(z|w)P(w)"
+  )
 })
 
 #-------------------------------------------------------------------
@@ -95,9 +92,10 @@ expected_output_3_pe1 <- probability(
 
 # now running testthat
 test_that("parse.expression works on simple observed graph G_3", {
-  expect_equal(parse.expression(P_3_pe1, topo_3, G_3.unobs, G_3, G_3.obs),
-               expected_output_3_pe1)
-
+  expect_equal(
+    parse.expression(P_3_pe1, topo_3, G_3.unobs, G_3, G_3.obs),
+    expected_output_3_pe1
+  )
 })
 
 #-------------------------------------------------------------------
@@ -188,8 +186,10 @@ test_that("simplify works on simple observed graph G_3", {
   # currently PASSES
 
 test_that("causal.effect works on simple observed graph G_3", {
-  expect_equal(causal.effect("y", "x", G = G_3, simp = TRUE),
-               "\\sum_{w}P(y|w,x)P(w)")
+  expect_equal(
+    causal.effect("y", "x", G = G_3, simp = TRUE),
+    "\\sum_{w}P(y|w,x)P(w)"
+  )
 })
 
 #-------------------------------------------------------------------
@@ -305,9 +305,10 @@ expected_output_3_pe2 <- list(
 
 # now running testthat
 test_that("parse.expression works on simple observed graph G_3", {
-  expect_equal(parse.expression(P_3_pe2, topo_3, G_3.unobs, G_3, G_3.obs),
-               expected_output_3_pe2)
-
+  expect_equal(
+    parse.expression(P_3_pe2, topo_3, G_3.unobs, G_3, G_3.obs),
+    expected_output_3_pe2
+  )
 })
 
 #-------------------------------------------------------------------
@@ -423,8 +424,10 @@ attr(expected_output_3_s2, "class") <- "probability"
 
 # now running testthat
 test_that("simplify works on simple observed graph G_3", {
-  expect_equal(simplify(P_3_s2, topo_3, G_3.unobs, G_3, G_3.obs),
-               expected_output_3_s2)
+  expect_equal(
+    simplify(P_3_s2, topo_3, G_3.unobs, G_3, G_3.obs),
+    expected_output_3_s2
+  )
 })
 
 #-------------------------------------------------------------------
@@ -465,8 +468,10 @@ join_output_3 <- list(
 )
 
 test_that("join works on simple observed graph G_3 with simp = FALSE", {
-  expect_equal(join(J_3, D_3, vari_3, cond_3, S_3, M_3, O_3, G_3.unobs, G_3, G_3.obs, topo_3),
-               join_output_3)
+  expect_equal(
+    join(J_3, D_3, vari_3, cond_3, S_3, M_3, O_3, G_3.unobs, G_3, G_3.obs, topo_3),
+    join_output_3
+  )
 })
 
 #-------------------------------------------------------------------
@@ -503,6 +508,8 @@ O_3 <- c("w", "y")
 insert_output_3 <- list(character(0), character(0))
 
 test_that("insert works on simple observed graph G_3 with simp = FALSE", {
-  expect_equal(insert(J_3, D_3, M_3, cond_3, S_3, O_3, G_3.unobs, G_3, G_3.obs, topo_3),
-               insert_output_3)
+  expect_equal(
+    insert(J_3, D_3, M_3, cond_3, S_3, O_3, G_3.unobs, G_3, G_3.obs, topo_3),
+    insert_output_3
+  )
 })

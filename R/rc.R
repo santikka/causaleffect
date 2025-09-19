@@ -1,8 +1,8 @@
 rc <- function(D, P, G, topo, tree) {
-  v.s <- igraph::get.vertex.attribute(G, "name")
+  v.s <- igraph::vertex_attr(G, "name")
   s <- v.s[which(igraph::vertex.attributes(G)$description == "S")]
-  G.causal <- igraph::induced.subgraph(G, v.s[!(v.s %in% s)])
-  v <- igraph::get.vertex.attribute(G.causal, "name")
+  G.causal <- igraph::induced_subgraph(G, v.s[!(v.s %in% s)])
+  v <- igraph::vertex_attr(G.causal, "name")
   v <- v %ts% topo
   G.obs <- observed.graph(G.causal)
   G.s.obs <- observed.graph(G)
@@ -19,7 +19,7 @@ rc <- function(D, P, G, topo, tree) {
     } else {
       P$var <- anc.union
     }
-    nxt <- rc(D, P, igraph::induced.subgraph(G, anc.union), topo, list())
+    nxt <- rc(D, P, igraph::induced_subgraph(G, anc.union), topo, list())
     tree$call$line <- 2
     tree$call$id <- nxt$tree$call$id
     tree$call$anc.d <- anc.d
@@ -72,7 +72,7 @@ rc <- function(D, P, G, topo, tree) {
   } else {
     P.new$den <- product.list[[1]]
   }
-  nxt <- rc(D, P.new, igraph::induced.subgraph(G, setdiff(v.s, c.set)), topo, list())
+  nxt <- rc(D, P.new, igraph::induced_subgraph(G, setdiff(v.s, c.set)), topo, list())
   tree$call$line <- 6
   tree$call$id <- nxt$tree$call$id
   tree$call$c.set <- c.set

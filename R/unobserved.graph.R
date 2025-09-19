@@ -7,10 +7,10 @@ unobserved.graph <- function(G) {
     e.len <- nrow(e)
     new.nodes <- paste0("u_{", 1:e.len, "}")
     G <- G + igraph::vertices(new.nodes, description = rep("U", e.len))
-    v <- igraph::get.vertex.attribute(G, "name")
+    v <- igraph::vertex_attr(G, "name")
     G <- G + igraph::edges(c(rbind(new.nodes, v[e[ ,1]]), rbind(new.nodes, v[e[ ,2]])))
     obs.edges <- setdiff(igraph::E(G), igraph::E(G)[unobs.edges])
-    G.unobs <- igraph::subgraph.edges(G, igraph::E(G)[obs.edges], delete.vertices = FALSE)
+    G.unobs <- igraph::subgraph_from_edges(G, igraph::E(G)[obs.edges], delete.vertices = FALSE)
     return(G.unobs)
   }
   return(G)

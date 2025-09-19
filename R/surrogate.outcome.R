@@ -1,12 +1,12 @@
 surrogate.outcome <- function(y, x, S, G, expr = TRUE, steps = FALSE, primes = FALSE, stop_on_nonid = TRUE) {
   d <- length(S) + 1
-  v <- igraph::get.vertex.attribute(G, "name")
+  v <- igraph::vertex_attr(G, "name")
   if (length(intersect(x, y)) > 0) stop("Sets 'x' and 'y' are not disjoint.")
   D <- vector(mode = "list", length = d)
   Z <- vector(mode = "list", length = d)
   D[[1]] <- G
   G.obs <- observed.graph(G)
-  topo.obs <- igraph::topological.sort(G.obs)
+  topo.obs <- igraph::topo_sort(G.obs)
   Z[[1]] <- character(0)
   for (i in 1:(d-1)) {
     Di <- G
@@ -23,16 +23,16 @@ surrogate.outcome <- function(y, x, S, G, expr = TRUE, steps = FALSE, primes = F
     D[[i+1]] <- Di
     Z[[i+1]] <- Zi
   }
-  topo <- lapply(D, function(k) igraph::topological.sort(observed.graph(k)))
-  topo <- lapply(1:d, function(k) igraph::get.vertex.attribute(D[[k]], "name")[topo[[k]]])
+  topo <- lapply(D, function(k) igraph::topo_sort(observed.graph(k)))
+  topo <- lapply(1:d, function(k) igraph::vertex_attr(D[[k]], "name")[topo[[k]]])
   D <- lapply(D, function(k) {
     if (length(igraph::edge.attributes(k)) == 0) {
-      k <- igraph::set.edge.attribute(k, "description", 1:length(igraph::E(k)), NA)
+      k <- igraph::set_edge_attr(k, "description", 1:length(igraph::E(k)), NA)
     }
     return(k)
   })
   for (i in 1:d) {
-    if (!igraph::is.dag(observed.graph(D[[i]]))) {
+    if (!igraph::is_dag(observed.graph(D[[i]]))) {
       if (i > 1) stop("Selection diagram 'D[", i, "]' is not a DAG.")
       else stop("Causal diagram 'D[", i, "]' is not a DAG.")
     }

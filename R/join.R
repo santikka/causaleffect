@@ -20,9 +20,9 @@
 #' @param M character vector. Missing variables (variables not contained within the expression).
 #' @param O character vector. Observed variables (variables contained within the expression).
 #' @param G.unobs igraph object created with \code{igraph::unobserved.graph(G)}. Separate graph that turns bidirected edges into explicit nodes for unobserved confounders.
-#' @param G igraph object created with \code{igraph::graph.formula()}. Main graph G. Includes bidirected edges.
+#' @param G igraph object created with \code{igraph::graph_from_literal()}. Main graph G. Includes bidirected edges.
 #' @param G.obs igraph object created with \code{igraph::observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).
-#' @param topo igraph list object created with \code{igraph::topological.sort} and \code{igraph::get.vertex.attribute}. The topological ordering of the vertices in graph G.
+#' @param topo igraph list object created with \code{igraph::topo_sort} and \code{igraph::vertex_attr}. The topological ordering of the vertices in graph G.
 #'
 #' @dependencies This function depends on several functions from the causaleffect package, including: \link{powerset}, \link{wrap.dSep}, and \link{insert}.
 #'
@@ -40,8 +40,8 @@
 #' \dontrun{
 #'
 #' # defining graph information for G_1 using igraph
-#' G_1 <- graph.formula(x -+ y, z -+ x, z -+ y , x -+ z, z -+ x, simplify = FALSE)
-#' G_1 <- set.edge.attribute(graph = G_1, name = "description", index = c(4,5), value = "U")
+#' G_1 <- graph_from_literal(x -+ y, z -+ x, z -+ y , x -+ z, z -+ x, simplify = FALSE)
+#' G_1 <- set_edge_attr(graph = G_1, name = "description", index = c(4,5), value = "U")
 #'
 #' # defining observed nodes of graph G_1 using igraph
 #' G_1.obs <- observed.graph(G_1)
@@ -50,8 +50,8 @@
 #' G_1.unobs <- unobserved.graph(G_1)
 #'
 #' # defining topological sort of graph G_1 using igraph
-#' topo_1 <- igraph::topological.sort(G_1.obs)
-#' topo_1 <- igraph::get.vertex.attribute(G_1, "name")[topo_1]
+#' topo_1 <- igraph::topo_sort(G_1.obs)
+#' topo_1 <- igraph::vertex_attr(G_1, "name")[topo_1]
 #'
 #' # we can obtain the following from running simplify(P_1, topo_1, G_1.unobs, G_1,
 #' # G_1.obs) with break points (the browser() function). I added print statements

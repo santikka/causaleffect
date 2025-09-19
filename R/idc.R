@@ -11,7 +11,7 @@ idc <- function(y, x, z, P, G, G.obs, v, topo, tree, prune) {
   for (node in z) {
     cond <- setdiff(z, node)
     edges.from.node <- igraph::E(G.u)[.from(node)]
-    G.xz <- igraph::subgraph.edges(G.u, igraph::E(G.u)[setdiff(igraph::E(G.u), union(edges.to.x, edges.from.node))], delete.vertices = FALSE)
+    G.xz <- igraph::subgraph_from_edges(G.u, igraph::E(G.u)[setdiff(igraph::E(G.u), union(edges.to.x, edges.from.node))], delete.vertices = FALSE)
     if (wrap.dSep(G.xz, y, node, union(x, cond))) {
       tree$call$line <- 9 + offset
       tree$call$z.prime <- node

@@ -1,7 +1,7 @@
 exclusion.restrictions <- function(G) {
   G.obs <- observed.graph(G)
-  topo <- igraph::topological.sort(G.obs)
-  v <- igraph::get.vertex.attribute(G, "name")[topo]
+  topo <- igraph::topo_sort(G.obs)
+  v <- igraph::vertex_attr(G, "name")[topo]
   ex <- lapply(v, function(y) {
     pa <- setdiff(parents(y, G.obs, topo), y)
     Z <- setdiff(v, union(y, pa))

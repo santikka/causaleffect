@@ -3,11 +3,11 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
   .from <- NULL
   description <- NULL
   d <- length(D)
-  v.s <- lapply(D, function(x) igraph::get.vertex.attribute(x, "name"))
+  v.s <- lapply(D, function(x) igraph::vertex_attr(x, "name"))
   s <- lapply(1:d, function(x) v.s[[x]][which(igraph::vertex.attributes(D[[x]])$description == "S")])
   s <- lapply(1:d, function(x) topo[[x]][which(topo[[x]] %in% s[[x]])])
   D.causal <- D[[1]]
-  v <- igraph::get.vertex.attribute(D.causal, "name")
+  v <- igraph::vertex_attr(D.causal, "name")
   v <- topo[[1]][which(topo[[1]] %in% v)]
   D.obs <- observed.graph(D.causal)
   D.s.obs <- lapply(D, function(x) observed.graph(x))
@@ -34,7 +34,7 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
 
   # line 2
   if (length(setdiff(v, anc)) != 0) {
-    anc.graph <- lapply(1:d, function(x) igraph::induced.subgraph(D[[x]], anc.s[[x]]))
+    anc.graph <- lapply(1:d, function(x) igraph::induced_subgraph(D[[x]], anc.s[[x]]))
     if (P$product | P$fraction | P$sum) {
       P$sumset <- union(setdiff(v, anc), P$sumset)
       P <- simplify.expression(P, NULL)
@@ -50,7 +50,7 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
   }
 
   # line 3
-  D.x.overbar <- igraph::subgraph.edges(D.causal, igraph::E(D.causal)[!(.to(x) | (.from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
+  D.x.overbar <- igraph::subgraph_from_edges(D.causal, igraph::E(D.causal)[!(.to(x) | (.from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
   anc.xbar <- ancestors(y, observed.graph(D.x.overbar), topo[[1]])
   w <- setdiff(setdiff(v, x), anc.xbar)
   if (length(w) != 0) {
@@ -64,7 +64,7 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
   }
 
   # line 4
-  D.remove.x <- igraph::induced.subgraph(D.causal, v[!(v %in% x)])
+  D.remove.x <- igraph::induced_subgraph(D.causal, v[!(v %in% x)])
   cc <- c.components(D.remove.x, topo[[1]])
   cc.len <- length(cc)
   if (cc.len > 1) {
@@ -100,12 +100,12 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
         W.new <- w.index + 1
         for (i in 1:length(D)) {
           D.unobs <- unobserved.graph(D[[i]])
-          D.unobs <- igraph::subgraph.edges(D.unobs, igraph::E(D.unobs)[!.to(x)], delete.vertices = FALSE)
+          D.unobs <- igraph::subgraph_from_edges(D.unobs, igraph::E(D.unobs)[!.to(x)], delete.vertices = FALSE)
           if (wrap.dSep(D.unobs, s[[i]], y, x) & (length(intersect(Z[[i]], x)) != 0)) {
             P.new <- P
             P.new$domain <- i
             xcapz <- intersect(Z[[i]], x)
-            D.remove.xcapz <- lapply(1:d, function(x) igraph::induced.subgraph(D[[x]], v.s[[x]][!(v.s[[x]] %in% xcapz)]))
+            D.remove.xcapz <- lapply(1:d, function(x) igraph::induced_subgraph(D[[x]], v.s[[x]][!(v.s[[x]] %in% xcapz)]))
             nxt <- trmz_ex(y, setdiff(x, Z[[i]]), P, xcapz, i, W.new, D.remove.xcapz, Z, topo, list(), prioritize)
             if (nxt$tree$call$id) {
               ind <- ind + 1
@@ -187,7 +187,7 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
       tree$call$line <- 8
       tree$call$cprime <- cc
       ind <- which(v %in% cc)
-      cc.graph <- lapply(1:d, function(x) igraph::induced.subgraph(D[[x]], cc.s[[x]]))
+      cc.graph <- lapply(1:d, function(x) igraph::induced_subgraph(D[[x]], cc.s[[x]]))
       kappa <- c()
       if (cc.len > 1) {
         for (i in 1:cc.len) { 
@@ -245,12 +245,12 @@ trmz_ex <- function(y, x, P, J, domain, w.index, D, Z, topo, tree, prioritize) {
           W.new <- w.index + 1
           for (i in 1:length(D)) {
             D.unobs <- unobserved.graph(D[[i]])
-            D.unobs <- igraph::subgraph.edges(D.unobs, igraph::E(D.unobs)[!.to(x)], delete.vertices = FALSE)
+            D.unobs <- igraph::subgraph_from_edges(D.unobs, igraph::E(D.unobs)[!.to(x)], delete.vertices = FALSE)
             if (wrap.dSep(D.unobs, s[[i]], y, x) & (length(intersect(Z[[i]], x)) != 0)) {
               P.new <- P
               P.new$domain <- i
               xcapz <- intersect(Z[[i]], x)
-              D.remove.xcapz <- lapply(1:d, function(x) igraph::induced.subgraph(D[[x]], v.s[[x]][!(v.s[[x]] %in% xcapz)]))
+              D.remove.xcapz <- lapply(1:d, function(x) igraph::induced_subgraph(D[[x]], v.s[[x]][!(v.s[[x]] %in% xcapz)]))
               nxt <- trmz_ex(y, setdiff(x, Z[[i]]), P, xcapz, i, W.new, D.remove.xcapz, Z, topo, list(), prioritize)
               if (nxt$tree$call$id) {
                 ind <- ind + 1

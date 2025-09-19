@@ -22,7 +22,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
 
   # line 2
   if (length(setdiff(v, an)) != 0) {
-    G.an <- igraph::induced.subgraph(G, an)
+    G.an <- igraph::induced_subgraph(G, an)
     G.an.obs <- observed.graph(G.an)
     if (P$product | P$fraction) {
       P$sumset <- union(setdiff(v, an), P$sumset) %ts% topo
@@ -38,12 +38,12 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
   }
 
   # line 3
-  G.xbar <- igraph::subgraph.edges(G, igraph::E(G)[!(.to(x) | (.from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
+  G.xbar <- igraph::subgraph_from_edges(G, igraph::E(G)[!(.to(x) | (.from(x) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
   co <- connected(y, G.xbar, topo)
   z <- setdiff(an, co)
   if (length(z) > 0) {
     v.new <- setdiff(v, z) %ts% topo
-    G.z <- igraph::induced.subgraph(G, v.new)
+    G.z <- igraph::induced_subgraph(G, v.new)
     G.z.obs <- observed.graph(G.z)
     G.z.l <- latent.projection(G, z)
     if (compare.graphs(G.z, G.z.l)) {
@@ -68,14 +68,14 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
   t <- c()
   for (i in 1:length(v.x)) {
     r <- setdiff(ancestors(v.x[i], G.xbar.obs, topo), de)
-    G.vbar <- igraph::subgraph.edges(G, igraph::E(G)[!(.to(v.x[i]) | (.from(v.x[i]) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
+    G.vbar <- igraph::subgraph_from_edges(G, igraph::E(G)[!(.to(v.x[i]) | (.from(v.x[i]) & (description == "U" & !is.na(description))))], delete.vertices = FALSE)
     co.vi <-  connected(setdiff(v, r), G.vbar, topo)
     t <- union(t, setdiff(r, co.vi))
   }
   t <- setdiff(t, union(x, y))
   if (length(t) > 0) {
     v.new <- setdiff(v, t) %ts% topo
-    G.t <- igraph::induced.subgraph(G, v.new)
+    G.t <- igraph::induced_subgraph(G, v.new)
     G.t.obs <- observed.graph(G.t)
     if (P$product | P$fraction) {
       P$sumset <- union(t, P$sumset) %ts% topo
@@ -94,7 +94,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
   if (length(x) == 1) {
     cc <- c.components(G, topo)
     s <- Find(function(z) x %in% z, cc)
-    G.s <- igraph::induced.subgraph(G, s)
+    G.s <- igraph::induced_subgraph(G, s)
     G.s.obs <- observed.graph(G.s)
     ch <- setdiff(children(x, G.s.obs, topo), x)
     if (length(ch) == 0) {
@@ -106,7 +106,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
           G.prime <- latent.projection(G, v.xy[i])
           cc.prime <- c.components(G.prime, topo)
           s.prime <- Find(function(z) x %in% z, cc.prime)
-          G.s.prime <- igraph::induced.subgraph(G.prime, s.prime)
+          G.s.prime <- igraph::induced_subgraph(G.prime, s.prime)
           G.s.prime.obs <- observed.graph(G.s.prime)
           ch.prime <- setdiff(children(x, G.s.prime.obs, topo), x)
           if (length(ch.prime) == 0) {
@@ -150,7 +150,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
   }
 
   # line 7
-  G.remove.x <- igraph::induced.subgraph(G, v[!(v %in% x)])
+  G.remove.x <- igraph::induced_subgraph(G, v[!(v %in% x)])
   s <- c.components(G.remove.x, topo)
   if (length(s) > 1) {
     tree$call$line <- 7
@@ -224,7 +224,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
     tree$call$s.prime <- s
     s.len <- length(s)
     ind <- which(v %in% s)
-    G.s <- igraph::induced.subgraph(G, s)
+    G.s <- igraph::induced_subgraph(G, s)
     G.s.obs <- observed.graph(G.s)
     product.list <- vector(mode = "list", length = s.len)
     P.prod <- probability()

@@ -1,9 +1,9 @@
 identify <- function(C, T, Q, G, topo, tree) {
-  v <- igraph::get.vertex.attribute(G, "name")
+  v <- igraph::vertex_attr(G, "name")
   s <- v[which(igraph::vertex.attributes(G)$description == "S")]
   v <- v %ts% topo
   G.obs <- observed.graph(G)
-  G.T <- igraph::induced.subgraph(G, T)
+  G.T <- igraph::induced_subgraph(G, T)
   G.T.obs <- observed.graph(G.T)
   tree$call <- list(y = C, x = setdiff(v, C), C = C, T = T, P = activate.selection.variable(Q, s), G = G.T, line = "", v = v, alg = "Identify", id = FALSE)
   anc.c <- ancestors(C, G.T.obs, topo)
@@ -33,7 +33,7 @@ identify <- function(C, T, Q, G, topo, tree) {
 
   # iii)
   if (all(C %in% A) && all(A %in% T)) {
-    G.A <- igraph::induced.subgraph(G, A)
+    G.A <- igraph::induced_subgraph(G, A)
     cc <- c.components(G.A, topo)
     T.prime <- Find(function(x) all(C %in% x), cc)
     T.one <- intersect(T.prime, A)

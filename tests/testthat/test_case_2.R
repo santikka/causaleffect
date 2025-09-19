@@ -1,10 +1,3 @@
-library(testthat)
-library(igraph)
-library(causaleffect)
-
-causal_effect_files <- list.files("~/Projects/causaleffect/R", pattern = "\\.R$", full.names = TRUE)
-lapply(causal_effect_files, source)
-
 #-------------------------------------------------------------------
 # test case #2 from pp. 6-7 of causaleffect on CRAN - pruning.
 #-------------------------------------------------------------------
@@ -22,31 +15,28 @@ lapply(causal_effect_files, source)
 #-------------------------------------------------------------------
 # defining graphs, nodes, and topological ordering using igraph package
 
-G_2 <- graph.formula(x -+ z_4, z_4 -+ y, z_1 -+ x, z_2 -+ z_1,
-                     z_3 -+ z_2, z_3 -+ x, z_5 -+ z_1, z_5 -+ z_4, x -+ z_2, z_2 -+ x,
-                     z_3 -+ z_2, z_2 -+ z_3, z_2 -+ y, y -+ z_2,
-                     z_4 -+ y, y -+ z_4, z_5 -+ z_4, z_4 -+ z_5, simplify = FALSE)
-G_2 <- set.edge.attribute(graph = G_2, "description", 9:18, "U")
+G_2 <- graph_from_literal(
+  x -+ z_4, z_4 -+ y, z_1 -+ x, z_2 -+ z_1,
+  z_3 -+ z_2, z_3 -+ x, z_5 -+ z_1, z_5 -+ z_4, x -+ z_2, z_2 -+ x,
+  z_3 -+ z_2, z_2 -+ z_3, z_2 -+ y, y -+ z_2,
+  z_4 -+ y, y -+ z_4, z_5 -+ z_4, z_4 -+ z_5,
+  simplify = FALSE
+)
+G_2 <- igraph::set_edge_attr(graph = G_2, "description", 9:18, "U")
 G_2.obs <- observed.graph(G_2)
 G_2.unobs <- unobserved.graph(G_2)
 topo_2 <- igraph::topo_sort(G_2.obs)
-topo_2 <- igraph::get.vertex.attribute(G_2, "name")[topo_2]
-
-print(topo_2)
-
-plot(G_2)
-# ^^ plotting this gives us a bidirected edge, which represents a latent confounder we can see in unobserved.graph
-plot(observed.graph(G_2.obs))
-plot(unobserved.graph(G_2.unobs))
-# ^^ unobserved.graph plots observed graph, plus unobserved node(s)
-
+topo_2 <- igraph::vertex_attr(G_2, "name")[topo_2]
 
 #-------------------------------------------------------------------
 # (1) testing that topo works with test case #2
   # currently PASSES
 
 test_that("topo works on graph with pruning G_2", {
-  expect_equal(topo_2, c("z_3", "z_5", "z_2", "z_1", "x", "z_4", "y"))
+  expect_equal(
+    topo_2,
+    c("z_3", "z_5", "z_2", "z_1", "x", "z_4", "y")
+  )
 })
 
 
@@ -56,9 +46,10 @@ test_that("topo works on graph with pruning G_2", {
   # currently PASSES
 
 test_that("causal.effect works on graph with pruning G_2", {
-  expect_equal(causal.effect("y", "x", G = G_2, primes = TRUE, prune = TRUE, simp = FALSE),
-               "\\frac{\\sum_{z_3,z_5,z_2,z_4}P(y|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}{\\sum_{z_3,z_5,z_2,z_4,y^{\\prime}}P(y^{\\prime}|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}")
-
+  expect_equal(
+    causal.effect("y", "x", G = G_2, primes = TRUE, prune = TRUE, simp = FALSE),
+    "\\frac{\\sum_{z_3,z_5,z_2,z_4}P(y|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}{\\sum_{z_3,z_5,z_2,z_4,y^{\\prime}}P(y^{\\prime}|z_3,z_5,z_2,z_1,x,z_4)P(z_4|z_3,z_5,z_2,z_1,x)P(x|z_3,z_5,z_2,z_1)P(z_2|z_3,z_5)P(z_5|z_3)P(z_3)}"
+  )
 })
 
 #-------------------------------------------------------------------
@@ -359,12 +350,12 @@ expected_output_2_pe1 <- list(
   query = list(y = "y", x = "x", z = NULL)
 )
 
-
 # now running testthat
 test_that("parse.expression works on graph with pruning G_2", {
-  expect_equal(parse.expression(P_2_pe1, topo_2, G_2.unobs, G_2, G_2.obs),
-               expected_output_2_pe1)
-
+  expect_equal(
+    parse.expression(P_2_pe1, topo_2, G_2.unobs, G_2, G_2.obs),
+    expected_output_2_pe1
+  )
 })
 
 #-------------------------------------------------------------------
@@ -653,10 +644,11 @@ expected_output_2_s1 <- list(
 )
 
 
-# now running testthat
 test_that("simplify works on graph with pruning G_2", {
-  expect_equal(simplify(P_2_s1, topo_2, G_2.unobs, G_2, G_2.obs),
-               expected_output_2_s1)
+  expect_equal(
+    simplify(P_2_s1, topo_2, G_2.unobs, G_2, G_2.obs),
+    expected_output_2_s1
+  )
 })
 
 #-------------------------------------------------------------------
@@ -665,8 +657,10 @@ test_that("simplify works on graph with pruning G_2", {
   # currently PASSES
 
 test_that("causal.effect works on graph with pruning G_2", {
-  expect_equal(causal.effect("y", "x", G = G_2, primes = TRUE, prune = TRUE, simp = TRUE),
-               "\\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}")
+  expect_equal(
+    causal.effect("y", "x", G = G_2, primes = TRUE, prune = TRUE, simp = TRUE),
+    "\\frac{\\sum_{z_2,z_5}P(y|x,z_1,z_2,z_5)P(x|z_1,z_2,z_5)P(z_2|z_5)P(z_5)}{\\sum_{z_2}P(x|z_1,z_2)P(z_2)}"
+  )
 })
 
 #-------------------------------------------------------------------
@@ -969,9 +963,10 @@ expected_output_2_pe2 <- list(
 
 # now running testthat
 test_that("parse.expression works on graph with pruning G_2", {
-  expect_equal(parse.expression(P_2_pe2, topo_2, G_2.unobs, G_2, G_2.obs),
-               expected_output_2_pe2)
-
+  expect_equal(
+    parse.expression(P_2_pe2, topo_2, G_2.unobs, G_2, G_2.obs),
+    expected_output_2_pe2
+  )
 })
 
 
@@ -1263,8 +1258,10 @@ expected_output_2_s2 <- list(
 
 # now running testthat
 test_that("simplify works on graph with pruning G_2", {
-  expect_equal(simplify(P_2_s2, topo_2, G_2.unobs, G_2, G_2.obs),
-               expected_output_2_s2)
+  expect_equal(
+    simplify(P_2_s2, topo_2, G_2.unobs, G_2, G_2.obs),
+    expected_output_2_s2
+  )
 })
 
 #-------------------------------------------------------------------
@@ -1280,31 +1277,33 @@ test_that("simplify works on graph with pruning G_2", {
   # P$children[[k]]$cond: w x (this represents cond in simplify())
   # P$sumset[j]: w (this reprensents S in simplify())
 
-simplify(P_2_s2, topo_2, G_2.unobs, G_2, G_2.obs)
+# simplify(P_2_s2, topo_2, G_2.unobs, G_2, G_2.obs)
 
-J_2 <- character(0)
-D_2 <- character(0)
-vari_2 <- "y"
-cond_2 <- c("w", "x")
-S_2 <- "w"
-M_2 <- c("x", "z")
-O_2 <- c("w", "y")
-
-# we can obtain the following from the graph information:
-  # G.unobs = G_2.unobs
-  # G = G_2
-  # G.obs = G_2.obs
-  # topo = topo_2
-
-# we expect the output from this to be:
-
-
-join_output_2_s2 <-
-
-test_that("join works on graph with pruning G_2 with simp = TRUE", {
-  expect_equal(join(J_2_s2, D_2_s2, vari_2_s2, cond_2_s2, S_2_s2, M_2_s2, O_2_s2, G_2.unobs, G_2, G_2.obs, topo_2),
-               join_output_2_s2)
-})
+# J_2 <- character(0)
+# D_2 <- character(0)
+# vari_2 <- "y"
+# cond_2 <- c("w", "x")
+# S_2 <- "w"
+# M_2 <- c("x", "z")
+# O_2 <- c("w", "y")
+#
+# # we can obtain the following from the graph information:
+#   # G.unobs = G_2.unobs
+#   # G = G_2
+#   # G.obs = G_2.obs
+#   # topo = topo_2
+#
+# # we expect the output from this to be:
+#
+#
+# join_output_2_s2 <-
+#
+# test_that("join works on graph with pruning G_2 with simp = TRUE", {
+#   expect_equal(
+#     join(J_2_s2, D_2_s2, vari_2_s2, cond_2_s2, S_2_s2, M_2_s2, O_2_s2, G_2.unobs, G_2, G_2.obs, topo_2),
+#     join_output_2_s2
+#   )
+# })
 
 #-------------------------------------------------------------------
 # (9) testing that insert works with test case #2
@@ -1319,12 +1318,12 @@ test_that("join works on graph with pruning G_2 with simp = TRUE", {
   # P$children[[k]]$cond: w x (this represents cond in simplify())
   # P$sumset[j]: w (this reprensents S in simplify())
 
-J_2 <- character(0)
-D_2 <- character(0)
-M_2 <- c("x", "z")
-cond_2 <- c("w", "x")
-S_2 <- "w"
-O_2 <- c("w", "y")
+J_3 <- character(0)
+D_3 <- character(0)
+M_3 <- c("x", "z")
+cond_3 <- c("w", "x")
+S_3 <- "w"
+O_3 <- c("w", "y")
 
 # we can obtain the following from the graph information:
   # G.unobs = G_2.unobs
@@ -1337,6 +1336,8 @@ O_2 <- c("w", "y")
 insert_output_3 <- list(character(0), character(0))
 
 test_that("insert works on simple observed graph G_3 with simp = FALSE", {
-  expect_equal(insert(J_3, D_3, M_3, cond_3, S_3, O_3, G_3.unobs, G_3, G_3.obs, topo_3),
-               insert_output_3)
+  expect_equal(
+    insert(J_3, D_3, M_3, cond_3, S_3, O_3, G_3.unobs, G_3, G_3.obs, topo_3),
+    insert_output_3
+  )
 })

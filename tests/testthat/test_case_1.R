@@ -1,10 +1,3 @@
-library(testthat)
-library(igraph)
-library(causaleffect)
-
-causal_effect_files <- list.files("~/Projects/causaleffect/R", pattern = "\\.R$", full.names = TRUE)
-lapply(causal_effect_files, source)
-
 #-------------------------------------------------------------------
 # test case #1 from pp. 6-7 of causaleffect on CRAN - includes unobserved confounders.
 #-------------------------------------------------------------------
@@ -22,21 +15,12 @@ lapply(causal_effect_files, source)
 
 #-------------------------------------------------------------------
 # defining graphs, nodes, and topological ordering using igraph package
-G_1 <- graph.formula(x -+ y, z -+ x, z -+ y , x -+ z, z -+ x, simplify = FALSE)
-G_1 <- set.edge.attribute(graph = G_1, name = "description", index = c(4,5), value = "U")
+G_1 <- igraph::graph_from_literal(x -+ y, z -+ x, z -+ y , x -+ z, z -+ x, simplify = FALSE)
+G_1 <- igraph::set_edge_attr(graph = G_1, name = "description", index = c(4,5), value = "U")
 G_1.obs <- observed.graph(G_1)
 G_1.unobs <- unobserved.graph(G_1)
-topo_1 <- igraph::topological.sort(G_1.obs)
-topo_1 <- igraph::get.vertex.attribute(G_1, "name")[topo_1]
-
-print(topo_1)
-
-plot(G_1)
-# ^^ plotting this gives us a bidirected edge, which represents a latent confounder we can see in unobserved.graph
-plot(observed.graph(G_1.obs))
-plot(unobserved.graph(G_1.unobs))
-# ^^ unobserved.graph plots observed graph, plus unobserved node(s)
-
+topo_1 <- igraph::topo_sort(G_1.obs)
+topo_1 <- igraph::vertex_attr(G_1, "name")[topo_1]
 
 #-------------------------------------------------------------------
 # (1) testing that topo works with test case #1
@@ -52,9 +36,10 @@ test_that("topo works on graph with unobserved confounders G_1", {
   # currently PASSES
 
 test_that("causal.effect works on graph with unobserved confounders G_1", {
-  expect_equal(causal.effect("y", "x", G = G_1, simp = FALSE),
-               "\\sum_{z}P(y|z,x)P(z)")
-
+  expect_equal(
+    causal.effect("y", "x", G = G_1, simp = FALSE),
+    "\\sum_{z}P(y|z,x)P(z)"
+  )
 })
 
 #-------------------------------------------------------------------
@@ -63,8 +48,10 @@ test_that("causal.effect works on graph with unobserved confounders G_1", {
   # currently PASSES
 
 test_that("causal.effect works on graph with unobserved confounders G_1", {
-  expect_equal(causal.effect("y", "x", G = G_1, simp = TRUE),
-               "\\sum_{z}P(y|z,x)P(z)")
+  expect_equal(
+    causal.effect("y", "x", G = G_1, simp = TRUE),
+    "\\sum_{z}P(y|z,x)P(z)"
+  )
 })
 
 #-------------------------------------------------------------------
@@ -113,9 +100,10 @@ expected_output_1 <- probability(
 
 # now running testthat
 test_that("parse.expression works on graph with unobserved confounders G_1", {
-  expect_equal(parse.expression(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
-               expected_output_1)
-
+  expect_equal(
+    parse.expression(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
+    expected_output_1
+  )
 })
 
 #-------------------------------------------------------------------
@@ -126,8 +114,10 @@ test_that("parse.expression works on graph with unobserved confounders G_1", {
 # passes through parse.expression unchanged.
 
 test_that("simplify works on graph with unobserved confounders G_1", {
-  expect_equal(simplify(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
-               expected_output_1)
+  expect_equal(
+    simplify(P_1, topo_1, G_1.unobs, G_1, G_1.obs),
+    expected_output_1
+  )
 })
 
 #-------------------------------------------------------------------
@@ -163,11 +153,13 @@ O_1 <- c("z", "y")
 join_output_1 <- list(
   c("y"),
   c("z", "x")
-  )
+)
 
 test_that("join works on graph with unobserved confounders G_1", {
-  expect_equal(join(J_1, D_1, vari_1, cond_1, S_1, M_1, O_1, G_1.unobs, G_1, G_1.obs, topo_1),
-               join_output_1)
+  expect_equal(
+    join(J_1, D_1, vari_1, cond_1, S_1, M_1, O_1, G_1.unobs, G_1, G_1.obs, topo_1),
+    join_output_1
+  )
 })
 
 #-------------------------------------------------------------------
@@ -201,6 +193,8 @@ O_1 <- c("z", "y")
 insert_output_1 <- list(character(0), character(0))
 
 test_that("insert works on graph with unobserved confounders G_1", {
-  expect_equal(insert(J_1, D_1, M_1, cond_1, S_1, O_1, G_1.unobs, G_1, G_1.obs, topo_1),
-               insert_output_1)
+  expect_equal(
+    insert(J_1, D_1, M_1, cond_1, S_1, O_1, G_1.unobs, G_1, G_1.obs, topo_1),
+    insert_output_1
+  )
 })

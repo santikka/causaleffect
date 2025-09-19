@@ -1,13 +1,12 @@
-# causaleffect: an R package for causal effect effect identification
+# causaleffect: an R package for causal effect identification
 
 Functions for identification and transportation of causal effects. 
 Provides a conditional causal effect identification algorithm (IDC) by Shpitser, I. and Pearl, J. (2006) <http://ftp.cs.ucla.edu/pub/stat_ser/r329-uai.pdf>, 
 an algorithm for transportability from multiple domains with limited experiments by Bareinboim, E. and Pearl, J. (2014) <http://ftp.cs.ucla.edu/pub/stat_ser/r443.pdf> 
 and a selection bias recovery algorithm by Bareinboim, E. and Tian, J. (2015) <http://ftp.cs.ucla.edu/pub/stat_ser/r445.pdf>. 
-All of the previously mentioned algorithms are based on a causal effect identification algorithm by Tian , J. (2002) <http://ftp.cs.ucla.edu/pub/stat_ser/r309.pdf>.
+All of the previously mentioned algorithms are based on a causal effect identification algorithm by Tian, J. (2002) <http://ftp.cs.ucla.edu/pub/stat_ser/r309.pdf>.
 
-For details, see the [package vignettes at CRAN](https://cran.r-project.org/package=causaleffect) and the paper [Identifying Causal Effects with the R Package
-causaleffect](https://www.jstatsoft.org/article/view/v076i12)
+For details, see the [package vignettes at CRAN](https://cran.r-project.org/package=causaleffect) and the paper [Identifying Causal Effects with the R Package causaleffect](https://www.jstatsoft.org/article/view/v076i12)
 
 ## Installation
 You can install the latest release version from CRAN:

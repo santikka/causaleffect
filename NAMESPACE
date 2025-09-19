@@ -1,6 +1,8 @@
 export(aux.effect)
 export(generalize)
 export(causal.effect)
+export(simplify)
+export(join)
 export(get.expression)
 export(meta.transport)
 export(parse.graphml)

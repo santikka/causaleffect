@@ -1,11 +1,43 @@
+# Causal Effect
+#
+# This function computes the causal effect of a set of variables x on another
+# set of variables y given an optional set of variables z, using a given causal
+# graph G.
+#
+#
+# y:
+# x:
+# z:
+# G:
+# expr:
+# simp:
+# steps:
+# primes:
+# prune:
+# stop_on_nonid:
+#
+# Returns:
+#
+#
+# Causaleffect dependencies: probability, deconstruct, get.expression, pid,
+# id(?),idc, observed.graph, unobserved.graph, parse.expression, set.primes(?)
+
+
+
+
 causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE, prune = FALSE, stop_on_nonid = TRUE) {
+  # if there aren't any attributes in the graph, then we need to create them.
   if (length(igraph::edge.attributes(G)) == 0) {
     G <- igraph::set.edge.attribute(G, "description", 1:length(igraph::E(G)), NA)
   }
+  # G.obs is the version of G that has no unobserved variables or bidirected edges representing unobserved confounders
   G.obs <- observed.graph(G)
   if (!igraph::is.dag(G.obs)) stop("Graph 'G' is not a DAG")
+  # This is the topological sort of a graph's directed edges
   topo <- igraph::topological.sort(G.obs)
+  # This labels the vertices of the topological sort to be the same as the names of the original graph.
   topo <- igraph::get.vertex.attribute(G, "name")[topo]
+  # sanity checks to make sure that x, y and z are in the topological sort of the graph
   if (length(setdiff(y, topo)) > 0) stop("Set 'y' contains variables not present in the graph.")
   if (length(setdiff(x, topo)) > 0) stop("Set 'x' contains variables not present in the graph.")
   if (length(z) > 0 && !identical(z, "")) {

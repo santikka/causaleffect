@@ -6,3 +6,4 @@
 ^graphs/.*$
 ^doc$
 ^Meta$
+^causaleffect\.Rproj$

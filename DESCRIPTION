@@ -11,8 +11,15 @@ URL: https://github.com/santikka/causaleffect/
 Description: Functions for identification and transportation of causal effects. Provides a conditional causal effect identification algorithm (IDC) by Shpitser, I. and Pearl, J. (2006) <http://ftp.cs.ucla.edu/pub/stat_ser/r329-uai.pdf>, an algorithm for transportability from multiple domains with limited experiments by Bareinboim, E. and Pearl, J. (2014) <http://ftp.cs.ucla.edu/pub/stat_ser/r443.pdf>, and a selection bias recovery algorithm by Bareinboim, E. and Tian, J. (2015) <http://ftp.cs.ucla.edu/pub/stat_ser/r445.pdf>. All of the previously mentioned algorithms are based on a causal effect identification algorithm by Tian , J. (2002) <http://ftp.cs.ucla.edu/pub/stat_ser/r309.pdf>.
 License: GPL (>= 2)
 Imports: igraph
-Suggests: R.rsp, XML
+Suggests: 
+    R.rsp,
+    testthat (>= 3.0.0),
+    XML
 VignetteBuilder: R.rsp
 NeedsCompilation: no
 Author: Santtu Tikka [aut, cre] (<https://orcid.org/0000-0003-4039-4342>)
 Maintainer: Santtu Tikka <santtuth@gmail.com>
+Config/testthat/edition: 3
+RoxygenNote: 7.3.2
+Roxygen: list(markdown = TRUE)
+Encoding: UTF-8

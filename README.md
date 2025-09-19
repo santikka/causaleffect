@@ -20,22 +20,3 @@ Alternatively, you can install the latest development version by using the devto
 install.packages("devtools")
 devtools::install_github("santikka/causaleffect")
 ```
-
-## Recent changes (for all changes, see NEWS file).
-
-### Changes from version 1.3.14 to 1.3.15
- * Replaced deprecated igraph edge indexing to avoid future warnings.
-
-### Changes from version 1.3.13 to 1.3.14
- * Fixed a rare issue when using pruning.
-
-### Changes from version 1.3.12 to 1.3.13
- * Fixed an incorrect graph definition in the IDC algorithm.
-
-### Changes from version 1.3.11 to 1.3.12
- * The package no longer depends on the 'ggm' package.
- * The package no longer requires the 'XML' package, now suggests instead.
-
-### Changes from version 1.3.10 to 1.3.11
- * Fixed inconsistency with function arguments when computing causal effects with surrogate experiments using 'aux.effect'.
- * Fixed a rare issue with simplification.

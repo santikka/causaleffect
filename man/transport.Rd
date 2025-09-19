@@ -3,7 +3,7 @@
 \title{Derive a transport formula for a causal effect between two domains}
 \description{This function returns an expression for the transport formula of a causal effect between two domains.  The formula is returned for the interventional distribution of the set of variables (\code{y}) given the intervention on the set of variables (\code{x}) in a selection diagram (\code{D}).  If the effect is non-transportable, an error  is thrown describing the graphical structure that witnesses non-transportability. The vertices of (\code{D}) that correspond to selection variables must have a description parameter of a single character "S" (shorthand for "selection").  By default, every variable is available for intervention in the source. If only a subset of the variables is available, then the set (\code{z}) can be used to derive specific z-transportability. }
 
-\usage{transport(y, x, z = NULL, D, expr = TRUE, simp = TRUE, 
+\usage{transport(y, x, z = NULL, D, expr = TRUE, simp = TRUE,
   steps = FALSE, primes = FALSE, stop_on_nonid = TRUE)}
 
 \arguments{
@@ -23,7 +23,7 @@
 
 Bareinboim E., Pearl J. 2013a A General Algorithm for Deciding Transportability of Experimental Results. \emph{Journal of Causal Inference}, \bold{1}, 107--134.
 
-Bareinboim E., Pearl J. 2013c Causal Transportability with Limited Experiments. \emph{Proceedings of the 27th AAAI Conference on Artificial Intelligence}, 95--101. 
+Bareinboim E., Pearl J. 2013c Causal Transportability with Limited Experiments. \emph{Proceedings of the 27th AAAI Conference on Artificial Intelligence}, 95--101.
 
 }
 
@@ -35,17 +35,20 @@ Bareinboim E., Pearl J. 2013c Causal Transportability with Limited Experiments. 
 library(igraph)
 
 # We set simplify = FALSE to allow multiple edges.
-d <- graph.formula(X -+ Z, Z -+ W, W -+ V, V -+ Y, S -+ V, # Observed edges
-  X -+ Z, Z -+ X, V -+ Y, Y -+ V, X -+ Y, Y -+ X, simplify = FALSE)
+d <- graph_from_literal(
+  X -+ Z, Z -+ W, W -+ V, V -+ Y, S -+ V, # Observed edges
+  X -+ Z, Z -+ X, V -+ Y, Y -+ V, X -+ Y, Y -+ X,
+  simplify = FALSE
+)
 
 # Here the bidirected edges are set to be unobserved in the selection diagram d.
 # This is denoted by giving them a description attribute with the value "U".
 # The first five edges are observed, the rest are unobserved.
-d <- set.edge.attribute(d, "description", 6:11, "U")
+d <- set_edge_attr(d, "description", 6:11, "U")
 
 # The variable "S" is a selection variable. This is denoted by giving it
-# a description attribute with the value "S". 
-d <- set.vertex.attribute(d, "description", 6, "S")
+# a description attribute with the value "S".
+d <- set_vertex_attr(d, "description", 6, "S")
 
 transport(y = "Y", x = "X", D = d)
 }

@@ -1,9 +1,9 @@
 recover <- function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE, stop_on_nonid = TRUE) {
-  if (length(igraph::edge.attributes(G)) == 0) {
+  if (length(igraph::edge_attr(G)) == 0) {
     G <- igraph::set_edge_attr(G, "description", 1:length(igraph::E(G)), NA)
   }
   if (!igraph::is_dag(observed.graph(G))) stop("Graph 'G' is not a DAG")
-  sel <- which(igraph::vertex.attributes(G)$description == "S")
+  sel <- which(igraph::vertex_attr(G)$description == "S")
   if (length(sel) == 0) stop("No selection variables present in the diagram.")
   if (length(sel) > 1) stop("Multiple selection variables are not supported.")
   G.obs <- observed.graph(G)
@@ -23,7 +23,7 @@ recover <- function(y, x, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = F
   G.T.prime.obs <- observed.graph(G.T.prime)
   D <- ancestors(y, G.T.prime.obs, topo)
   G.D <- igraph::induced_subgraph(G.causal, D)
-  cc <- c.components(G.D, topo)
+  cc <- c_components(G.D, topo)
   cg <- length(cc)
   res <- probability()
   tree <- list()

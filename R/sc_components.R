@@ -1,8 +1,8 @@
-sc.components <- function(D, topo) {
+sc_components <- function(D, topo) {
   .from <- NULL
   A <- as.matrix(igraph::as_adjacency_matrix(D))
   v <- igraph::vertex_attr(D, "name")
-  s <- v[which(igraph::vertex.attributes(D)$description == "S")]
+  s <- v[which(igraph::vertex_attr(D)$description == "S")]
   e <- igraph::E(D)
   bidirected <- NULL
   selection <- e[.from(s)]

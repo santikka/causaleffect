@@ -26,7 +26,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, topo, topo.u, constraints)
       q.factor.rhs <- NULL
 
       # C factor of the right hand side
-      u <- V(G.unobs)[which(vertex.attributes(G.unobs)$description == "U")]$name
+      u <- V(G.unobs)[which(vertex_attr(G.unobs)$description == "U")]$name
       u.pa <- NULL
       s_d.len <- length(s_d)
       product.list.rhs <- vector(mode = "list", length = s_d.len)
@@ -68,7 +68,7 @@ q.constraints <- function(s, node, G, G.obs, G.unobs, topo, topo.u, constraints)
       G.d <- igraph::induced_subgraph(G.s, d.prime)
       v <- igraph::vertex_attr(G.d, "name")
       v <- v %ts% topo
-      cc.d <- c.components(G.d, topo)
+      cc.d <- c_components(G.d, topo)
       if (length(cc.d) > 1) e <- Find(function(x) node %in% x, cc.d)
       else e <- cc.d[[1]]
 

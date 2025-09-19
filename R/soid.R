@@ -87,7 +87,7 @@ soid <- function(y, x, P, G, G.obs, I, J, v, topo, tree) {
 
   # line 4
   G.remove.x <- igraph::induced_subgraph(G, v[!(v %in% x)])
-  s <- c.components(G.remove.x, topo)
+  s <- c_components(G.remove.x, topo)
   if (length(s) > 1) {
     tree$call$line <- 4
     nxt <- lapply(s, function(t) {
@@ -103,7 +103,7 @@ soid <- function(y, x, P, G, G.obs, I, J, v, topo, tree) {
     s <- s[[1]]
 
     # line 5 
-    cc <- c.components(G, topo)
+    cc <- c_components(G, topo)
     if (identical(cc[[1]], v)) {
       v.string <- paste(v, sep = "", collapse = ",")
       s.string <- paste(s, sep = "", collapse = ",")

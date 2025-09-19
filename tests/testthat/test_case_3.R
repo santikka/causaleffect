@@ -15,7 +15,7 @@
 #-------------------------------------------------------------------
 # defining graphs, nodes, and topological ordering using igraph package
 
-G_3 <- graph_from_literal(x -+ y, w -+ x, w -+ z, z -+ y)
+G_3 <- igraph::graph_from_literal(x -+ y, w -+ x, w -+ z, z -+ y)
 G_3.obs <- observed.graph(G_3)
 G_3.unobs <- unobserved.graph(G_3)
 topo_3 <- igraph::topo_sort(G_3.obs)

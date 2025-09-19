@@ -1,33 +1,6 @@
-# Causal Effect
-#
-# This function computes the causal effect of a set of variables x on another
-# set of variables y given an optional set of variables z, using a given causal
-# graph G.
-#
-#
-# y:
-# x:
-# z:
-# G:
-# expr:
-# simp:
-# steps:
-# primes:
-# prune:
-# stop_on_nonid:
-#
-# Returns:
-#
-#
-# Causaleffect dependencies: probability, deconstruct, get.expression, pid,
-# id(?),idc, observed.graph, unobserved.graph, parse.expression, set.primes(?)
-
-
-
-
 causal.effect <- function(y, x, z = NULL, G, expr = TRUE, simp = FALSE, steps = FALSE, primes = FALSE, prune = FALSE, stop_on_nonid = TRUE) {
   # if there aren't any attributes in the graph, then we need to create them.
-  if (length(igraph::edge.attributes(G)) == 0) {
+  if (length(igraph::edge_attr(G)) == 0) {
     G <- igraph::set_edge_attr(G, "description", 1:length(igraph::E(G)), NA)
   }
   # G.obs is the version of G that has no unobserved variables or bidirected edges representing unobserved confounders

@@ -23,9 +23,6 @@
 #' @param G igraph object created with \code{igraph::graph_from_literal()}. Main graph G. Includes bidirected edges.
 #' @param G.obs igraph object created with \code{igraph::observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).
 #' @param topo igraph list object created with \code{igraph::topo_sort} and \code{igraph::vertex_attr}. The topological ordering of the vertices in graph G.
-#'
-#' @dependencies This function depends on several functions from the causaleffect package, including: \link{powerset}, \link{wrap.dSep}, and \link{insert}.
-#'
 #' @return \code{Join} returns the joint result, or the original result if none of the conditions for joining were met.
 #'
 #' @references Tikka, S., & Karvanen, J. (2017). Simplifying probabilistic expressions in causal inference. Journal of Machine Learning Research, 18(36), 1-30.
@@ -34,7 +31,6 @@
 #' Psychology PhD student at Oregon State University
 #'
 #' @seealso \code{\link{causal.effect}}, \code{\link{parse.expression}}, \code{\link{get.expression}}, \code{\link{probability}}
-#'
 #'
 #' @examples
 #' \dontrun{
@@ -88,8 +84,7 @@
 #' @concept probabilistic expressions
 #' @concept graph theory
 #' @concept causal inference
-
-
+#' @noRd
 join <- function(J, D, vari, cond, S, M, O, G.unobs, G, G.obs, topo) {
 # initialize J and D as empty character vectors
   J.new <- character()

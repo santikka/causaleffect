@@ -1,6 +1,6 @@
 rc <- function(D, P, G, topo, tree) {
   v.s <- igraph::vertex_attr(G, "name")
-  s <- v.s[which(igraph::vertex.attributes(G)$description == "S")]
+  s <- v.s[which(igraph::vertex_attr(G)$description == "S")]
   G.causal <- igraph::induced_subgraph(G, v.s[!(v.s %in% s)])
   v <- igraph::vertex_attr(G.causal, "name")
   v <- v %ts% topo
@@ -29,7 +29,7 @@ rc <- function(D, P, G, topo, tree) {
   }
 
   # line 2
-  cc <- c.components(G.causal, topo)
+  cc <- c_components(G.causal, topo)
   cg <- length(cc)
   c.set <- c()
   c.ind <- c()

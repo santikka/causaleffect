@@ -26,7 +26,7 @@ surrogate.outcome <- function(y, x, S, G, expr = TRUE, steps = FALSE, primes = F
   topo <- lapply(D, function(k) igraph::topo_sort(observed.graph(k)))
   topo <- lapply(1:d, function(k) igraph::vertex_attr(D[[k]], "name")[topo[[k]]])
   D <- lapply(D, function(k) {
-    if (length(igraph::edge.attributes(k)) == 0) {
+    if (length(igraph::edge_attr(k)) == 0) {
       k <- igraph::set_edge_attr(k, "description", 1:length(igraph::E(k)), NA)
     }
     return(k)

@@ -1,5 +1,5 @@
 aux.effect <- function(y, x, z, G, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE, stop_on_nonid = TRUE) {
-  if (length(igraph::edge.attributes(G)) == 0) {
+  if (length(igraph::edge_attr(G)) == 0) {
     G <- igraph::set_edge_attr(G, "description", 1:length(igraph::E(G)), NA)
   }
   res <- generalize(y = y, x = x, Z = list(z), D = list(G), expr = FALSE, simp = simp, steps = TRUE, primes = primes, stop_on_nonid = stop_on_nonid)

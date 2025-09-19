@@ -28,7 +28,7 @@ latent.projection <- function(G, l) {
     }
     G <- igraph::induced_subgraph(G, setdiff(v, l[i]))
     e.dat <- as.data.frame(igraph::get.edges(G, E(G)))
-    e.dat[ ,3] <- igraph::edge.attributes(G)
+    e.dat[ ,3] <- igraph::edge_attr(G)
     G <- igraph::subgraph_from_edges(G, which(!duplicated(e.dat)), delete.vertices = FALSE)
   }
   return(G)

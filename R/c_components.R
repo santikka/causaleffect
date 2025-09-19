@@ -1,4 +1,4 @@
-c.components <- function(G, topo) {
+c_components <- function(G, topo) {
   A <- as.matrix(igraph::as_adjacency_matrix(G))
   v <- igraph::vertex_attr(G, "name")
   indices <- which(A >= 1 & t(A) >= 1, arr.ind = TRUE)

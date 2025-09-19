@@ -6,7 +6,7 @@ given the intervention on the set of variables (\code{x}) conditional on (\code{
 an error is thrown describing the graphical structure that witnesses non-identifiability.  If \code{steps = TRUE}, returns instead
 a list where the first element is the expression and the second element is a list of the intermediary steps taken by the algorithm.  }
 
-\usage{causal.effect(y, x, z = NULL, G, expr = TRUE, simp = FALSE, 
+\usage{causal.effect(y, x, z = NULL, G, expr = TRUE, simp = FALSE,
   steps = FALSE, primes = FALSE, prune = FALSE, stop_on_nonid = TRUE)}
 
 \arguments{
@@ -26,9 +26,9 @@ a list where the first element is the expression and the second element is a lis
 \references{
 
 Shpitser I., Pearl J. 2006 Identification of Joint Interventional Distributions in Recursive semi-Markovian Causal Models.
-\emph{Proceedings of the 21st National Conference on Artificial Intelligence}, \bold{2}, 1219--1226. 
+\emph{Proceedings of the 21st National Conference on Artificial Intelligence}, \bold{2}, 1219--1226.
 
-Shpitser I., Pearl J. 2006 Identification of Conditional Interventional Distributions. 
+Shpitser I., Pearl J. 2006 Identification of Conditional Interventional Distributions.
 \emph{Proceedings of the 22nd Conference on Uncertainty in Artificial Intelligence}, 427--444. }
 
 \author{Santtu Tikka}
@@ -39,24 +39,27 @@ Shpitser I., Pearl J. 2006 Identification of Conditional Interventional Distribu
 library(igraph)
 
 # simplify = FALSE to allow multiple edges
-g <- graph.formula(x -+ y, z -+ x, z -+ y , x -+ z, z -+ x, simplify = FALSE)
+g <- graph_from_literal(x -+ y, z -+ x, z -+ y , x -+ z, z -+ x, simplify = FALSE)
 
 # Here the bidirected edge between X and Z is set to be unobserved in graph g
 # This is denoted by giving them a description attribute with the value "U"
 # The edges in question are the fourth and the fifth edge
-g <- set.edge.attribute(graph = g, name = "description", index = c(4,5), value = "U")
+g <- set_edge_attr(graph = g, name = "description", index = c(4, 5), value = "U")
 causal.effect("y", "x", G = g)
 
 # Pruning example
-p <- graph.formula(x -+ z_4, z_4 -+ y, z_1 -+ x, z_2 -+ z_1, 
-  z_3 -+ z_2, z_3 -+ x, z_5 -+ z_1, z_5 -+ z_4, x -+ z_2, z_2 -+ x, 
+p <- graph_from_literal(
+  x -+ z_4, z_4 -+ y, z_1 -+ x, z_2 -+ z_1,
+  z_3 -+ z_2, z_3 -+ x, z_5 -+ z_1, z_5 -+ z_4, x -+ z_2, z_2 -+ x,
   z_3 -+ z_2, z_2 -+ z_3, z_2 -+ y, y -+ z_2,
-  z_4 -+ y, y -+ z_4, z_5 -+ z_4, z_4 -+ z_5, simplify = FALSE)
-p <- set.edge.attribute(p, "description", 9:18, "U")
+  z_4 -+ y, y -+ z_4, z_5 -+ z_4, z_4 -+ z_5,
+  simplify = FALSE
+)
+p <- set_edge_attr(p, "description", 9:18, "U")
 causal.effect("y", "x", G = p, primes = TRUE, prune = TRUE)
 
 # Simplification example
-s <- graph.formula(x -+ y, w -+ x, w -+ z, z -+ y)
+s <- graph_from_literal(x -+ y, w -+ x, w -+ z, z -+ y)
 causal.effect("y", "x", G = s, simp = FALSE)
 causal.effect("y", "x", G = s, simp = TRUE)
 }

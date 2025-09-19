@@ -25,9 +25,9 @@ parse.graphml.standard <- function(file, nodes, use.names) {
         if (two.arrows | no.arrows) {
           remove.id <- remove.id + 1
           removals[[remove.id]] <- current.edge
-          e1 <- XML::newXMLNode("edge", parent = doc, attrs = c(id = "e", source = src, target = trgt), 
+          e1 <- XML::newXMLNode("edge", parent = doc, attrs = c(id = "e", source = src, target = trgt),
             XML::newXMLNode("data", attrs = c(key = "d9"), cdata = TRUE, "U" ))
-          e2 <- XML::newXMLNode("edge", parent = doc, attrs = c(id = "e", source = trgt, target = src), 
+          e2 <- XML::newXMLNode("edge", parent = doc, attrs = c(id = "e", source = trgt, target = src),
             XML::newXMLNode("data", attrs = c(key = "d9"), cdata = TRUE, "U" ))
           XML::addChildren(graph, kids = list(e1, e2))
         }
@@ -46,7 +46,7 @@ parse.graphml.standard <- function(file, nodes, use.names) {
   temp <- tempfile(fileext = ".graphml")
   temp.xml <- XML::saveXML(doc, file = temp)
   XML::free(doc)
-  igrph <- igraph::read.graph(temp.xml, format = "graphml")
-  igrph <- igraph::set.vertex.attribute(igrph, "name", value = nodes)
+  igrph <- igraph::read_graph(temp.xml, format = "graphml")
+  igrph <- igraph::set_vertex_attr(igrph, "name", value = nodes)
   return(igrph)
 }

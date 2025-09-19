@@ -2,7 +2,7 @@ independence.restrictions <- function(G) {
   G.obs <- observed.graph(G)
   topo <- igraph::topo_sort(G.obs)
   v <- igraph::vertex_attr(G, "name")[topo]
-  cc <- c.components(G, v)
+  cc <- c_components(G, v)
   cc.len <- length(cc)
   if (cc.len > 1) {
     indep <- setNames(vector(mode = "list", length = length(v)), v)

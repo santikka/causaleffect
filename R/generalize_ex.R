@@ -2,14 +2,14 @@ generalize_ex <- function(y, x, Z, D, expr = TRUE, simp = FALSE, steps = FALSE, 
   d <- length(D)
   z <- length(Z)
   v <- igraph::vertex_attr(D[[1]], "name")
-  s <- v[which(igraph::vertex.attributes(D[[1]])$description == "S")]
+  s <- v[which(igraph::vertex_attr(D[[1]])$description == "S")]
   if (length(s) > 0) stop("The causal diagram cannot contain selection variables.")
   if (d != z) stop("Number of available experiments does not match number of domains.")
   if (length(intersect(x, y)) > 0) stop("Sets 'x' and 'y' are not disjoint.")
   topo <- lapply(D, function(k) igraph::topo_sort(observed.graph(k)))
   topo <- lapply(1:d, function(k) igraph::vertex_attr(D[[k]], "name")[topo[[k]]])
   D <- lapply(D, function(k) {
-    if (length(igraph::edge.attributes(k)) == 0) {
+    if (length(igraph::edge_attr(k)) == 0) {
       k <- igraph::set_edge_attr(k, "description", 1:length(igraph::E(k)), NA)
     }
     return(k)

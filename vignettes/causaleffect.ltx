@@ -673,9 +673,9 @@ The \code{causal.effect} function can be utilized without first importing a grap
 %
 \begin{Sinput}
 R> library("igraph")
-R> fig1 <- graph.formula(W -+ X, W -+ Z, X -+ Z, Z -+ Y, X -+ Y, Y -+ X, 
+R> fig1 <- graph_from_literal(W -+ X, W -+ Z, X -+ Z, Z -+ Y, X -+ Y, Y -+ X, 
 +    simplify = FALSE)
-R> fig1 <- set.edge.attribute(graph = fig1, name = "description",
+R> fig1 <- set_edge_attr(graph = fig1, name = "description",
 +    index = c(5,6), value = "U")
 R> ce1 <- causal.effect(y = "Y", x = "X", z = NULL, G = fig1, expr = TRUE)
 R> ce1
@@ -688,7 +688,7 @@ R> ce1
 [1] "\\left(\\sum_{W,Z}P(W)P(Z|W,X)\\left(\\sum_{X}P(Y|W,X,Z)P(X|W)\\right)\\right)"
 \end{Soutput}
 }
-Here \code{X -+ Z} denotes a directed edge from $X$ to $Z$. The argument \code{simplify = FALSE} allows the insertion of duplicate edges for the purposes of forming bidirected arcs. Recalling the \code{internal} notation from Section~\ref{Sect:files} we must denote the unidirected edges that correspond to a bidirected edge with a special \code{description} parameter, and assign its value to \code{"U"}. This can be done with the \code{set.edge.attribute} function of the \pkg{igraph} package. Finally, the expression for the interventional distribution is obtained by using the \code{causal.effect} function. Usually one needs to apply the standard \proglang{R} function \code{cat} to obtain the expression with only singular slash symbols.
+Here \code{X -+ Z} denotes a directed edge from $X$ to $Z$. The argument \code{simplify = FALSE} allows the insertion of duplicate edges for the purposes of forming bidirected arcs. Recalling the \code{internal} notation from Section~\ref{Sect:files} we must denote the unidirected edges that correspond to a bidirected edge with a special \code{description} parameter, and assign its value to \code{"U"}. This can be done with the \code{set_edge_attr} function of the \pkg{igraph} package. Finally, the expression for the interventional distribution is obtained by using the \code{causal.effect} function. Usually one needs to apply the standard \proglang{R} function \code{cat} to obtain the expression with only singular slash symbols.
 \begin{Sinput}
 R> cat(ce1)
 \end{Sinput}
@@ -700,10 +700,10 @@ R> cat(ce1)
 \end{Soutput}
 To observe unidentifiability, the graph of Figure~\ref{kuva:grfF}(\subref{kuva:grfFa}) is also constructed and an attempt is made to identify $P_x(y)$.
 \begin{Sinput}
-R> fig5 <- graph.formula(Z_1 -+ X, X -+ Z_2, Z_2 -+ Y, Z_1 -+ X, X -+ Z_1,
+R> fig5 <- graph_from_literal(Z_1 -+ X, X -+ Z_2, Z_2 -+ Y, Z_1 -+ X, X -+ Z_1,
 +    Z_1 -+ Z_2, Z_2 -+ Z_1, Z_1 -+ Y, Y -+ Z_1, X -+ Y, Y -+ X, 
 +    simplify = FALSE) 
-R> fig5 <- set.edge.attribute(graph = fig5, name = "description", 
+R> fig5 <- set_edge_attr(graph = fig5, name = "description", 
 +    index = 4:11, value = "U")
 R> causal.effect(y = "Y", x = "X", z = NULL, G = fig5, expr = TRUE)
 \end{Sinput}
@@ -766,10 +766,10 @@ $$P^*(y,z_2,z_3) = \sum_{x}P(y\vert z_2,x,z_3,z_1)P(z_3\vert z_2,x)P(x\vert z_2)
 and $P$ is the joint distribution of the observed variables of $G$.
 Now, the function \code{causal.effect} is applied as follows.
 \begin{Sinput}
-R> fig7 <- graph.formula(X -+ Z_1, Z_1 -+ Y, Z_3 -+ Y, Z_2 -+ X,
+R> fig7 <- graph_from_literal(X -+ Z_1, Z_1 -+ Y, Z_3 -+ Y, Z_2 -+ X,
 +    Z_2 -+ Z_1, Z_2 -+ Z_3, X -+ Y, Y -+ X, X -+ Z_3, Z_3 -+ X, 
 +    X -+ Z_2, Z_2 -+ X, Y -+ Z_2, Z_2 -+ Y, simplify = FALSE)
-R> fig7 <- set.edge.attribute(graph = fig7, name = "description", 
+R> fig7 <- set_edge_attr(graph = fig7, name = "description", 
 +    index = 7:14, value = "U")
 R> ce3 <- causal.effect(y = c("Z_1", "Z_2", "Z_3", "Y"), x = "X",
 +    z = NULL, G = fig7, expr = TRUE)
@@ -818,7 +818,7 @@ Algorithm~\ref{alg:identify} does not utilize every possible independence proper
 \noindent
 The function \code{causal.effect} is utilized
 \begin{Sinput}
-R> fig8 <- graph.formula(z -+ x, z -+ w, x -+ y, w -+ y)
+R> fig8 <- graph_from_literal(z -+ x, z -+ w, x -+ y, w -+ y)
 R> ce3 <- causal.effect(y = "y", x = c("x", "w"), z = NULL, G = fig8,
 +    expr = TRUE)
 R> cat(ce3)

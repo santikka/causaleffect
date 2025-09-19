@@ -8,16 +8,12 @@
 #'
 #' @return A list of vectors, where each vector is a subset of the original input set. The list contains \code{2^n} subsets, where \code{n} is the length of the input set. If the input set is empty, the function returns a list containing only the empty set.
 #'
-#' @examples
-#'
-#'
 #' @seealso \code{\link{join}} for using powerset with conditional independence in probabilistic graphical models.
 #'
 #' @keywords set theory combinatorics
 #' @concept power set
 #' @concept subsets
-
-
+#' @noRd
 powerset <- function(set) {
   n <- length(set)
 # If the input set n is empty, return a list containing only the empty set

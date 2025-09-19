@@ -1,9 +1,9 @@
 transport <- function(y, x, z = NULL, D, expr = TRUE, simp = TRUE, steps = FALSE, primes = FALSE, stop_on_nonid = TRUE) {
-  if (length(igraph::edge.attributes(D)) == 0) {
+  if (length(igraph::edge_attr(D)) == 0) {
     D <- igraph::set_edge_attr(D, "description", 1:length(igraph::E(D)), NA)
   }
   v <- igraph::vertex_attr(D, "name")
-  s <- v[which(igraph::vertex.attributes(D)$description == "S")]
+  s <- v[which(igraph::vertex_attr(D)$description == "S")]
   if (is.null(z)) z <- setdiff(v, union(y, s))
   D.causal <- igraph::induced_subgraph(D, v[!(v %in% s)])
   res <- generalize(y = y, x = x, Z = list(character(0), z), D = list(D.causal, D), expr = FALSE, simp = simp, steps = TRUE, primes = primes, stop_on_nonid = stop_on_nonid)

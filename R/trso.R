@@ -4,7 +4,7 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
   description <- NULL
   d <- length(D)
   v.s <- lapply(D, function(x) igraph::vertex_attr(x, "name"))
-  s <- lapply(1:d, function(x) v.s[[x]][which(igraph::vertex.attributes(D[[x]])$description == "S")])
+  s <- lapply(1:d, function(x) v.s[[x]][which(igraph::vertex_attr(D[[x]])$description == "S")])
   s <- lapply(1:d, function(x) topo[[x]][which(topo[[x]] %in% s[[x]])])
   D.causal <- D[[1]]
   v <- igraph::vertex_attr(D.causal, "name")
@@ -65,7 +65,7 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
 
   # line 4
   D.remove.x <- igraph::induced_subgraph(D.causal, v[!(v %in% x)])
-  cc <- c.components(D.remove.x, topo[[1]])
+  cc <- c_components(D.remove.x, topo[[1]])
   cc.len <- length(cc)
   if (cc.len > 1) {
     tree$call$line <- 4
@@ -119,7 +119,7 @@ trso <- function(y, x, P, J, domain, D, Z, topo, tree) {
     }
 
     cc <- cc[[1]]
-    cG.s <- lapply(1:d, function(x) sc.components(D[[x]], topo[[x]]))
+    cG.s <- lapply(1:d, function(x) sc_components(D[[x]], topo[[x]]))
     cG <- cG.s[[1]]
 
     # line 8

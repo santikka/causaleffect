@@ -1,6 +1,6 @@
 causal.parents <- function(node, vi, G, G.obs, topo) {
   G.vi <- igraph::induced_subgraph(G, vi)
-  cc <- c.components(G.vi, topo)
+  cc <- c_components(G.vi, topo)
   t <- Find(function(x) node %in% x, cc)
   pa.t <- parents(t, G.obs)
   pa <- setdiff(pa.t, node)

@@ -1,5 +1,5 @@
 unobserved.graph <- function(G) {
-  unobs.edges <- which(igraph::edge.attributes(G)$description == "U")
+  unobs.edges <- which(igraph::edge_attr(G)$description == "U")
   u <- length(unobs.edges)
   if (u > 0) {
     e <- igraph::get.edges(G, unobs.edges)

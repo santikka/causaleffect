@@ -1,8 +1,8 @@
 compare.graphs <- function(G1, G2) {
-  e1 <- as.data.frame(igraph::get.edges(G1, igraph::E(G1)))
-  e1[ ,3] <- igraph::edge.attributes(G1)
-  e2 <- as.data.frame(igraph::get.edges(G2, igraph::E(G2)))
-  e2[ ,3] <- igraph::edge.attributes(G2)
+  e1 <- as.data.frame(igraph::ends(G1, igraph::E(G1)))
+  e1[ ,3] <- igraph::edge_attr(G1)
+  e2 <- as.data.frame(igraph::ends(G2, igraph::E(G2)))
+  e2[ ,3] <- igraph::edge_attr(G2)
   n1 <- nrow(e1)
   n2 <- nrow(e2)
   if (n1 != n2) return(FALSE)

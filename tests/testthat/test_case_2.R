@@ -15,7 +15,7 @@
 #-------------------------------------------------------------------
 # defining graphs, nodes, and topological ordering using igraph package
 
-G_2 <- graph_from_literal(
+G_2 <- igraph::graph_from_literal(
   x -+ z_4, z_4 -+ y, z_1 -+ x, z_2 -+ z_1,
   z_3 -+ z_2, z_3 -+ x, z_5 -+ z_1, z_5 -+ z_4, x -+ z_2, z_2 -+ x,
   z_3 -+ z_2, z_2 -+ z_3, z_2 -+ y, y -+ z_2,

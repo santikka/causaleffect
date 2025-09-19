@@ -11,9 +11,6 @@
 #' @param G.unobs object created with \link{unobserved.graph(G)}. Separate graph that turns bidirected edges into explicit nodes for unobserved confounders.
 #' @param G  object created with \code{igraph::graph_from_literal()}. Main graph G. Includes bidirected edges.
 #' @param G.obs object created with \link{observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).
-#'
-#' @dependencies This function depends on several functions from the causaleffect package, including: \link{irrelevant}, \link{wrap.dSep}, \link{dSep}, \link{join}, \link{ancestors}, \link{factorize}, \link{parents}, \link{children}, and \link{powerset}.
-#'
 #' @return \code{simplify()} will return the simplified atomic expression in a list structure. For example (from example below):
 #'  \preformatted{
 #'  $var: character(0)
@@ -95,8 +92,7 @@
 #' @concept probabilistic expressions
 #' @concept graph theory
 #' @concept causal inference
-
-
+#' @noRd
 simplify <- function(P, topo, G.unobs, G, G.obs) {
 # initialize j to 0
   j <- 0

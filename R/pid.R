@@ -92,7 +92,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
 
   # line 5
   if (length(x) == 1) {
-    cc <- c.components(G, topo)
+    cc <- c_components(G, topo)
     s <- Find(function(z) x %in% z, cc)
     G.s <- igraph::induced_subgraph(G, s)
     G.s.obs <- observed.graph(G.s)
@@ -104,7 +104,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
       if (v.xy.len > 0 ){
         for (i in 1:v.xy.len) {
           G.prime <- latent.projection(G, v.xy[i])
-          cc.prime <- c.components(G.prime, topo)
+          cc.prime <- c_components(G.prime, topo)
           s.prime <- Find(function(z) x %in% z, cc.prime)
           G.s.prime <- igraph::induced_subgraph(G.prime, s.prime)
           G.s.prime.obs <- observed.graph(G.s.prime)
@@ -151,7 +151,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
 
   # line 7
   G.remove.x <- igraph::induced_subgraph(G, v[!(v %in% x)])
-  s <- c.components(G.remove.x, topo)
+  s <- c_components(G.remove.x, topo)
   if (length(s) > 1) {
     tree$call$line <- 7
     nxt <- lapply(s, function(t) {
@@ -168,7 +168,7 @@ pid <- function(y, x, P, G, G.obs, v, topo, tree) {
     s <- s[[1]]
 
     # line 8
-    cc <- c.components(G, topo)
+    cc <- c_components(G, topo)
     if (identical(cc[[1]], v)) {
       tree$call$s <- cc[[1]]
       tree$call$line <- 8

@@ -12,13 +12,13 @@ parse.graphml.internal <- function(file, nodes, use.names) {
   }
   all <- XML::getNodeSet(doc, "//*[position() > 1]", ns)
   keep <- XML::getNodeSet(doc, "//ns:edge | //ns:node | //ns:graph | //ns:key[@attr.name = 'description'] | //ns:data[contains(@key,'d9')]", ns)
-  remove <- XML::getNodeSet(doc, "//ns:key[@for='port'] | //ns:key[@for='graphml'] | //ns:data[@key='d4'] | //ns:data[@key='d6'] 
+  remove <- XML::getNodeSet(doc, "//ns:key[@for='port'] | //ns:key[@for='graphml'] | //ns:data[@key='d4'] | //ns:data[@key='d6']
  | //ns:data[@key='d7'] | //ns:data[@key='d8'] | //ns:data[@key='d10']" , ns)
   XML::removeNodes(union(setdiff(all, keep), remove))
   temp <- tempfile(fileext = ".graphml")
   temp.xml <- XML::saveXML(doc, file = temp)
   XML::free(doc)
-  igrph <- igraph::read.graph(temp.xml, format = "graphml")
-  igrph <- igraph::set.vertex.attribute(igrph, "name", value = nodes)
+  igrph <- igraph::read_graph(temp.xml, format = "graphml")
+  igrph <- igraph::set_vertex_attr(igrph, "name", value = nodes)
   return(igrph)
 }

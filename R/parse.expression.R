@@ -7,9 +7,7 @@
 #' @param G.unobs object created with \link{unobserved.graph(G)}. Separate graph that turns bidirected edges into explicit nodes for unobserved confounders.
 #' @param G  object created with \code{igraph::graph_from_literal()}. Main graph G. Includes bidirected edges.
 #' @param G.obs object created with \link{observed.graph(G)}. Separate graph that does not contain bidirected edges (only contains the directed edges with observed nodes).
-#'
-#' @dependencies This function depends on several functions from the causaleffect package, including: \link{simplify} and \link{probability}.
-#'
+
 #' @return A parsed probability object, potentially with adjusted summation sets and children, or `NULL` if the expression can be fully simplified away. This output can be used as the `P` for \link{simplify}.
 #'
 #' @details
@@ -89,9 +87,7 @@
 #'
 #' }
 #'
-#' @export
-
-
+#' @noRd
 parse.expression <- function(P, topo, G.unobs, G, G.obs) {
   # Check if the expression is a fraction
   if (P$fraction) {

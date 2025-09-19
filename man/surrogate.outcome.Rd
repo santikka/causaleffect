@@ -2,7 +2,7 @@
 \alias{surrogate.outcome}
 \title{Derive a formula for a causal effect using surrogate outcomes}
 \description{This function returns an expression for the causal effect of interest using surrogate outcomes. The formula is returned for the interventional distribution of the set of variables (\code{y}) given the intervention on the set of variables (\code{x}). Available experimental data are depicted by a list (\code{S}) where each element is a list with two elements, \code{Z} and \code{W}, that are character vectors describing the experiments and the outcome variables, respectively. }
-\usage{surrogate.outcome(y, x, S, G, expr = TRUE, 
+\usage{surrogate.outcome(y, x, S, G, expr = TRUE,
   steps = FALSE, primes = FALSE, stop_on_nonid = TRUE)}
 
 \arguments{
@@ -31,11 +31,14 @@ Bareinboim E., Pearl J. 2014 Transportability from Multiple Environments with Li
 library(igraph)
 
 # We set simplify = FALSE to allow multiple edges.
-g <-  graph.formula(W -+ X, W -+ Z, X -+ Z, Z -+ Y, # Observed edges
-  X -+ Z, Z -+ X, simplify = FALSE)
+g <-  graph_from_literal(
+  W -+ X, W -+ Z, X -+ Z, Z -+ Y, # Observed edges
+  X -+ Z, Z -+ X,
+  simplify = FALSE
+)
 
 # We set the bidirected edges
-g <- set.edge.attribute(g, "description", 5:6, "U")
+g <- set_edge_attr(g, "description", 5:6, "U")
 
 # We construct the set of available experimental data
 s <- list(

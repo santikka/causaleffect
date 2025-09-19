@@ -25,17 +25,15 @@ an implementation of an algorithm for recovering from selection bias by Bareinbo
 Every causal model and selection diagram is depicted as an igraph graph with distinct attributes and special notation. Any bidirected edge corresponding to an unobserved variable must be denoted by using two unidirected edges with a \code{description} attribute of value \code{"U"}. Here is an example describing a simple causal model with only two vertices, X and Y, and a bidirected edge between them.
 
 \preformatted{
-> g <- graph.formula(X -+ Y, Y -+ X)
-> g <- set.edge.attribute(graph = g, 
-+ name = "description", index = 1:2, value = "U")
+> g <- graph_from_literal(X -+ Y, Y -+ X)
+> g <- set_edge_attr(graph = g, name = "description", index = 1:2, value = "U")
 }
 
 For selection diagrams, the vertices that correspond to selection variables must have a \code{description} attribute of value \code{"S"}. Here is an example of a simple selection diagram with a selection node S pointing to a non-selection variable Y. Because S precedes Y in the "-+" notation, S is given index 1 in the vertex sequence.
 
 \preformatted{
-> d <- graph.formula(S -+ Y)
-> d <- set.vertex.attribute(graph = d, 
-+ name = "description", index = 1, value = "S")
+> d <- graph_from_literal(S -+ Y)
+> d <- set_vertex_attr(graph = d, name = "description", index = 1, value = "S")
 }
 
 }
@@ -49,15 +47,15 @@ Bareinboim E., Pearl J. 2013a A General Algorithm for Deciding Transportability 
 
 Bareinboim E., Pearl J. 2013b Meta-Transportability of Causal Effects: A Formal Approach. \emph{Proceedings of the 16th International Conference on Artificial Intelligence and Statistics}, 135--143.
 
-Bareinboim E., Pearl J. 2013c Causal Transportability with Limited Experiments. \emph{Proceedings of the 27th AAAI Conference on Artificial Intelligence}, 95--101. 
+Bareinboim E., Pearl J. 2013c Causal Transportability with Limited Experiments. \emph{Proceedings of the 27th AAAI Conference on Artificial Intelligence}, 95--101.
 
 Bareinboim E., Pearl J. 2014 Transportability from Multiple Environments with Limited Experiments: Completeness Results. \emph{Proceedings of the 27th Annual Conference on Neural Information Processing Systems}, 280--288.
 
 Bareinboim E., Tian J. 2015 Recovering Causal Effects From Selection Bias. \emph{In Proceedings of the 29th AAAI Conference on Artificial Intelligence}, 3475--3481.
 
-Pearl J. 2009 \emph{Causality: Models, Reasoning and Inference}, New York: Cambridge University Press. 
+Pearl J. 2009 \emph{Causality: Models, Reasoning and Inference}, New York: Cambridge University Press.
 
-Shpitser I., Pearl J. 2006a Identification of Joint Interventional Distributions in Recursive semi-Markovian Causal Models. \emph{Proceedings of the 21st National Conference on Artificial Intelligence}, \bold{2}, 1219--1226. 
+Shpitser I., Pearl J. 2006a Identification of Joint Interventional Distributions in Recursive semi-Markovian Causal Models. \emph{Proceedings of the 21st National Conference on Artificial Intelligence}, \bold{2}, 1219--1226.
 
 Shpitser I., Pearl J. 2006b Identification of Conditional Interventional Distributions. \emph{Proceedings of the 22nd Conference on Uncertainty in Artificial Intelligence}, 427--444.
 

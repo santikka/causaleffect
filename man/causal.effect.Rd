@@ -13,7 +13,7 @@ a list where the first element is the expression and the second element is a lis
   \item{y}{A character vector of variables of interest given the intervention. }
   \item{x}{A character vector of the variables that are acted upon. }
   \item{z}{A character vector of the conditioning variables. }
-  \item{G}{An \code{igraph} object describing the directed acyclic graph induced by the causal model that matches the internal syntax. }
+  \item{G}{An \code{igraph} object using the package's graph syntax, or a \code{caugi} DAG or ADMG. Vertices must have unique, nonempty names. Directed edges must be acyclic. See Details for the representation of unobserved confounding. }
   \item{expr}{A logical value. If \code{TRUE}, a string is returned describing the expression in LaTeX syntax. Else, a list structure is returned which can be manually parsed by the function \code{get.expression}. }
   \item{simp}{A logical value. If \code{TRUE}, a simplification procedure is applied to the resulting probability object. d-separation and the rules of do-calculus are applied repeatedly to simplify the expression. }
   \item{steps}{A logical value. If \code{TRUE}, returns a list where the first element corresponds to the expression of the causal effect and the second to the a list describing intermediary steps taken by the algorithm.}
@@ -23,6 +23,23 @@ a list where the first element is the expression and the second element is a lis
 }
 
 \value{If \code{steps = FALSE}, A character string or an object of class \code{probability} that describes the interventional distribution. Otherwise, a list as described in the arguments.}
+\details{
+For \code{igraph} inputs, each bidirected edge is represented by two reciprocal
+directed edges, both with edge attribute \code{description = "U"}. Other edges
+are ordinary directed edges. For \code{caugi} inputs, use \code{<->} edges for
+unobserved confounding. A directed edge and a bidirected edge can connect the
+same pair of vertices; construct these \code{caugi} graphs with
+\code{simple = FALSE}.
+
+All vertices are treated as observed variables. To use a DAG with explicit
+latent vertices, first project them out with \code{caugi::latent_project()}.
+Graphs with undirected or partially oriented edges are not supported.
+
+Graph computations use \code{caugi}. The topological ordering follows
+\code{igraph} to preserve the ordering of expressions. Graphs returned in
+\code{steps} remain \code{igraph} objects using the encoding above, including
+when the input is a \code{caugi} graph. Input graphs are not modified.
+}
 \references{
 
 Shpitser I., Pearl J. 2006 Identification of Joint Interventional Distributions in Recursive semi-Markovian Causal Models.
@@ -46,6 +63,13 @@ g <- graph_from_literal(x -+ y, z -+ x, z -+ y , x -+ z, z -+ x, simplify = FALS
 # The edges in question are the fourth and the fifth edge
 g <- set_edge_attr(graph = g, name = "description", index = c(4, 5), value = "U")
 causal.effect("y", "x", G = g)
+
+# The same graph using native directed and bidirected edges
+cg <- caugi::caugi(
+  x \%-->\% y, z \%-->\% x, z \%-->\% y, x \%<->\% z,
+  nodes = c("x", "y", "z"), class = "ADMG", simple = FALSE
+)
+causal.effect("y", "x", G = cg)
 
 # Pruning example
 p <- graph_from_literal(

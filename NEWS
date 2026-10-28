@@ -1,3 +1,11 @@
+Changes in the development version
+ * Use caugi for graph computations in causal.effect(), including conditional
+   identification, pruning, and simplification.
+ * Accept caugi DAG and ADMG inputs in causal.effect(). Existing igraph inputs,
+   expression ordering, and igraph graphs in steps output remain supported.
+ * Use native ADMG separation in conditional identification and simplification.
+ * Require caugi >= 1.4.0 and R >= 4.2.
+
 Changes from version 1.3.16 to 1.3.17
  * Incorporated tests and improved documentation by @hmhummel and @djinnome
  * Replaced deprecated igraph functions
